@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente Dourado Principal -->
+    <linearGradient id="lionGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff5b8"/>
+      <stop offset="25%" stop-color="#ffd700"/>
+      <stop offset="60%" stop-color="#d4af37"/>
+      <stop offset="90%" stop-color="#996515"/>
+      <stop offset="100%" stop-color="#5a3d0b"/>
+    </linearGradient>
+
+    <!-- Dourado Brilhante Iluminado -->
+    <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#ffe680"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+
+    <!-- Violeta Real Profundo para Sombras e Detalhes -->
+    <linearGradient id="lionViolet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7b2cbf"/>
+      <stop offset="50%" stop-color="#3c096c"/>
+      <stop offset="100%" stop-color="#140226"/>
+    </linearGradient>
+
+    <!-- Fundo Circular com Brilho Espiritual -->
+    <radialGradient id="auraGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#5a189a" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#06020c" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Brilho dos Olhos -->
+    <radialGradient id="eyeGlow" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#ffe066"/>
+      <stop offset="85%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#805300"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Aura de Glória do Leão de Judá -->
+  <circle cx="250" cy="250" r="235" fill="url(#auraGlow)"/>
+  <circle cx="250" cy="250" r="225" fill="none" stroke="url(#lionGold)" stroke-width="2" stroke-opacity="0.4" stroke-dasharray="4 8"/>
+
+  <g id="lionHead">
+    <!-- ================= JUBA DO LEÃO (FLUXO EXTERNO) ================= -->
+    <!-- Juba Superior / Coroa -->
+    <path d="M 250 45 
+             C 285 75, 330 65, 355 105 
+             C 335 110, 315 115, 295 125 
+             C 345 130, 385 160, 400 205 
+             C 375 205, 350 205, 330 215 
+             C 380 235, 415 280, 410 335 
+             C 385 330, 360 325, 345 335 
+             C 375 365, 380 415, 345 445 
+             C 320 425, 305 400, 290 380 
+             C 295 415, 275 445, 250 460 
+             C 225 445, 205 415, 210 380 
+             C 195 400, 180 425, 155 445 
+             C 120 415, 125 365, 155 335 
+             C 140 325, 115 330, 90 335 
+             C 85 280, 120 235, 170 215 
+             C 150 205, 125 205, 100 205 
+             C 115 160, 155 130, 205 125 
+             C 185 115, 165 110, 145 105 
+             C 170 65, 215 75, 250 45 Z" 
+          fill="url(#lionViolet)" stroke="url(#lionGold)" stroke-width="3" stroke-linejoin="round"/>
+
+    <!-- Mechas de Juba Internas (Douradas e Majestosas) -->
+    <!-- Mechas Lado Direito -->
+    <path d="M 250 75 Q 310 95 340 145 Q 305 145 280 155 Q 330 180 350 225 Q 315 220 290 235 Q 340 265 350 320 Q 315 305 285 320 Q 320 355 310 405 Q 280 370 265 350" 
+          fill="none" stroke="url(#lionGold)" stroke-width="3.5" stroke-linecap="round"/>
+    
+    <path d="M 250 110 Q 295 130 315 175 Q 285 180 270 200 Q 305 225 315 270 Q 285 270 270 295" 
+          fill="none" stroke="url(#goldHighlight)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Mechas Lado Esquerdo (Simetria Nobre) -->
+    <path d="M 250 75 Q 190 95 160 145 Q 195 145 220 155 Q 170 180 150 225 Q 185 220 210 235 Q 160 265 150 320 Q 185 305 215 320 Q 180 355 190 405 Q 220 370 235 350" 
+          fill="none" stroke="url(#lionGold)" stroke-width="3.5" stroke-linecap="round"/>
+
+    <path d="M 250 110 Q 205 130 185 175 Q 215 180 230 200 Q 195 225 185 270 Q 215 270 230 295" 
+          fill="none" stroke="url(#goldHighlight)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- ================= ORELHAS DO LEÃO ================= -->
+    <!-- Orelha Esquerda -->
+    <path d="M 175 140 C 150 110, 185 75, 215 105 Z" fill="#240046" stroke="url(#lionGold)" stroke-width="3"/>
+    <path d="M 180 130 C 165 115, 185 95, 205 112 Z" fill="url(#lionGold)" opacity="0.6"/>
+
+    <!-- Orelha Direita -->
+    <path d="M 325 140 C 350 110, 315 75, 285 105 Z" fill="#240046" stroke="url(#lionGold)" stroke-width="3"/>
+    <path d="M 320 130 C 335 115, 315 95, 295 112 Z" fill="url(#lionGold)" opacity="0.6"/>
+
+    <!-- ================= ESTRUTURA DO ROSTO ================= -->
+    <!-- Contorno Facial Principal -->
+    <path d="M 250 120 
+             C 285 120, 315 145, 320 180 
+             C 325 215, 320 250, 330 280 
+             C 315 300, 295 330, 285 360 
+             C 270 380, 255 395, 250 400 
+             C 245 395, 230 380, 215 360 
+             C 205 330, 185 300, 170 280 
+             C 180 250, 175 215, 180 180 
+             C 185 145, 215 120, 250 120 Z" 
+          fill="#0c0418" stroke="url(#lionGold)" stroke-width="3.5" stroke-linejoin="round"/>
+
+    <!-- ================= TESTA & SOBRANCELHAS DO LEÃO ================= -->
+    <!-- Linhas da Fronte / Rugas de Autoridade Real -->
+    <path d="M 250 135 L 250 190" stroke="url(#lionGold)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 235 145 Q 250 160 265 145" fill="none" stroke="url(#lionGold)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 225 165 Q 250 180 275 165" fill="none" stroke="url(#lionGold)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Cruz / Símbolo Real no Centro da Testa -->
+    <polygon points="250,140 254,148 262,150 255,155 257,163 250,158 243,163 245,155 238,150 246,148" fill="url(#goldHighlight)"/>
+
+    <!-- Arco da Sobrancelha Esquerda (Firmeza e Nobreza) -->
+    <path d="M 205 205 Q 225 190 245 205" fill="none" stroke="url(#lionGold)" stroke-width="4" stroke-linecap="round"/>
+    <!-- Arco da Sobrancelha Direita -->
+    <path d="M 295 205 Q 275 190 255 205" fill="none" stroke="url(#lionGold)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- ================= OLHOS PENETRANTES DO LEÃO ================= -->
+    <!-- Olho Esquerdo (Formato Felino Marcante) -->
+    <path d="M 205 218 C 215 208, 235 212, 243 222 C 235 230, 215 228, 205 218 Z" 
+          fill="#110524" stroke="url(#lionGold)" stroke-width="2.5"/>
+    <ellipse cx="225" cy="219" rx="8" ry="7" fill="url(#eyeGlow)"/>
+    <ellipse cx="225" cy="219" rx="3.5" ry="6" fill="#000000"/>
+    <circle cx="227" cy="216" r="2" fill="#ffffff"/>
+
+    <!-- Olho Direito -->
+    <path d="M 295 218 C 285 208, 265 212, 257 222 C 265 230, 285 228, 295 218 Z" 
+          fill="#110524" stroke="url(#lionGold)" stroke-width="2.5"/>
+    <ellipse cx="275" cy="219" rx="8" ry="7" fill="url(#eyeGlow)"/>
+    <ellipse cx="275" cy="219" rx="3.5" ry="6" fill="#000000"/>
+    <circle cx="277" cy="216" r="2" fill="#ffffff"/>
+
+    <!-- ================= PONTE NASAL DO LEÃO ================= -->
+    <path d="M 238 222 Q 242 260 235 285 L 265 285 Q 258 260 262 222" 
+          fill="#1b0833" stroke="url(#lionGold)" stroke-width="2"/>
+    <path d="M 250 220 L 250 280" stroke="url(#lionGold)" stroke-width="1.5" stroke-dasharray="3 4"/>
+
+    <!-- ================= FOCINHO E NARIZ DO LEÃO ================= -->
+    <!-- Trufa Nasal (O Nariz Forte de Leão) -->
+    <path d="M 230 285 
+             C 240 280, 260 280, 270 285 
+             C 275 295, 268 310, 250 315 
+             C 232 310, 225 295, 230 285 Z" 
+          fill="url(#lionGold)" stroke="#ffffff" stroke-width="1"/>
+    
+    <!-- Narinas Negras Felinas -->
+    <ellipse cx="240" cy="296" rx="4" ry="2.5" fill="#140226" transform="rotate(-15 240 296)"/>
+    <ellipse cx="260" cy="296" rx="4" ry="2.5" fill="#140226" transform="rotate(15 260 296)"/>
+
+    <!-- ================= BIGODEIRAS / MUSSO DO LEÃO ================= -->
+    <!-- Almofada do Bigode Esquerdo -->
+    <path d="M 250 315 C 235 315, 205 320, 205 340 C 205 358, 235 360, 250 350" 
+          fill="#160829" stroke="url(#lionGold)" stroke-width="2.5"/>
+    <!-- Pontos do Bigode Esquerdo -->
+    <circle cx="220" cy="330" r="2" fill="url(#lionGold)"/>
+    <circle cx="230" cy="333" r="2" fill="url(#lionGold)"/>
+    <circle cx="240" cy="338" r="2" fill="url(#lionGold)"/>
+    <circle cx="225" cy="342" r="1.5" fill="url(#lionGold)"/>
+    <circle cx="235" cy="346" r="1.5" fill="url(#lionGold)"/>
+
+    <!-- Almofada do Bigode Direito -->
+    <path d="M 250 315 C 265 315, 295 320, 295 340 C 295 358, 265 360, 250 350" 
+          fill="#160829" stroke="url(#lionGold)" stroke-width="2.5"/>
+    <!-- Pontos do Bigode Direito -->
+    <circle cx="280" cy="330" r="2" fill="url(#lionGold)"/>
+    <circle cx="270" cy="333" r="2" fill="url(#lionGold)"/>
+    <circle cx="260" cy="338" r="2" fill="url(#lionGold)"/>
+    <circle cx="275" cy="342" r="1.5" fill="url(#lionGold)"/>
+    <circle cx="265" cy="346" r="1.5" fill="url(#lionGold)"/>
+
+    <!-- Fios do Bigode (Dourados e Delicados) -->
+    <path d="M 210 335 Q 170 338 135 345" stroke="url(#lionGold)" stroke-width="1.5" fill="none" opacity="0.8"/>
+    <path d="M 210 342 Q 170 350 140 365" stroke="url(#lionGold)" stroke-width="1.5" fill="none" opacity="0.8"/>
+    <path d="M 215 350 Q 175 365 145 385" stroke="url(#lionGold)" stroke-width="1.5" fill="none" opacity="0.7"/>
+
+    <path d="M 290 335 Q 330 338 365 345" stroke="url(#lionGold)" stroke-width="1.5" fill="none" opacity="0.8"/>
+    <path d="M 290 342 Q 330 350 360 365" stroke="url(#lionGold)" stroke-width="1.5" fill="none" opacity="0.8"/>
+    <path d="M 285 350 Q 325 365 355 385" stroke="url(#lionGold)" stroke-width="1.5" fill="none" opacity="0.7"/>
+
+    <!-- ================= BOCA E QUEIXO (BARBA REAL) ================= -->
+    <!-- Queixo do Leão com Barba Majestosa -->
+    <path d="M 235 352 Q 250 360 265 352 L 260 380 Q 250 395 240 380 Z" 
+          fill="url(#lionGold)" stroke="#ffd700" stroke-width="1.5"/>
+    <path d="M 243 380 L 250 415 L 257 380" stroke="url(#lionGold)" stroke-width="2.5" fill="none"/>
+  </g>
+
+  <!-- Coroa de Luz Superior (Simbolizando o Rei dos Reis) -->
+  <g transform="translate(250, 48)">
+    <circle cx="0" cy="0" r="4" fill="#ffffff"/>
+    <line x1="0" y1="-12" x2="0" y2="12" stroke="url(#goldHighlight)" stroke-width="2"/>
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="url(#goldHighlight)" stroke-width="2"/>
+    <line x1="-8" y1="-8" x2="8" y2="8" stroke="url(#goldHighlight)" stroke-width="1.2"/>
+    <line x1="8" y1="-8" x2="-8" y2="8" stroke="url(#goldHighlight)" stroke-width="1.2"/>
+  </g>
+</svg>

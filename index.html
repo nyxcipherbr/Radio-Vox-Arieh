@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
+  <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
+  <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg">
+  <link rel="stylesheet" href="styles.css?v=4.1">
+
+  <!-- ==========================================
+       CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
+       ========================================== -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; connect-src * 'self';">
+</head>
+<body>
+
+  <!-- ==========================================
+       NAVBAR SUPERIOR
+       ========================================== -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="nav-brand">
+        <div class="nav-logo-box">
+          <img src="assets/lion_logo.jpg" alt="Vox Arieh Logo" width="44" height="44">
+        </div>
+        <div class="nav-brand-text">
+          <h1 class="gold-text">VOX ARIEH</h1>
+          <span>Web Rádio 24h</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#hero">Início</a></li>
+        <li><a href="#devocional">Palavra do Dia</a></li>
+        <li><a href="#programacao">Grade 24h</a></li>
+        <li><a href="#patrocinadores">Guia Comercial</a></li>
+        <li><a href="#anuncie">Anuncie</a></li>
+        <li><a href="#igreja">AD Madureira</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="badge-live">
+          <span class="pulse-dot"></span>
+          <span>NO AR 24H</span>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openPrayerModal()">
+          Pedir Oração
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       HERO PRINCIPAL
+       ========================================== -->
+  <header id="hero" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span>🦁 O Leão da Tribo de Judá Ruge Aqui</span>
+        </div>
+        <h1 class="hero-title">
+          Rádio <span class="gold-text">Vox Arieh</span>
+        </h1>
+        <p class="hero-slogan">
+          <strong>"O rugido da libertação em cada frequência."</strong><br>
+          Transmitindo 24 horas de louvores que edificam sua alma, ministrações da palavra viva e intercessão pela sua família diretamente de Rondonópolis - MT.
+        </p>
+
+        <div class="hero-cta-group">
+          <button id="heroPlayBtn" class="btn btn-gold" onclick="togglePlayStream()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span id="heroPlayText">Ouvir a Rádio Agora</span>
+          </button>
+          <a href="https://wa.me/5566999536712?text=Paz%20do%20Senhor!%20Gostaria%20de%20pedir%20um%20louvor%20na%20Radio%20Vox%20Arieh" target="_blank" class="btn btn-whatsapp">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+            </svg>
+            Pedir Louvor no WhatsApp
+          </a>
+          <a href="#anuncie" class="btn btn-violet">
+            Anunciar Minha Empresa
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-visual-card">
+          <div class="hero-lion-wrapper">
+            <img src="assets/lion_logo.jpg" alt="Leão de Judá Vox Arieh" width="100%" height="100%">
+          </div>
+          <h3 class="gold-text">VOX ARIEH</h3>
+          <p>Assembleia de Deus Madureira • Rondonópolis</p>
+
+          <div class="stats-row">
+            <div class="stat-item">
+              <h4 id="liveListeners">24h</h4>
+              <span>No Ar</span>
+            </div>
+            <div class="stat-item">
+              <h4>100%</h4>
+              <span>Gospel</span>
+            </div>
+            <div class="stat-item">
+              <h4>Ao Vivo</h4>
+              <span>AutoDJ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       MOMENTO DA PALAVRA / DEVOCIONAL DO DIA
+       ========================================== -->
+  <section id="devocional" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Alimento para o seu Espírito</span>
+        <h2 class="section-title">Momento da <span class="gold-text">Palavra Devocional</span></h2>
+      </div>
+
+      <div class="devotional-card">
+        <div class="devotional-content">
+          <div class="devotional-badge">
+            📖 Versículo do Dia
+          </div>
+          <blockquote class="devotional-verse" id="devotionalVerse">
+            "O leão rugiu, quem não temerá? O Senhor Deus falou, quem não profetizará?" — Amós 3:8
+          </blockquote>
+          <p class="devotional-body" id="devotionalMessage">
+            Quando o Leão da Tribo de Judá ruge, as cadeias do medo e da angústia são quebradas. Que o poder de Deus alcance a sua casa hoje, trazendo cura, restauração e vitória sobre cada desafio!
+          </p>
+          <div class="devotional-author">
+            <div class="author-avatar">AM</div>
+            <div class="author-info">
+              <h4>Evangelista Alexandra Maia</h4>
+              <p>AD Madureira — Padre Lothar</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="devotional-action-box">
+          <h4>Ouça a Mensagem</h4>
+          <p>Pílula devocional em áudio com oração pelas causas impossíveis.</p>
+          <button class="btn btn-gold" onclick="playDevotionalAudio()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+            Ouvir Áudio Devocional
+          </button>
+          <button class="btn btn-violet" onclick="shareDevotional()">
+            Compartilhar no WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       GRADE DE PROGRAMAÇÃO 24 HORAS
+       ========================================== -->
+  <section id="programacao" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Programação Ininterrupta</span>
+        <h2 class="section-title">Grade <span class="gold-text">24 Horas no Ar</span></h2>
+      </div>
+
+      <div class="schedule-container" id="scheduleContainer">
+        <!-- Renderizado dinamicamente pelo JavaScript com base no horário real -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       GUIA COMERCIAL / EMPRESAS PARCEIRAS (APOIO CULTURAL)
+       ========================================== -->
+  <section id="patrocinadores" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Apoio Cultural & Parcerias</span>
+        <h2 class="section-title">Empresas <span class="gold-text">Parceiras da Vox Arieh</span></h2>
+        <p style="color: var(--text-muted); max-width: 650px; margin: 12px auto 0;">
+          Conheça os comércios e profissionais que apoiam a propagação do Evangelho em Rondonópolis e região.
+        </p>
+      </div>
+
+      <div class="sponsors-grid" id="sponsorsContainer">
+        <!-- Renderizado dinamicamente pelo JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       ÁREA ANUNCIE CONOSCO (MÍDIA KIT & PLANOS)
+       ========================================== -->
+  <section id="anuncie" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Monetização & Divulgação Comercial</span>
+        <h2 class="section-title">Anuncie sua Empresa na <span class="gold-text">Vox Arieh</span></h2>
+        <p style="color: var(--text-muted); max-width: 700px; margin: 12px auto 0;">
+          Associe a sua marca a uma rádio de valores cristãos, alta fidelidade de audiência e alcance milhares de ouvintes diariamente. Emitimos <strong>Nota Fiscal (CNPJ)</strong> e contrato formal.
+        </p>
+      </div>
+
+      <div class="plans-grid" id="plansContainer">
+        <!-- Renderizado dinamicamente pelo JavaScript -->
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <button class="btn btn-gold btn-lg" onclick="openCustomAdModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+          </svg>
+          Solicitar Proposta Personalizada para Minha Empresa
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       IGREJA & LIDERANÇA PASTORAL
+       ========================================== -->
+  <section id="igreja" class="church-section">
+    <div class="container">
+      <div class="church-card">
+        <div class="church-grid">
+          <div class="church-info">
+            <span class="section-subtitle">Base Espiritual</span>
+            <h3 class="gold-text">Igreja Assembleia de Deus Madureira</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px;">
+              A Rádio Vox Arieh é um ministério de comunicação cristã dedicado a proclamar a verdade de Jesus Cristo, edificando lares através da palavra e dos louvores.
+            </p>
+            <ul class="church-pastors-list">
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span><strong>Pastor Presidente:</strong> Pr. Ary Dantas</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span><strong>Pastores Dirigentes:</strong> Pr. Melgercior e Pra. Zeigna</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span><strong>Direção & Locução:</strong> Evangelista Alexandra Maia</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="church-location">
+            <span class="section-subtitle">Onde Estamos</span>
+            <h3 style="margin-bottom: 16px;">Venha nos Visitar</h3>
+            <div class="address-box">
+              <h5>Endereço da Congregação</h5>
+              <p>Rua 10, Quadra 19, Lote 22</p>
+              <p>Bairro Padre Lothar — Rondonópolis - MT</p>
+            </div>
+            <div style="margin-top: 24px;">
+              <a href="https://wa.me/5566999536712?text=Paz%20do%20Senhor!%20Gostaria%20de%20saber%20os%20horarios%20dos%20cultos%20da%20AD%20Madureira" target="_blank" class="btn btn-violet">
+                Consultar Horários de Culto
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       RODAPÉ (FOOTER)
+       ========================================== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h3 class="gold-text">RÁDIO VOX ARIEH</h3>
+        <p>"O rugido da libertação em cada frequência." Uma estação a serviço do Reino de Deus, proclamando cura, salvação e restauração.</p>
+        <p style="margin-top: 12px; color: var(--gold-primary);">
+          <strong>Atendimento & WhatsApp:</strong> (66) 99953-6712
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#hero">Início</a></li>
+          <li><a href="#devocional">Momento Devocional</a></li>
+          <li><a href="#programacao">Grade de Horários</a></li>
+          <li><a href="#patrocinadores">Guia Comercial</a></li>
+          <li><a href="#anuncie">Mídia Kit & Planos</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Apoio Pastoral</h4>
+        <ul>
+          <li><a href="#igreja">AD Madureira</a></li>
+          <li><a href="#igreja">Pr. Ary Dantas</a></li>
+          <li><a href="#igreja">Pr. Melgercior & Pra. Zeigna</a></li>
+          <li><a href="#igreja">Ev. Alexandra Maia</a></li>
+          <li><a href="javascript:void(0)" onclick="openPrayerModal()">Pedido de Oração</a></li>
+          <li><a href="javascript:void(0)" onclick="openPrivacyModal()" style="color: var(--gold-primary);">🛡️ Privacidade & LGPD</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+        <p>© 2026 Rádio Vox Arieh — Todos os direitos reservados. CNPJ Ativo • Rondonópolis - MT</p>
+        <button onclick="openAdminLoginModal()" class="btn" style="background: rgba(60, 9, 108, 0.4); border: 1px solid var(--border-gold); color: var(--gold-bright); font-size: 0.78rem; padding: 6px 14px; border-radius: 20px; cursor: pointer;">
+          🔒 Painel da Direção (ADM)
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       FIXED WEB PLAYER (BARRA DE ÁUDIO NO RODAPÉ)
+       ========================================== -->
+  <div class="fixed-player" id="fixedPlayer">
+    <div class="container player-grid">
+      <div class="player-track-info">
+        <div class="player-album-art">
+          <img src="assets/lion_logo.jpg" alt="Vox Arieh" width="48" height="48">
+        </div>
+        <div class="player-track-details">
+          <div class="player-track-title" id="playerCurrentTrack">Carregando transmissão...</div>
+          <div class="player-track-artist" id="playerCurrentHost">Rádio Vox Arieh • 24 Horas</div>
+        </div>
+      </div>
+
+      <div class="player-controls-center">
+        <div class="player-btns">
+          <div class="equalizer" id="audioEqualizer">
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+          </div>
+
+          <button class="btn-play-main" id="mainPlayBtn" onclick="togglePlayStream()" aria-label="Tocar ou Pausar">
+            <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+
+          <span class="badge-live" style="padding: 4px 10px; font-size: 0.68rem;">
+            AO VIVO
+          </span>
+        </div>
+      </div>
+
+      <div class="player-controls-right">
+        <div class="volume-wrapper">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+          <input type="range" class="volume-slider" id="volumeControl" min="0" max="1" step="0.05" value="0.8">
+        </div>
+
+        <button class="btn btn-gold btn-sm" onclick="openPrayerModal()" style="padding: 8px 14px; font-size: 0.8rem;">
+          Pedir Oração
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Element Oculto -->
+  <audio id="radioAudio" preload="none"></audio>
+  <audio id="devotionalAudio" preload="none"></audio>
+
+  <!-- ==========================================
+       MODAL: PEDIDO DE ORAÇÃO & LOUVOR
+       ========================================== -->
+  <div class="modal-overlay" id="prayerModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <h3 class="gold-text" style="margin-bottom: 8px;">Pedir Louvor ou Oração</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
+        Sua mensagem será enviada diretamente para o WhatsApp oficial da Evangelista Alexandra Maia.
+      </p>
+
+      <form id="prayerForm" onsubmit="handleSendPrayer(event)">
+        <div class="form-group">
+          <label for="prayerName">Seu Nome Completo:</label>
+          <input type="text" id="prayerName" class="form-control" placeholder="Ex: Maria de Fátima" required>
+        </div>
+        <div class="form-group">
+          <label for="prayerCity">Bairro / Cidade:</label>
+          <input type="text" id="prayerCity" class="form-control" placeholder="Ex: Padre Lothar, Rondonópolis" required>
+        </div>
+        <div class="form-group">
+          <label for="prayerSong">Louvor que gostaria de ouvir:</label>
+          <input type="text" id="prayerSong" class="form-control" placeholder="Ex: O Leão Rugiu ou Porque Ele Vive">
+        </div>
+        <div class="form-group">
+          <label for="prayerRequest">Seu Pedido de Oração / Causa:</label>
+          <textarea id="prayerRequest" class="form-control" placeholder="Escreva seu motivo de oração para colocarmos no clamor da rádio..." required></textarea>
+        </div>
+        <!-- Conformidade LGPD -->
+        <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px; margin: 15px 0;">
+          <input type="checkbox" id="lgpdPrayerConsent" required style="margin-top: 3px; accent-color: var(--gold-bright);">
+          <label for="lgpdPrayerConsent" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin: 0;">
+            Concordo com o envio dos dados via WhatsApp para fins de oração e atendimento pastoral, nos termos da <strong>LGPD (Lei nº 13.709/2018)</strong>.
+          </label>
+        </div>
+        <button type="submit" class="btn btn-whatsapp" style="width: 100%;">
+          Enviar pelo WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: PROPOSTA DE ANÚNCIO PERSONALIZADA
+       ========================================== -->
+  <div class="modal-overlay" id="adModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <h3 class="gold-text" style="margin-bottom: 8px;">Anunciar na Rádio Vox Arieh</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
+        Receba nossa proposta comercial e veicule sua marca para os fiéis e ouvintes de Rondonópolis.
+      </p>
+
+      <form id="adForm" onsubmit="handleSendAd(event)">
+        <div class="form-group">
+          <label for="adCompany">Nome da Empresa:</label>
+          <input type="text" id="adCompany" class="form-control" placeholder="Ex: Supermercado São José" required>
+        </div>
+        <div class="form-group">
+          <label for="adContactPerson">Seu Nome / Cargo:</label>
+          <input type="text" id="adContactPerson" class="form-control" placeholder="Ex: Carlos (Proprietário)" required>
+        </div>
+        <div class="form-group">
+          <label for="adSegment">Segmento / Ramo de Atuação:</label>
+          <input type="text" id="adSegment" class="form-control" placeholder="Ex: Farmácia, Varejo, Oficina..." required>
+        </div>
+        <div class="form-group">
+          <label for="adPlan">Plano de Interesse:</label>
+          <select id="adPlan" class="form-control">
+            <option value="Plano Bronze (R$ 50/mês)">Plano Bronze (R$ 50/mês - 6 inserções/dia)</option>
+            <option value="Plano Prata (R$ 100/mês)" selected>Plano Prata (R$ 100/mês - 12 inserções + Banner)</option>
+            <option value="Plano Ouro (R$ 200/mês)">Plano Ouro Master (R$ 200/mês - Patrocínio do Devocional)</option>
+            <option value="Personalizado">Quero uma Proposta Personalizada</option>
+          </select>
+        </div>
+        <!-- Conformidade LGPD -->
+        <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px; margin: 15px 0;">
+          <input type="checkbox" id="lgpdAdConsent" required style="margin-top: 3px; accent-color: var(--gold-bright);">
+          <label for="lgpdAdConsent" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin: 0;">
+            Concordo com o compartilhamento dos dados para fins de proposta comercial e veiculação publicitária, em conformidade com a <strong>LGPD (Lei nº 13.709/2018)</strong>.
+          </label>
+        </div>
+        <button type="submit" class="btn btn-whatsapp" style="width: 100%;">
+          Falar com o Comercial via WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 1: LOGIN DO PAINEL DA DIREÇÃO (ADM)
+       ========================================== -->
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal-box" style="max-width: 420px; text-align: center;">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <div style="width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; background: rgba(212, 175, 55, 0.15); border: 1.5px solid var(--gold-primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+        👑
+      </div>
+      <h3 class="gold-text" style="margin-bottom: 6px;">Painel da Direção</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 22px;">
+        Acesso exclusivo da <strong>Evangelista Alexandra Maia</strong>. Digite sua senha:
+      </p>
+
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group" style="text-align: left;">
+          <label for="adminPassInput">Senha de Acesso Master:</label>
+          <input type="password" id="adminPassInput" class="form-control" placeholder="••••••••" required autofocus autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-gold" style="width: 100%;">
+          Acessar Painel Master
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: DASHBOARD DO PAINEL ADM (NICHO MASTER)
+       ========================================== -->
+  <div class="modal-overlay" id="adminDashboardModal">
+    <div class="modal-box admin-modal-box">
+      <div class="admin-header">
+        <div class="admin-header-title">
+          <img src="assets/lion_logo.jpg" alt="Leão" width="46" height="46" style="border-radius: 50%; border: 2px solid var(--gold-primary);">
+          <div>
+            <h2 class="gold-text">Painel Master • Rádio Vox Arieh</h2>
+            <p>Gestão de Patrocinadores, Devocionais e Transmissão 24h</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button class="btn btn-gold btn-sm" onclick="exportAdminConfig()" title="Baixar backup da configuração">
+            💾 Baixar Backup
+          </button>
+          <button class="modal-close" onclick="closeModals()" style="position: static; font-size: 1.8rem; margin-left: 10px;">&times;</button>
+        </div>
+      </div>
+
+      <!-- Abas de Navegação -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn is-active" onclick="switchAdminTab('tabSponsors', this)">
+          🏢 Patrocinadores
+        </button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('tabDevotional', this)">
+          📖 Palavra do Dia
+        </button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('tabSchedule', this)">
+          ⏰ Grade 24 Horas
+        </button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('tabSettings', this)">
+          ⚙️ Transmissão & Senha
+        </button>
+      </div>
+
+      <!-- ABA 1: PATROCINADORES -->
+      <div id="tabSponsors" class="admin-tab-content is-active">
+        <div class="admin-section-title">
+          <span>Empresas Parceiras Cadastradas</span>
+          <button class="btn btn-gold btn-sm" onclick="toggleAddSponsorForm()">
+            ➕ Novo Patrocinador
+          </button>
+        </div>
+
+        <!-- Formulário Cadastrar/Editar Patrocinador -->
+        <div id="sponsorFormBox" style="display: none; background: rgba(36, 0, 70, 0.4); border: 1px solid var(--border-gold); border-radius: var(--radius-md); padding: 22px; margin-bottom: 25px;">
+          <h4 id="sponsorFormTitle" class="gold-text" style="margin-bottom: 15px;">Cadastrar Novo Patrocinador</h4>
+          <form id="adminSponsorForm" onsubmit="handleSaveSponsor(event)">
+            <input type="hidden" id="sponsorEditIndex" value="-1">
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label>Nome da Empresa:</label>
+                <input type="text" id="spFormName" class="form-control" placeholder="Ex: Farmácia da Bênção" required>
+              </div>
+              <div class="form-group">
+                <label>Ramo / Categoria:</label>
+                <input type="text" id="spFormCategory" class="form-control" placeholder="Ex: Saúde & Medicamentos" required>
+              </div>
+              <div class="form-group">
+                <label>Telefone / WhatsApp (com DDD):</label>
+                <input type="text" id="spFormPhone" class="form-control" placeholder="Ex: (66) 99999-0000" required>
+              </div>
+              <div class="form-group">
+                <label>Instagram Oficial (opcional):</label>
+                <input type="text" id="spFormInsta" class="form-control" placeholder="Ex: @empresa.oficial">
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Selo / Tipo de Patrocínio:</label>
+                <select id="spFormBadge" class="form-control">
+                  <option value="Patrocinador Master Oficial">Patrocinador Master Oficial</option>
+                  <option value="Patrocinador Master VIP">Patrocinador Master VIP</option>
+                  <option value="Patrocinador Ouro">Patrocinador Ouro</option>
+                  <option value="Patrocinador Prata">Patrocinador Prata</option>
+                  <option value="Apoio Cultural">Apoio Cultural</option>
+                </select>
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Descrição dos Produtos / Serviços:</label>
+                <textarea id="spFormDesc" class="form-control" placeholder="Descreva os diferenciais e serviços oferecidos pela empresa..." required></textarea>
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 15px;">
+              <button type="submit" class="btn btn-gold">Salvar Patrocinador</button>
+              <button type="button" class="btn btn-violet" onclick="toggleAddSponsorForm(false)">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista Dinâmica de Patrocinadores -->
+        <div id="adminSponsorsList" class="admin-card-list"></div>
+      </div>
+
+      <!-- ABA 2: DEVOCIONAL DO DIA -->
+      <div id="tabDevotional" class="admin-tab-content">
+        <div class="admin-section-title">
+          <span>Editar Palavra Devocional em Destaque</span>
+        </div>
+        <form onsubmit="handleSaveDevotional(event)" style="background: rgba(22, 10, 38, 0.8); border: 1px solid var(--border-violet); border-radius: var(--radius-md); padding: 25px;">
+          <div class="form-group">
+            <label>Título da Palavra:</label>
+            <input type="text" id="devFormTitle" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Versículo Bíblico em Destaque:</label>
+            <input type="text" id="devFormVerse" class="form-control" placeholder='Ex: "O leão rugiu, quem não temerá?" — Amós 3:8' required>
+          </div>
+          <div class="form-group">
+            <label>Ministrante / Pregador(a):</label>
+            <input type="text" id="devFormSpeaker" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Mensagem Pastoral / Reflexão Bíblica:</label>
+            <textarea id="devFormMessage" class="form-control" style="min-height: 120px;" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Áudio da Palavra Gravada (Arquivo ou Link):</label>
+            <input type="text" id="devFormAudio" class="form-control" placeholder="assets/devocional.mp3 ou link de áudio">
+            <input type="file" id="devFormAudioFile" accept="audio/*" class="form-control" style="margin-top: 6px;">
+            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+              🎙️ Envie o áudio gravado no seu celular/computador ou informe o link da gravação.
+            </small>
+          </div>
+          <button type="submit" class="btn btn-gold" style="margin-top: 10px;">
+            Salvar e Publicar no Site
+          </button>
+        </form>
+      </div>
+
+      <!-- ABA 3: GRADE 24 HORAS -->
+      <div id="tabSchedule" class="admin-tab-content">
+        <div class="admin-section-title">
+          <span>Grade de Programação 24 Horas</span>
+          <button class="btn btn-gold btn-sm" onclick="toggleAddProgForm()">
+            ➕ Novo Horário
+          </button>
+        </div>
+        <div id="progFormBox" style="display: none; background: rgba(36, 0, 70, 0.4); border: 1px solid var(--border-gold); border-radius: var(--radius-md); padding: 20px; margin-bottom: 25px;">
+          <h4 id="progFormTitle" class="gold-text" style="margin-bottom: 15px;">Adicionar Novo Horário</h4>
+          <form onsubmit="handleSaveProgram(event)">
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label>Início (ex: 14:00):</label>
+                <input type="text" id="progStart" class="form-control" placeholder="14:00" required>
+              </div>
+              <div class="form-group">
+                <label>Fim (ex: 16:00):</label>
+                <input type="text" id="progEnd" class="form-control" placeholder="16:00" required>
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Nome do Programa:</label>
+                <input type="text" id="progTitle" class="form-control" placeholder="Ex: Tarde de Louvor & Adoração" required>
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Apresentador(a) / Locutor(a):</label>
+                <input type="text" id="progHost" class="form-control" placeholder="Ex: Ev. Alexandra Maia" required>
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Descrição:</label>
+                <input type="text" id="progDesc" class="form-control" placeholder="Ex: Hinos que edificam e oração ao vivo." required>
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 15px;">
+              <button type="submit" class="btn btn-gold">Salvar na Grade</button>
+              <button type="button" class="btn btn-violet" onclick="toggleAddProgForm(false)">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="adminScheduleList" class="admin-card-list"></div>
+      </div>
+
+      <!-- ABA 4: CONFIGURAÇÕES & SENHA -->
+      <div id="tabSettings" class="admin-tab-content">
+        <div class="admin-section-title">
+          <span>Streaming de Áudio & Senha de Acesso</span>
+        </div>
+        <form onsubmit="handleSaveSettings(event)" style="background: rgba(22, 10, 38, 0.8); border: 1px solid var(--border-violet); border-radius: var(--radius-md); padding: 25px;">
+          <div class="form-group">
+            <label>URL do Streaming de Áudio (Icecast / SHOUTcast):</label>
+            <input type="text" id="settStreamUrl" class="form-control" placeholder="https://stream.lexaapp.com.br/listen/voxarieh/radio.mp3" required>
+            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">Cole aqui a URL que sua empresa de streaming fornecer quando você contratar o plano 24h.</small>
+          </div>
+          <div class="admin-form-grid">
+            <div class="form-group">
+              <label>WhatsApp de Atendimento da Rádio:</label>
+              <input type="text" id="settWhatsapp" class="form-control" placeholder="5566999536712" required>
+            </div>
+            <div class="form-group">
+              <label>Instagram Oficial:</label>
+              <input type="text" id="settInstagram" class="form-control" placeholder="@voxarieh.radio">
+            </div>
+            <div class="form-group admin-form-full">
+              <label>Alterar Senha do Painel ADM:</label>
+              <input type="password" id="settAdminPass" class="form-control" placeholder="Deixe em branco para manter a senha atual">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gold" style="margin-top: 10px;">
+            Salvar Configurações
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 3: POLÍTICA DE PRIVACIDADE & LGPD
+       ========================================== -->
+  <div class="modal-overlay" id="privacyModal">
+    <div class="modal-box" style="max-width: 650px; max-height: 85vh; overflow-y: auto;">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <span style="font-size: 2rem;">🛡️</span>
+        <div>
+          <h3 class="gold-text">Privacidade & Proteção de Dados</h3>
+          <p style="color: var(--text-muted); font-size: 0.82rem;">Em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 - LGPD)</p>
+        </div>
+      </div>
+
+      <div style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; display: flex; flex-direction: column; gap: 14px;">
+        <p>A <strong>Rádio Vox Arieh</strong> preza pela total segurança, confidencialidade e santidade no tratamento das informações dos seus ouvintes, membros e anunciantes.</p>
+
+        <h4 style="color: var(--gold-bright); font-size: 0.95rem;">1. Coleta e Finalidade de Dados</h4>
+        <p>Os dados informados no site (como nome, cidade e pedidos de oração) têm finalidade estritamente espiritual e pastoral. Não comercializamos, compartilhamos ou alugamos dados pessoais para terceiros.</p>
+
+        <h4 style="color: var(--gold-bright); font-size: 0.95rem;">2. Criptografia Ponta a Ponta via WhatsApp</h4>
+        <p>Para sua máxima segurança, as mensagens de oração e contato não ficam armazenadas em bancos de dados públicos ou servidores web vulneráveis. O envio é canalizado diretamente para o WhatsApp oficial com criptografia ponta a ponta.</p>
+
+        <h4 style="color: var(--gold-bright); font-size: 0.95rem;">3. Seus Direitos (Art. 18 da LGPD)</h4>
+        <p>Você pode a qualquer momento solicitar a confirmação, correção ou exclusão de qualquer informação cadastral de anunciante entrando em contato diretamente com a nossa diretoria pelo WhatsApp <strong>(66) 99953-6712</strong>.</p>
+      </div>
+
+      <div style="margin-top: 24px; text-align: right;">
+        <button class="btn btn-gold btn-sm" onclick="closeModals()">Compreendi e Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION FLUTUANTE -->
+  <div id="toastBox" class="toast-box">
+    <span>✅</span>
+    <span id="toastMsg">Alteração salva com sucesso!</span>
+  </div>
+
+  <!-- Scripts com Cache-Busting -->
+  <script src="config.js?v=4.1"></script>
+  <script src="app.js?v=4.1"></script>
+</body>
+</html>

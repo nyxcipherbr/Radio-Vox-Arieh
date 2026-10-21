@@ -1,0 +1,37 @@
+# ==============================================================================
+# REGRAS DE CIBERSEGURANÇA (.GITIGNORE) — PREVENÇÃO DE VAZAMENTOS (ZERO LEAKS)
+# ==============================================================================
+
+# Arquivos de Sistema e IDEs
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Credenciais, Segredos e Chaves Privadas
+.env*
+*.env
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+
+# Backups e Dumps de Banco de Dados
+*.bak
+*.backup
+*.sql
+*.sqlite
+*.sqlite3
+*.dump
+*.tar.gz
+*.zip
+
+# Dependências e Builds Locais
+node_modules/
+dist/
+build/
