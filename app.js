@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSchedule();
   renderSponsors();
   renderPlans();
+  renderPodcast();
   updateLiveShow();
   
   // Atualiza o programa no ar a cada 60 segundos
@@ -51,6 +52,16 @@ function getYouTubeEmbedUrl(url) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|live\/|watch\?v=|\&v=)([^#\&\?]*).*/;
   const match = clean.match(regExp);
   return (match && match[2].length === 11) ? `https://www.youtube-nocookie.com/embed/${match[2]}` : null;
+}
+
+function getSpotifyEmbedUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  const clean = url.trim();
+  const match = clean.match(/open\.spotify\.com\/(episode|show)\/([a-zA-Z0-9]+)/);
+  if (match && match[1] && match[2]) {
+    return `https://open.spotify.com/embed/${match[1]}/${match[2]}?utm_source=generator&theme=0`;
+  }
+  return null;
 }
 
 // Criptografia nativa Web Crypto API (SHA-256)
@@ -110,6 +121,23 @@ function saveDevotionalData(data) {
   } catch (e) {
     console.error("Erro ao salvar devocional no localStorage:", e);
     alert("⚠️ Limite de armazenamento local atingido! Se enviou uma gravação de áudio pesada, envie um arquivo menor (até 4MB) ou insira o link direto.");
+  }
+}
+
+function getPodcastData() {
+  try {
+    const saved = localStorage.getItem('vox_arieh_podcast');
+    return saved ? JSON.parse(saved) : (RADIO_CONFIG.podcast || {});
+  } catch (e) {
+    return RADIO_CONFIG.podcast || {};
+  }
+}
+
+function savePodcastData(data) {
+  try {
+    localStorage.setItem('vox_arieh_podcast', JSON.stringify(data));
+  } catch (e) {
+    console.error("Erro ao salvar podcast no localStorage:", e);
   }
 }
 
@@ -456,6 +484,48 @@ function renderPlans() {
   }).join('');
 }
 
+function renderPodcast() {
+  const container = document.getElementById('spotifyPlayerContainer');
+  const followBtn = document.getElementById('btnSpotifyFollow');
+  if (!container) return;
+
+  const p = getPodcastData();
+  const dev = getDevotionalData();
+  const spotifyUrl = (dev && dev.spotifyUrl) ? dev.spotifyUrl : (p && p.spotifyEpisodeUrl ? p.spotifyEpisodeUrl : '');
+  const showUrl = (p && p.spotifyShowUrl) ? p.spotifyShowUrl : 'https://open.spotify.com';
+
+  if (followBtn) {
+    followBtn.href = sanitizeUrl(showUrl);
+  }
+
+  const embedUrl = getSpotifyEmbedUrl(spotifyUrl);
+  if (embedUrl) {
+    container.innerHTML = `
+      <iframe src="${embedUrl}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="podcast-empty-state">
+        <div class="podcast-icon-bubble">🎙️</div>
+        <h3>Vox Arieh Cast — Em Breve no Spotify!</h3>
+        <p>Grave suas mensagens no <strong>Spotify for Podcasters</strong> e adicione o link no Painel ADM para o player oficial tocar aqui.</p>
+        <a href="${sanitizeUrl(showUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm" style="margin-top: 14px;">
+          Abrir Spotify
+        </a>
+      </div>
+    `;
+  }
+}
+
+function sharePodcast() {
+  const p = getPodcastData();
+  const dev = getDevotionalData();
+  const spotifyUrl = (dev && dev.spotifyUrl) || (p && p.spotifyEpisodeUrl) || window.location.href;
+  const msg = `🦁 *VOX ARIEH CAST — PODCAST GOSPEL*\n\nOuça a mensagem ministrada pela Evangelista Alexandra Maia:\n🔗 ${spotifyUrl}\n\n*Rádio Vox Arieh* — O rugido da libertação em cada frequência!`;
+  const shareUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(shareUrl, '_blank');
+}
+
 /* ========================================================
    MODAIS PÚBLICOS E WHATSAPP
    ======================================================== */
@@ -729,6 +799,8 @@ function populateAdminDevotional() {
   if (s) s.value = d.speaker || '';
   if (m) m.value = d.message || '';
   if (vid) vid.value = d.videoUrl || '';
+  const spot = document.getElementById('devFormSpotify');
+  if (spot) spot.value = d.spotifyUrl || '';
   if (a) a.value = (d.audioSample && !d.audioSample.startsWith('data:')) ? d.audioSample : '';
 }
 
@@ -738,12 +810,14 @@ async function handleSaveDevotional(event) {
   const fileInput = document.getElementById('devFormAudioFile');
   const urlInput = document.getElementById('devFormAudio');
   const vidInput = document.getElementById('devFormVideo');
+  const spotInput = document.getElementById('devFormSpotify');
   
   let audioSample = current.audioSample || '';
   if (urlInput && urlInput.value.trim()) {
     audioSample = urlInput.value.trim();
   }
   const videoUrl = vidInput ? vidInput.value.trim() : (current.videoUrl || '');
+  const spotifyUrl = spotInput ? spotInput.value.trim() : (current.spotifyUrl || '');
 
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
@@ -778,12 +852,14 @@ async function handleSaveDevotional(event) {
     speaker: document.getElementById('devFormSpeaker').value.trim(),
     message: document.getElementById('devFormMessage').value.trim(),
     videoUrl: videoUrl,
+    spotifyUrl: spotifyUrl,
     audioSample: audioSample
   };
 
   saveDevotionalData(updated);
   renderDevotional();
-  alert("✅ Momento Devocional atualizado e publicado com sucesso no site!");
+  renderPodcast();
+  alert("✅ Momento Devocional e Podcast atualizados e publicados com sucesso no site!");
   closeModals();
 }
 

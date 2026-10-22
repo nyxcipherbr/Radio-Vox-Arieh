@@ -6,14 +6,14 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg">
-  <link rel="stylesheet" href="styles.css?v=4.2">
+  <link rel="stylesheet" href="styles.css?v=4.3">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
        ========================================== -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtu.be; connect-src * 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtu.be https://open.spotify.com; connect-src * 'self';">
 </head>
 <body>
 
@@ -35,6 +35,7 @@
       <ul class="nav-links">
         <li><a href="#hero">Início</a></li>
         <li><a href="#devocional">Palavra do Dia</a></li>
+        <li><a href="#podcasts">Podcasts</a></li>
         <li><a href="#programacao">Grade 24h</a></li>
         <li><a href="#patrocinadores">Guia Comercial</a></li>
         <li><a href="#anuncie">Anuncie</a></li>
@@ -161,6 +162,51 @@
           <button class="btn btn-violet" onclick="shareDevotional()">
             Compartilhar no WhatsApp
           </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SEÇÃO: PODCASTS & MENSAGENS (VOX ARIEH CAST)
+       ========================================== -->
+  <section id="podcasts" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Mensagens & Devocionais Sob Demanda</span>
+        <h2 class="section-title">Vox Arieh <span class="gold-text">Cast & Podcasts</span></h2>
+        <p style="color: var(--text-muted); max-width: 650px; margin: 12px auto 0;">
+          Ouça as palavras devocionais, orações e mensagens bíblicas com a Evangelista Alexandra Maia a qualquer hora no Spotify ou direto no portal.
+        </p>
+      </div>
+
+      <div class="podcast-wrapper">
+        <div class="podcast-card-featured">
+          <div class="podcast-badge-wrap">
+            <span class="podcast-badge">🎧 Episódio em Destaque</span>
+            <span class="podcast-platform">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
+              </svg>
+              Disponível no Spotify
+            </span>
+          </div>
+          
+          <div id="spotifyPlayerContainer" class="podcast-player-box">
+            <!-- Renderizado dinamicamente pelo JavaScript -->
+          </div>
+
+          <div class="podcast-actions">
+            <a id="btnSpotifyFollow" href="https://open.spotify.com" target="_blank" rel="noopener noreferrer" class="btn btn-spotify">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
+              </svg>
+              Seguir no Spotify
+            </a>
+            <button class="btn btn-violet" onclick="sharePodcast()">
+              Compartilhar no WhatsApp
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -622,6 +668,13 @@
             </small>
           </div>
           <div class="form-group">
+            <label>Podcast no Spotify (Link do Episódio):</label>
+            <input type="text" id="devFormSpotify" class="form-control" placeholder="Ex: https://open.spotify.com/episode/... ou link do Spotify">
+            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+              🎧 Grave pelo app <strong>Spotify for Podcasters</strong> (gratuito e sem limite) e cole o link do episódio aqui para tocar direto no site!
+            </small>
+          </div>
+          <div class="form-group">
             <label>Áudio da Palavra Gravada (Arquivo MP3/M4A ou Link):</label>
             <input type="text" id="devFormAudio" class="form-control" placeholder="Link de áudio (ex: https://...)">
             <input type="file" id="devFormAudioFile" accept="audio/*" class="form-control" style="margin-top: 6px;">
@@ -751,7 +804,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=4.2"></script>
-  <script src="app.js?v=4.2"></script>
+  <script src="config.js?v=4.3"></script>
+  <script src="app.js?v=4.3"></script>
 </body>
 </html>
