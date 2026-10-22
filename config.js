@@ -60,17 +60,18 @@ const RADIO_CONFIG = {
     description: "Devocionais diários, orações de poder e mensagens ministradas pela Evangelista Alexandra Maia e convidados."
   },
 
-  // Grade de Programação 24 Horas (Calculada dinamicamente com base no horário do ouvinte)
+  // Grade de Programação 24 Horas Oficial (Calculada dinamicamente com base no horário real)
   schedule: [
-    { start: "00:00", end: "06:00", title: "Madrugada com Deus", host: "Adoração & Oração Contínua", desc: "Louvores de profunda adoração e clamor nas madrugadas." },
-    { start: "06:00", end: "08:00", title: "Despertar da Fé", host: "Momento de Oração Matinal", desc: "Comece o dia debaixo da unção e da bênção do Senhor." },
-    { start: "08:00", end: "11:30", title: "Manhã de Louvor & Glória", host: "Grandes Clássicos & Lançamentos", desc: "Os maiores louvores nacionais e internacionais edificando sua casa." },
-    { start: "11:30", end: "12:30", title: "Momento da Palavra & Devocional", host: "Ev. Alexandra Maia & Pastores AD Madureira", desc: "Pílula bíblica diária, oração pastoral e alimento para o espírito." },
-    { start: "12:30", end: "15:00", title: "Tarde de Avivamento", host: "Louvores Pentecostais", desc: "Músicas alegres, ritmos que edificam e testemunhos de vitória." },
-    { start: "15:00", end: "18:00", title: "Conexão Vox Arieh", host: "Interação & Pedidos de Louvor", desc: "Ouvintes de Rondonópolis e do Brasil participando via WhatsApp." },
-    { start: "18:00", end: "19:30", title: "Entardecer da Graça", host: "Clamor pelas Famílias", desc: "Intercessão pela juventude, lares e cura divina." },
-    { start: "19:30", end: "22:00", title: "Noite de Vitória & Celebração", host: "Programação Especial AD Madureira", desc: "Palavra ungida e hinos de celebração ao Rei dos Reis." },
-    { start: "22:00", end: "23:59", title: "Noite de Paz & Intimidade", host: "Louvores Acústicos", desc: "Termine seu dia na doce presença do Espírito Santo." }
+    { start: "00:00", end: "01:00", title: "Momento da Palavra — Clamor da Meia-Noite", host: "Ev. Alexandra Maia", desc: "Ministração bíblica, oração forte de libertação e quebra de cadeias." },
+    { start: "01:00", end: "03:00", title: "Madrugada com Deus", host: "Louvores & Adoração Profunda", desc: "Os mais belos louvores nacionais de adoração e consagração nas madrugadas." },
+    { start: "03:00", end: "04:00", title: "Momento da Palavra — Vigília da Madrugada", host: "Ev. Alexandra Maia", desc: "Palavra ungida e intercessão pela cura da alma e causas urgentes." },
+    { start: "04:00", end: "06:00", title: "Alvorada da Vitória", host: "Louvores Pentecostais", desc: "Louvores que despertam a fé para começar o dia cheio da presença de Deus." },
+    { start: "06:00", end: "07:00", title: "Momento da Palavra — Despertar da Fé", host: "Ev. Alexandra Maia", desc: "Pílula bíblica matinal e clamor pelas famílias para abençoar o seu dia." },
+    { start: "07:00", end: "12:00", title: "Manhã de Louvor & Glória", host: "Grandes Clássicos Gospel 24h", desc: "Músicas que edificam sua casa, sucessos contemporâneos e harpa cristã." },
+    { start: "12:00", end: "13:00", title: "Momento da Palavra — Alimento do Meio-Dia", host: "Ev. Alexandra Maia", desc: "Mensagem devocional, reflexão da Palavra de Deus e oração pastoral." },
+    { start: "13:00", end: "18:00", title: "Tarde de Avivamento", host: "Conexão Vox Arieh Louvores", desc: "Tarde de unção, louvores inspiradores e comunhão com os ouvintes." },
+    { start: "18:00", end: "19:00", title: "Momento da Palavra — Clamor do Entardecer", host: "Ev. Alexandra Maia", desc: "Oração pelas causas impossíveis, ministração e gratidão pelas bênçãos." },
+    { start: "19:00", end: "23:59", title: "Noite de Celebração & Intimidade", host: "Louvores Especiais AD Madureira", desc: "Termine o seu dia debaixo da paz do Senhor com profunda adoração." }
   ],
 
   // Planos Comerciais para Anunciantes (Mídia Kit - Valores de Lançamento)

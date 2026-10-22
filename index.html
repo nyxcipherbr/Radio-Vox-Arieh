@@ -6,7 +6,7 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg?v=5.0">
-  <link rel="stylesheet" href="styles.css?v=5.2">
+  <link rel="stylesheet" href="styles.css?v=5.3">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -715,9 +715,14 @@
       <div id="tabSchedule" class="admin-tab-content">
         <div class="admin-section-title">
           <span>Grade de Programação 24 Horas</span>
-          <button class="btn btn-gold btn-sm" onclick="toggleAddProgForm()">
-            ➕ Novo Horário
-          </button>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-violet btn-sm" onclick="resetScheduleToDefault()" title="Restaura a grade oficial com horários de pregações e louvores">
+              🔄 Restaurar Grade Oficial
+            </button>
+            <button class="btn btn-gold btn-sm" onclick="toggleAddProgForm()">
+              ➕ Novo Horário
+            </button>
+          </div>
         </div>
         <div id="progFormBox" style="display: none; background: rgba(36, 0, 70, 0.4); border: 1px solid var(--border-gold); border-radius: var(--radius-md); padding: 20px; margin-bottom: 25px;">
           <h4 id="progFormTitle" class="gold-text" style="margin-bottom: 15px;">Adicionar Novo Horário</h4>
@@ -827,7 +832,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=5.2"></script>
-  <script src="app.js?v=5.2"></script>
+  <script src="config.js?v=5.3"></script>
+  <script src="app.js?v=5.3"></script>
 </body>
 </html>

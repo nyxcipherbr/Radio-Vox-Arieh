@@ -144,11 +144,31 @@ function savePodcastData(data) {
 function getScheduleData() {
   try {
     const saved = localStorage.getItem('vox_arieh_schedule');
-    return saved ? JSON.parse(saved) : RADIO_CONFIG.schedule;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+    return RADIO_CONFIG.schedule;
   } catch (e) {
     console.error("Erro ao carregar grade:", e);
     return RADIO_CONFIG.schedule;
   }
+}
+
+// Auto-limpeza de cache de grade antiga ou corrompida no navegador
+try {
+  const savedSched = localStorage.getItem('vox_arieh_schedule');
+  if (savedSched) {
+    const parsed = JSON.parse(savedSched);
+    // Se a grade salva estiver vazia ou for a versão antiga sem o bloco das 03:00, limpa para atualizar automaticamente
+    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "03:00")) {
+      localStorage.removeItem('vox_arieh_schedule');
+    }
+  }
+} catch (e) {
+  localStorage.removeItem('vox_arieh_schedule');
 }
 
 function saveScheduleData(data) {
@@ -978,6 +998,16 @@ function deleteProgram(index) {
     renderSchedule();
     updateLiveShow();
     showToast("Programa removido da grade!");
+  }
+}
+
+function resetScheduleToDefault() {
+  if (confirm("Deseja restaurar a Grade Oficial de 24 Horas com os horários da Palavra (00h, 03h, 06h, 12h, 18h) e Louvores?")) {
+    localStorage.removeItem('vox_arieh_schedule');
+    renderAdminSchedule();
+    renderSchedule();
+    updateLiveShow();
+    showToast("Grade Oficial Restaurada com Sucesso!");
   }
 }
 
