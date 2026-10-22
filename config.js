@@ -46,7 +46,7 @@ const RADIO_CONFIG = {
     verse: "O leão rugiu, quem não temerá? O Senhor Deus falou, quem não profetizará? — Amós 3:8",
     speaker: "Evangelista Alexandra Maia",
     message: "Quando o Leão da Tribo de Judá ruge, as correntes caem, a enfermidade recua e as portas que estavam fechadas se abrem em nome de Jesus. Permaneça firme em oração hoje!",
-    audioSample: "assets/devocional_palavra.mp3",
+    audioSample: "",
     videoUrl: ""
   },
 

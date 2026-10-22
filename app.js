@@ -748,15 +748,15 @@ async function handleSaveDevotional(event) {
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
 
-    // Detecção inteligente caso o usuário selecione um arquivo de vídeo no campo de áudio
+    // Detecção se o arquivo selecionado for vídeo
     if (file.type && file.type.startsWith('video/')) {
-      alert("💡 Você selecionou um arquivo de VÍDEO (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\n\n• Para exibir o VÍDEO no site: Suba no YouTube (pode ser 'Não Listado') e cole o link no campo 'Vídeo da Palavra' acima! Fica em HD e não pesa no site.\n\n• Para tocar o ÁUDIO da mensagem: Selecione o arquivo de áudio MP3 (já convertemos seu vídeo para o arquivo 'devocional_palavra.mp3' na sua pasta Downloads com apenas 2.5MB!).");
+      alert("💡 Você selecionou um arquivo de VÍDEO (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\n\n• Para exibir o VÍDEO no site: Suba no YouTube e cole o link no campo 'Vídeo da Palavra' acima!\n• Para tocar o ÁUDIO: Selecione um arquivo de gravação de voz (áudio MP3 ou M4A) ou informe o link.");
       return;
     }
 
-    // Limite preventivo de 4MB para armazenamento local seguro
-    if (file.size > 4 * 1024 * 1024) {
-      alert("⚠️ Arquivo de áudio muito grande (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\nPara salvar diretamente no navegador sem exceder a memória, utilize um áudio de até 4MB ou forneça uma URL direta.");
+    // Limite preventivo para gravação direta no navegador
+    if (file.size > 5 * 1024 * 1024) {
+      alert("⚠️ Arquivo de áudio grande (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\nO navegador do celular possui um limite de memória para gravação local direta de até 5MB.\n\nPara áudios maiores ou para que todos os ouvintes da rádio ouçam em qualquer celular, você pode informar o link direto do áudio no campo 'Link de áudio' acima!");
       return;
     }
     try {
