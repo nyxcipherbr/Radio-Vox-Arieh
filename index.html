@@ -6,14 +6,14 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg">
-  <link rel="stylesheet" href="styles.css?v=4.1">
+  <link rel="stylesheet" href="styles.css?v=4.2">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
        ========================================== -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; connect-src * 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtu.be; connect-src * 'self';">
 </head>
 <body>
 
@@ -140,21 +140,24 @@
           <div class="devotional-author">
             <div class="author-avatar">AM</div>
             <div class="author-info">
-              <h4>Evangelista Alexandra Maia</h4>
+              <h4 id="devotionalSpeaker">Evangelista Alexandra Maia</h4>
               <p>AD Madureira — Padre Lothar</p>
             </div>
           </div>
         </div>
 
-        <div class="devotional-action-box">
-          <h4>Ouça a Mensagem</h4>
-          <p>Pílula devocional em áudio com oração pelas causas impossíveis.</p>
-          <button class="btn btn-gold" onclick="playDevotionalAudio()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-            </svg>
-            Ouvir Áudio Devocional
-          </button>
+        <div class="devotional-action-box" id="devotionalActionBox">
+          <div id="devotionalVideoContainer"></div>
+          <div id="devotionalAudioBox">
+            <h4 id="devotionalActionTitle">Mensagem da Palavra</h4>
+            <p id="devotionalActionSubtitle">Pílula devocional e oração pelas causas impossíveis.</p>
+            <button class="btn btn-gold" id="btnPlayDevotional" onclick="playDevotionalAudio()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+              </svg>
+              Ouvir Áudio da Palavra
+            </button>
+          </div>
           <button class="btn btn-violet" onclick="shareDevotional()">
             Compartilhar no WhatsApp
           </button>
@@ -612,11 +615,18 @@
             <textarea id="devFormMessage" class="form-control" style="min-height: 120px;" required></textarea>
           </div>
           <div class="form-group">
-            <label>Áudio da Palavra Gravada (Arquivo ou Link):</label>
-            <input type="text" id="devFormAudio" class="form-control" placeholder="assets/devocional.mp3 ou link de áudio">
+            <label>Vídeo da Palavra (YouTube, Shorts ou Link MP4):</label>
+            <input type="text" id="devFormVideo" class="form-control" placeholder="Ex: https://www.youtube.com/watch?v=... ou YouTube Shorts">
+            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+              🎥 Para vídeos do celular de qualquer tamanho (50MB a 500MB), suba no YouTube (pode ser "Não Listado") e cole o link aqui! Fica em HD e não sobrecarrega a rádio.
+            </small>
+          </div>
+          <div class="form-group">
+            <label>Áudio da Palavra Gravada (Arquivo MP3/M4A ou Link):</label>
+            <input type="text" id="devFormAudio" class="form-control" placeholder="assets/devocional_palavra.mp3 ou link de áudio">
             <input type="file" id="devFormAudioFile" accept="audio/*" class="form-control" style="margin-top: 6px;">
             <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
-              🎙️ Envie o áudio gravado no seu celular/computador ou informe o link da gravação.
+              🎙️ Envie o áudio leve do seu celular/computador (até 4MB) ou informe o link da gravação.
             </small>
           </div>
           <button type="submit" class="btn btn-gold" style="margin-top: 10px;">
@@ -741,7 +751,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=4.1"></script>
-  <script src="app.js?v=4.1"></script>
+  <script src="config.js?v=4.2"></script>
+  <script src="app.js?v=4.2"></script>
 </body>
 </html>

@@ -45,6 +45,14 @@ function sanitizeUrl(url) {
   return '#';
 }
 
+function getYouTubeEmbedUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  const clean = url.trim();
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|live\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = clean.match(regExp);
+  return (match && match[2].length === 11) ? `https://www.youtube-nocookie.com/embed/${match[2]}` : null;
+}
+
 // Criptografia nativa Web Crypto API (SHA-256)
 async function sha256(message) {
   const msgBuffer = new TextEncoder().encode(message);
@@ -299,9 +307,45 @@ function renderDevotional() {
   const d = getDevotionalData();
   const verseElem = document.getElementById('devotionalVerse');
   const msgElem = document.getElementById('devotionalMessage');
+  const speakerElem = document.getElementById('devotionalSpeaker');
+  const videoContainer = document.getElementById('devotionalVideoContainer');
+  const audioBox = document.getElementById('devotionalAudioBox');
   
   if (verseElem) verseElem.textContent = `“${d.verse}”`;
   if (msgElem) msgElem.textContent = d.message;
+  if (speakerElem && d.speaker) speakerElem.textContent = d.speaker;
+
+  // Renderização Dinâmica de Vídeo (se houver)
+  if (videoContainer) {
+    if (d.videoUrl && d.videoUrl.trim()) {
+      const ytEmbed = getYouTubeEmbedUrl(d.videoUrl);
+      if (ytEmbed) {
+        videoContainer.innerHTML = `
+          <div class="devotional-video-wrapper">
+            <iframe src="${ytEmbed}" title="Palavra Devocional" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        `;
+        videoContainer.style.display = 'block';
+      } else {
+        const cleanVidUrl = sanitizeUrl(d.videoUrl);
+        videoContainer.innerHTML = `
+          <div class="devotional-video-wrapper">
+            <video src="${cleanVidUrl}" controls playsinline preload="metadata"></video>
+          </div>
+        `;
+        videoContainer.style.display = 'block';
+      }
+    } else {
+      videoContainer.innerHTML = '';
+      videoContainer.style.display = 'none';
+    }
+  }
+
+  // Ajusta visibilidade do áudio
+  if (audioBox) {
+    const hasAudio = !!(d.audioSample || (RADIO_CONFIG.dailyDevotional && RADIO_CONFIG.dailyDevotional.audioSample));
+    audioBox.style.display = hasAudio ? 'block' : 'none';
+  }
 }
 
 function renderSchedule() {
@@ -677,12 +721,14 @@ function populateAdminDevotional() {
   const v = document.getElementById('devFormVerse');
   const s = document.getElementById('devFormSpeaker');
   const m = document.getElementById('devFormMessage');
+  const vid = document.getElementById('devFormVideo');
   const a = document.getElementById('devFormAudio');
 
   if (t) t.value = d.title || '';
   if (v) v.value = d.verse || '';
   if (s) s.value = d.speaker || '';
   if (m) m.value = d.message || '';
+  if (vid) vid.value = d.videoUrl || '';
   if (a) a.value = (d.audioSample && !d.audioSample.startsWith('data:')) ? d.audioSample : '';
 }
 
@@ -691,14 +737,23 @@ async function handleSaveDevotional(event) {
   const current = getDevotionalData();
   const fileInput = document.getElementById('devFormAudioFile');
   const urlInput = document.getElementById('devFormAudio');
+  const vidInput = document.getElementById('devFormVideo');
   
   let audioSample = current.audioSample || '';
   if (urlInput && urlInput.value.trim()) {
     audioSample = urlInput.value.trim();
   }
+  const videoUrl = vidInput ? vidInput.value.trim() : (current.videoUrl || '');
 
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
+
+    // Detecção inteligente caso o usuário selecione um arquivo de vídeo no campo de áudio
+    if (file.type && file.type.startsWith('video/')) {
+      alert("💡 Você selecionou um arquivo de VÍDEO (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\n\n• Para exibir o VÍDEO no site: Suba no YouTube (pode ser 'Não Listado') e cole o link no campo 'Vídeo da Palavra' acima! Fica em HD e não pesa no site.\n\n• Para tocar o ÁUDIO da mensagem: Selecione o arquivo de áudio MP3 (já convertemos seu vídeo para o arquivo 'devocional_palavra.mp3' na sua pasta Downloads com apenas 2.5MB!).");
+      return;
+    }
+
     // Limite preventivo de 4MB para armazenamento local seguro
     if (file.size > 4 * 1024 * 1024) {
       alert("⚠️ Arquivo de áudio muito grande (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\nPara salvar diretamente no navegador sem exceder a memória, utilize um áudio de até 4MB ou forneça uma URL direta.");
@@ -722,12 +777,13 @@ async function handleSaveDevotional(event) {
     verse: document.getElementById('devFormVerse').value.trim(),
     speaker: document.getElementById('devFormSpeaker').value.trim(),
     message: document.getElementById('devFormMessage').value.trim(),
+    videoUrl: videoUrl,
     audioSample: audioSample
   };
 
   saveDevotionalData(updated);
   renderDevotional();
-  alert("✅ Momento Devocional e Áudio da Palavra publicados com sucesso no site!");
+  alert("✅ Momento Devocional atualizado e publicado com sucesso no site!");
   closeModals();
 }
 
