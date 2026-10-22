@@ -374,6 +374,19 @@ function renderDevotional() {
     const hasAudio = !!(d.audioSample || (RADIO_CONFIG.dailyDevotional && RADIO_CONFIG.dailyDevotional.audioSample));
     audioBox.style.display = hasAudio ? 'block' : 'none';
   }
+
+  // Ajusta botão direto de áudio no Spotify
+  const spotifyBox = document.getElementById('devotionalSpotifyBox');
+  const spotifyBtn = document.getElementById('devotionalSpotifyBtn');
+  if (spotifyBox && spotifyBtn) {
+    const spotUrl = (d && d.spotifyUrl) ? d.spotifyUrl : (RADIO_CONFIG.dailyDevotional && RADIO_CONFIG.dailyDevotional.spotifyUrl ? RADIO_CONFIG.dailyDevotional.spotifyUrl : '');
+    if (spotUrl) {
+      spotifyBtn.href = sanitizeUrl(spotUrl);
+      spotifyBox.style.display = 'block';
+    } else {
+      spotifyBox.style.display = 'none';
+    }
+  }
 }
 
 function renderSchedule() {
@@ -487,15 +500,27 @@ function renderPlans() {
 function renderPodcast() {
   const container = document.getElementById('spotifyPlayerContainer');
   const followBtn = document.getElementById('btnSpotifyFollow');
+  const episodeBtn = document.getElementById('btnSpotifyEpisode');
   if (!container) return;
 
   const p = getPodcastData();
   const dev = getDevotionalData();
   const spotifyUrl = (dev && dev.spotifyUrl) ? dev.spotifyUrl : (p && p.spotifyEpisodeUrl ? p.spotifyEpisodeUrl : '');
-  const showUrl = (p && p.spotifyShowUrl) ? p.spotifyShowUrl : 'https://open.spotify.com';
+  const showUrl = (p && p.spotifyShowUrl && p.spotifyShowUrl !== 'https://open.spotify.com') 
+    ? p.spotifyShowUrl 
+    : 'https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX';
 
   if (followBtn) {
     followBtn.href = sanitizeUrl(showUrl);
+  }
+
+  if (episodeBtn) {
+    if (spotifyUrl) {
+      episodeBtn.href = sanitizeUrl(spotifyUrl);
+      episodeBtn.style.display = 'inline-flex';
+    } else {
+      episodeBtn.style.display = 'none';
+    }
   }
 
   const embedUrl = getSpotifyEmbedUrl(spotifyUrl);
@@ -510,7 +535,7 @@ function renderPodcast() {
         <h3>Vox Arieh Cast — Em Breve no Spotify!</h3>
         <p>Grave suas mensagens no <strong>Spotify for Podcasters</strong> e adicione o link no Painel ADM para o player oficial tocar aqui.</p>
         <a href="${sanitizeUrl(showUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm" style="margin-top: 14px;">
-          Abrir Spotify
+          Abrir Perfil no Spotify
         </a>
       </div>
     `;
@@ -521,7 +546,10 @@ function sharePodcast() {
   const p = getPodcastData();
   const dev = getDevotionalData();
   const spotifyUrl = (dev && dev.spotifyUrl) || (p && p.spotifyEpisodeUrl) || window.location.href;
-  const msg = `🦁 *VOX ARIEH CAST — PODCAST GOSPEL*\n\nOuça a mensagem ministrada pela Evangelista Alexandra Maia:\n🔗 ${spotifyUrl}\n\n*Rádio Vox Arieh* — O rugido da libertação em cada frequência!`;
+  const showUrl = (p && p.spotifyShowUrl && p.spotifyShowUrl !== 'https://open.spotify.com') 
+    ? p.spotifyShowUrl 
+    : 'https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX';
+  const msg = `🦁 *VOX ARIEH CAST — PODCAST GOSPEL*\n\nOuça a mensagem ministrada pela Evangelista Alexandra Maia:\n🎧 *Episódio:* ${spotifyUrl}\n✨ *Siga nosso canal no Spotify:* ${showUrl}\n\n*Rádio Vox Arieh* — O rugido da libertação em cada frequência!`;
   const shareUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
   window.open(shareUrl, '_blank');
 }
@@ -601,10 +629,14 @@ function handleSendAd(event) {
 function shareDevotional() {
   const d = getDevotionalData();
   const whatsapp = getRadioWhatsapp();
+  const spotUrl = (d && d.spotifyUrl) ? d.spotifyUrl : (RADIO_CONFIG.dailyDevotional && RADIO_CONFIG.dailyDevotional.spotifyUrl ? RADIO_CONFIG.dailyDevotional.spotifyUrl : '');
   let text = `🦁 *MOMENTO DA PALAVRA - RÁDIO VOX ARIEH*\n\n`;
   text += `"${d.verse}"\n\n`;
   text += `${d.message}\n\n`;
   text += `🎙️ *Ministração:* ${d.speaker} (AD Madureira - Rondonópolis / MT)\n`;
+  if (spotUrl) {
+    text += `🎧 *Ouça no Spotify:* ${spotUrl}\n`;
+  }
   text += `🔊 Ouça 24h ao vivo: https://wa.me/${whatsapp}`;
 
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -787,6 +819,7 @@ function handleSaveSponsor(event) {
 /* Gestão do Devocional no ADM */
 function populateAdminDevotional() {
   const d = getDevotionalData();
+  const p = getPodcastData();
   const t = document.getElementById('devFormTitle');
   const v = document.getElementById('devFormVerse');
   const s = document.getElementById('devFormSpeaker');
@@ -800,7 +833,14 @@ function populateAdminDevotional() {
   if (m) m.value = d.message || '';
   if (vid) vid.value = d.videoUrl || '';
   const spot = document.getElementById('devFormSpotify');
-  if (spot) spot.value = d.spotifyUrl || '';
+  if (spot) spot.value = d.spotifyUrl || (p && p.spotifyEpisodeUrl) || '';
+  const spotShow = document.getElementById('devFormSpotifyShow');
+  if (spotShow) {
+    const showUrlVal = (p && p.spotifyShowUrl && p.spotifyShowUrl !== 'https://open.spotify.com') 
+      ? p.spotifyShowUrl 
+      : (RADIO_CONFIG.podcast && RADIO_CONFIG.podcast.spotifyShowUrl ? RADIO_CONFIG.podcast.spotifyShowUrl : '');
+    spotShow.value = showUrlVal;
+  }
   if (a) a.value = (d.audioSample && !d.audioSample.startsWith('data:')) ? d.audioSample : '';
 }
 
@@ -811,6 +851,7 @@ async function handleSaveDevotional(event) {
   const urlInput = document.getElementById('devFormAudio');
   const vidInput = document.getElementById('devFormVideo');
   const spotInput = document.getElementById('devFormSpotify');
+  const spotShowInput = document.getElementById('devFormSpotifyShow');
   
   let audioSample = current.audioSample || '';
   if (urlInput && urlInput.value.trim()) {
@@ -818,6 +859,7 @@ async function handleSaveDevotional(event) {
   }
   const videoUrl = vidInput ? vidInput.value.trim() : (current.videoUrl || '');
   const spotifyUrl = spotInput ? spotInput.value.trim() : (current.spotifyUrl || '');
+  const spotifyShowUrl = spotShowInput ? spotShowInput.value.trim() : '';
 
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
@@ -857,6 +899,13 @@ async function handleSaveDevotional(event) {
   };
 
   saveDevotionalData(updated);
+
+  // Sincroniza dados do Podcast oficial da rádio
+  const podcastData = getPodcastData();
+  if (spotifyUrl) podcastData.spotifyEpisodeUrl = spotifyUrl;
+  if (spotifyShowUrl) podcastData.spotifyShowUrl = spotifyShowUrl;
+  savePodcastData(podcastData);
+
   renderDevotional();
   renderPodcast();
   alert("✅ Momento Devocional e Podcast atualizados e publicados com sucesso no site!");

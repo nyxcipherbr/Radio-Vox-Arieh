@@ -48,15 +48,15 @@ const RADIO_CONFIG = {
     message: "Quando o Leão da Tribo de Judá ruge, as correntes caem, a enfermidade recua e as portas que estavam fechadas se abrem em nome de Jesus. Permaneça firme em oração hoje!",
     audioSample: "",
     videoUrl: "",
-    spotifyUrl: ""
+    spotifyUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w"
   },
 
   // Podcasts & Mensagens Sob Demanda (Spotify for Podcasters)
   podcast: {
-    title: "Vox Arieh Cast",
+    title: "Rádio Vox Arieh — Momento da Palavra",
     subtitle: "O rugido da Palavra de Deus em cada episódio",
-    spotifyEpisodeUrl: "", // Cole o link do episódio do Spotify aqui ou no ADM
-    spotifyShowUrl: "https://open.spotify.com",
+    spotifyEpisodeUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w",
+    spotifyShowUrl: "https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX",
     description: "Devocionais diários, orações de poder e mensagens ministradas pela Evangelista Alexandra Maia e convidados."
   },
 
