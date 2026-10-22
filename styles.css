@@ -503,32 +503,39 @@ h1, h2, h3, .font-serif {
 .devotional-author {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .author-avatar {
-  width: 52px;
-  height: 52px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  border: 2px solid var(--gold-primary);
+  border: 2.5px solid var(--gold-bright);
   background: var(--violet-royal);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold-bright);
-  font-weight: 800;
-  font-size: 1.1rem;
-  box-shadow: 0 0 15px var(--gold-glow);
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
+  flex-shrink: 0;
+}
+
+.author-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
 }
 
 .author-info h4 {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 .author-info p {
-  font-size: 0.82rem;
-  color: var(--gold-primary);
+  font-size: 0.85rem;
+  color: var(--gold-bright);
 }
 
 .devotional-action-box {
