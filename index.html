@@ -6,7 +6,7 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg?v=5.0">
-  <link rel="stylesheet" href="styles.css?v=5.8">
+  <link rel="stylesheet" href="styles.css?v=5.9">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -606,10 +606,14 @@
             <p>Gestão de Patrocinadores, Devocionais e Transmissão 24h</p>
           </div>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
           <button class="btn btn-gold btn-sm" onclick="exportAdminConfig()" title="Baixar backup da configuração">
             💾 Baixar Backup
           </button>
+          <button class="btn btn-violet btn-sm" onclick="document.getElementById('backupFileInput').click()" title="Restaurar backup da configuração" style="border: 1px solid var(--border-gold); color: var(--gold-bright);">
+            📥 Restaurar Backup
+          </button>
+          <input type="file" id="backupFileInput" accept=".json,application/json" style="display: none;" onchange="handleImportBackup(event)">
           <button class="modal-close" onclick="closeModals()" style="position: static; font-size: 1.8rem; margin-left: 10px;">&times;</button>
         </div>
       </div>
@@ -911,7 +915,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=5.8"></script>
-  <script src="app.js?v=5.8"></script>
+  <script src="config.js?v=5.9"></script>
+  <script src="app.js?v=5.9"></script>
 </body>
 </html>

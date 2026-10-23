@@ -154,20 +154,69 @@ function savePodcastData(data) {
   }
 }
 
+function getDeletedEpisodes() {
+  try {
+    const list = JSON.parse(localStorage.getItem('vox_arieh_deleted_episodes') || '[]');
+    return new Set(Array.isArray(list) ? list : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function trackDeletedEpisode(spotifyUrl) {
+  try {
+    if (!spotifyUrl) return;
+    const norm = spotifyUrl.split('?')[0].trim().toLowerCase();
+    const list = JSON.parse(localStorage.getItem('vox_arieh_deleted_episodes') || '[]');
+    if (!list.includes(norm)) {
+      list.push(norm);
+      localStorage.setItem('vox_arieh_deleted_episodes', JSON.stringify(list));
+    }
+  } catch (e) {}
+}
+
 function getPodcastEpisodes() {
+  const defaultEpisodes = (RADIO_CONFIG.podcast && Array.isArray(RADIO_CONFIG.podcast.episodes))
+    ? RADIO_CONFIG.podcast.episodes
+    : [];
+
   try {
     const saved = localStorage.getItem('vox_arieh_episodes');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    if (!saved) {
+      return defaultEpisodes;
     }
-    return (RADIO_CONFIG.podcast && Array.isArray(RADIO_CONFIG.podcast.episodes))
-      ? RADIO_CONFIG.podcast.episodes
-      : [];
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return defaultEpisodes;
+    }
+
+    // Fusão inteligente (Smart Merge) para proteger registros do celular:
+    // Começa com a lista que já está no dispositivo do usuário
+    const normalize = url => (url || '').split('?')[0].trim().toLowerCase();
+    const existingUrls = new Set(parsed.map(ep => normalize(ep.spotifyUrl)).filter(Boolean));
+    const deletedUrls = getDeletedEpisodes();
+
+    let updated = false;
+    const merged = [...parsed];
+
+    // Adiciona os episódios oficiais de RADIO_CONFIG que ainda não existam no cache do dispositivo
+    for (const defEp of defaultEpisodes) {
+      const norm = normalize(defEp.spotifyUrl);
+      if (norm && !existingUrls.has(norm) && !deletedUrls.has(norm)) {
+        merged.push(defEp);
+        existingUrls.add(norm);
+        updated = true;
+      }
+    }
+
+    // Se novos episódios oficiais foram agregados, sincroniza de volta sem apagar nada
+    if (updated) {
+      localStorage.setItem('vox_arieh_episodes', JSON.stringify(merged));
+    }
+    return merged;
   } catch (e) {
-    return (RADIO_CONFIG.podcast && Array.isArray(RADIO_CONFIG.podcast.episodes))
-      ? RADIO_CONFIG.podcast.episodes
-      : [];
+    console.error("Erro ao carregar episódios:", e);
+    return defaultEpisodes;
   }
 }
 
@@ -1204,6 +1253,7 @@ function deletePodcastEpisode(index) {
     if (ep.featured && episodes.length > 0) {
       episodes[0].featured = true;
     }
+    trackDeletedEpisode(ep.spotifyUrl);
     savePodcastEpisodes(episodes);
     renderAdminPodcastEpisodes();
     renderPodcastGallery();
@@ -1366,6 +1416,44 @@ function exportAdminConfig() {
   dlAnchor.remove();
 
   showToast("Arquivo de backup baixado com sucesso!");
+}
+
+/* Restaurar Backup de Configuração Seguro */
+function handleImportBackup(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.dailyDevotional) saveDevotionalData(data.dailyDevotional);
+      if (data.podcastEpisodes && Array.isArray(data.podcastEpisodes)) savePodcastEpisodes(data.podcastEpisodes);
+      if (data.schedule && Array.isArray(data.schedule)) saveScheduleData(data.schedule);
+      if (data.sponsors && Array.isArray(data.sponsors)) saveSponsorsData(data.sponsors);
+      if (data.streamUrl) localStorage.setItem('vox_arieh_streamUrl', data.streamUrl);
+      if (data.contact) {
+        if (data.contact.whatsapp) localStorage.setItem('vox_arieh_whatsapp', data.contact.whatsapp);
+        if (data.contact.instagram) localStorage.setItem('vox_arieh_instagram', data.contact.instagram);
+      }
+      renderDevotional();
+      renderSchedule();
+      renderSponsors();
+      renderPodcast();
+      renderPodcastGallery();
+      renderAdminPodcastEpisodes();
+      renderAdminSponsors();
+      renderAdminSchedule();
+      populateAdminDevotional();
+      populateAdminSettings();
+      showToast("Backup restaurado com sucesso!");
+      alert("✅ Dados e configurações restaurados com sucesso a partir do backup!");
+    } catch (err) {
+      alert("❌ Erro ao ler o arquivo de backup. Verifique se é um arquivo JSON válido exportado pelo painel.");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 /* Toast Notification Flutuante */

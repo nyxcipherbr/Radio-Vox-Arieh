@@ -55,10 +55,73 @@ const RADIO_CONFIG = {
   podcast: {
     title: "Rádio Vox Arieh — Momento da Palavra",
     subtitle: "O rugido da Palavra de Deus em cada episódio",
-    spotifyEpisodeUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w",
+    spotifyEpisodeUrl: "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
     spotifyShowUrl: "https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX",
     description: "Devocionais diários, orações de poder e mensagens ministradas pela Evangelista Alexandra Maia e convidados.",
     episodes: [
+      {
+        id: "ep_2",
+        title: "Ativação Profetica",
+        speaker: "Evangelista Alexandra Maia",
+        category: "Profético & Fé",
+        date: "22 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
+        featured: true
+      },
+      {
+        id: "ep_3",
+        title: "O preço do calvario",
+        speaker: "Missionária Zete Alves",
+        category: "Cruz & Salvação",
+        date: "23 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/3NX1yg1jEQOjDIzKCMyvEF",
+        featured: false
+      },
+      {
+        id: "ep_4",
+        title: "Congresso de Cura",
+        speaker: "Missionária Gina",
+        category: "Cura & Milagres",
+        date: "23 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/1EWANq8EVGOuilnzRd8zqg",
+        featured: false
+      },
+      {
+        id: "ep_5",
+        title: "Os melhores soldados de Deus",
+        speaker: "Tony Calado",
+        category: "Guerra Espiritual",
+        date: "23 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/3m0gjKaySq7c5x6bjr0bpT",
+        featured: false
+      },
+      {
+        id: "ep_6",
+        title: "Espírito Santo",
+        speaker: "Rádio Vox Arieh",
+        category: "Avivamento & Poder",
+        date: "23 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/4OH7HxMtyHQ1jWOAKtCr4k",
+        featured: false
+      },
+      {
+        id: "ep_7",
+        title: "Filhos no Altar",
+        speaker: "Missionária Zete Alves",
+        category: "Família & Santidade",
+        date: "23 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/27z2ZMbm0Dy2vkdwV3nDFv",
+        featured: false
+      },
+      {
+        id: "ep_8",
+        title: "Armas para vencer batalhas Espirituais",
+        speaker: "Rádio Vox Arieh",
+        category: "Guerra Espiritual",
+        date: "23 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/3I3zvqiyd0hkzWclex9Zsp",
+        featured: false
+      },
       {
         id: "ep_1",
         title: "Palavra sobre Cura da Alma",
@@ -66,7 +129,7 @@ const RADIO_CONFIG = {
         category: "Cura & Libertação",
         date: "22 de Outubro",
         spotifyUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w",
-        featured: true
+        featured: false
       }
     ]
   },
