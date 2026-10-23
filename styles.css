@@ -681,6 +681,82 @@ h1, h2, h3, .font-serif {
 }
 
 /* ========================================================
+   GALERIA DE EPISÓDIOS & MENSAGENS EM ÁUDIO (PODCASTS)
+   ======================================================== */
+.podcast-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 22px;
+}
+
+.podcast-gallery-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-violet);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.podcast-gallery-card:hover {
+  border-color: var(--gold-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--violet-glow);
+}
+
+.podcast-gallery-card.is-featured-card {
+  border-color: var(--gold-primary);
+  background: linear-gradient(145deg, rgba(36, 0, 70, 0.5), rgba(22, 10, 38, 0.85));
+}
+
+.podcast-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.podcast-category-badge {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-bright);
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.podcast-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.podcast-card-speaker {
+  font-size: 0.88rem;
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.podcast-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+/* ========================================================
    GRADE DE PROGRAMAÇÃO 24H
    ======================================================== */
 .schedule-container {

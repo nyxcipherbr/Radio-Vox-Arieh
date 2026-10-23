@@ -57,7 +57,18 @@ const RADIO_CONFIG = {
     subtitle: "O rugido da Palavra de Deus em cada episódio",
     spotifyEpisodeUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w",
     spotifyShowUrl: "https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX",
-    description: "Devocionais diários, orações de poder e mensagens ministradas pela Evangelista Alexandra Maia e convidados."
+    description: "Devocionais diários, orações de poder e mensagens ministradas pela Evangelista Alexandra Maia e convidados.",
+    episodes: [
+      {
+        id: "ep_1",
+        title: "Palavra sobre Cura da Alma",
+        speaker: "Evangelista Alexandra Maia",
+        category: "Cura & Libertação",
+        date: "22 de Outubro",
+        spotifyUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w",
+        featured: true
+      }
+    ]
   },
 
   // Grade de Programação 24 Horas Oficial (Calculada dinamicamente com base no horário real)

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSponsors();
   renderPlans();
   renderPodcast();
+  renderPodcastGallery();
   updateLiveShow();
   
   // Atualiza o programa no ar a cada 60 segundos
@@ -138,6 +139,32 @@ function savePodcastData(data) {
     localStorage.setItem('vox_arieh_podcast', JSON.stringify(data));
   } catch (e) {
     console.error("Erro ao salvar podcast no localStorage:", e);
+  }
+}
+
+function getPodcastEpisodes() {
+  try {
+    const saved = localStorage.getItem('vox_arieh_episodes');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+    return (RADIO_CONFIG.podcast && Array.isArray(RADIO_CONFIG.podcast.episodes))
+      ? RADIO_CONFIG.podcast.episodes
+      : [];
+  } catch (e) {
+    return (RADIO_CONFIG.podcast && Array.isArray(RADIO_CONFIG.podcast.episodes))
+      ? RADIO_CONFIG.podcast.episodes
+      : [];
+  }
+}
+
+function savePodcastEpisodes(episodes) {
+  try {
+    localStorage.setItem('vox_arieh_episodes', JSON.stringify(episodes));
+  } catch (e) {
+    console.error("Erro ao salvar episódios no localStorage:", e);
+    alert("⚠️ Erro ao salvar lista de episódios no navegador!");
   }
 }
 
@@ -523,9 +550,15 @@ function renderPodcast() {
   const episodeBtn = document.getElementById('btnSpotifyEpisode');
   if (!container) return;
 
+  const episodes = getPodcastEpisodes();
+  const featuredEp = episodes.find(e => e.featured) || (episodes.length > 0 ? episodes[0] : null);
   const p = getPodcastData();
   const dev = getDevotionalData();
-  const spotifyUrl = (dev && dev.spotifyUrl) ? dev.spotifyUrl : (p && p.spotifyEpisodeUrl ? p.spotifyEpisodeUrl : '');
+
+  const spotifyUrl = (featuredEp && featuredEp.spotifyUrl)
+    ? featuredEp.spotifyUrl
+    : ((dev && dev.spotifyUrl) ? dev.spotifyUrl : (p && p.spotifyEpisodeUrl ? p.spotifyEpisodeUrl : ''));
+
   const showUrl = (p && p.spotifyShowUrl && p.spotifyShowUrl !== 'https://open.spotify.com') 
     ? p.spotifyShowUrl 
     : 'https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX';
@@ -562,14 +595,117 @@ function renderPodcast() {
   }
 }
 
+function renderPodcastGallery() {
+  const container = document.getElementById('podcastGalleryGrid');
+  if (!container) return;
+
+  const episodes = getPodcastEpisodes();
+  if (!episodes || episodes.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 35px 20px; background: rgba(36, 0, 70, 0.3); border: 1px dashed var(--border-violet); border-radius: var(--radius-md);">
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+          Nenhum episódio cadastrado na galeria ainda. Adicione novos links de ministrações no <strong>Painel ADM</strong>!
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = episodes.map((ep) => {
+    const isFeatured = !!ep.featured;
+    const title = sanitizeHTML(ep.title || 'Ministração Bíblica');
+    const speaker = sanitizeHTML(ep.speaker || 'Ev. Alexandra Maia');
+    const category = sanitizeHTML(ep.category || 'Palavra de Fé');
+    const date = ep.date ? sanitizeHTML(ep.date) : '';
+    const safeUrl = sanitizeUrl(ep.spotifyUrl || '#');
+
+    return `
+      <div class="podcast-gallery-card ${isFeatured ? 'is-featured-card' : ''}">
+        <div>
+          <div class="podcast-card-meta">
+            <span class="podcast-category-badge">${category}</span>
+            ${isFeatured ? '<span style="color: var(--gold-bright); font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; gap: 4px;">⭐ Em Destaque</span>' : ''}
+          </div>
+          <h4 class="podcast-card-title">${title}</h4>
+          <div class="podcast-card-speaker">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>${speaker}</span>
+            ${date ? `<span style="color: var(--text-muted); font-size: 0.75rem;">• ${date}</span>` : ''}
+          </div>
+        </div>
+        <div class="podcast-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="playEpisodeInPlayer('${ep.id}')" title="Tocar esta mensagem no player do site">
+            ▶️ Tocar no Site
+          </button>
+          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm" title="Ouvir diretamente no aplicativo Spotify">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
+            </svg>
+            Spotify
+          </a>
+          <button class="btn btn-violet btn-sm" onclick="shareSpecificPodcast('${ep.id}')" title="Compartilhar esta palavra no WhatsApp">
+            📲 Compartilhar
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function playEpisodeInPlayer(episodeId) {
+  const episodes = getPodcastEpisodes();
+  const ep = episodes.find(e => e.id === episodeId);
+  if (!ep || !ep.spotifyUrl) return;
+
+  const container = document.getElementById('spotifyPlayerContainer');
+  const episodeBtn = document.getElementById('btnSpotifyEpisode');
+  const embedUrl = getSpotifyEmbedUrl(ep.spotifyUrl);
+
+  if (container && embedUrl) {
+    container.innerHTML = `
+      <iframe src="${embedUrl}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    `;
+  }
+
+  if (episodeBtn) {
+    episodeBtn.href = sanitizeUrl(ep.spotifyUrl);
+    episodeBtn.style.display = 'inline-flex';
+  }
+
+  const playerBox = document.getElementById('podcasts');
+  if (playerBox) {
+    playerBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  showToast(`Tocando agora: ${ep.title}`);
+}
+
+function shareSpecificPodcast(episodeId) {
+  const episodes = getPodcastEpisodes();
+  const ep = episodes.find(e => e.id === episodeId);
+  if (!ep) return;
+
+  const title = ep.title || 'Palavra Ministrada';
+  const speaker = ep.speaker || 'Evangelista Alexandra Maia';
+  const url = ep.spotifyUrl || window.location.href;
+  const msg = `🦁 *VOX ARIEH — MINISTRAÇÃO EM ÁUDIO*\n\nOuça essa mensagem ministrada:\n📖 *${title}*\n🎙️ *Ministrante:* ${speaker}\n🎧 *Ouça agora no Spotify:* ${url}\n\n*Rádio Vox Arieh* — O rugido da libertação em cada frequência!`;
+  const shareUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(shareUrl, '_blank');
+}
+
 function sharePodcast() {
+  const episodes = getPodcastEpisodes();
+  const featuredEp = episodes.find(e => e.featured) || (episodes.length > 0 ? episodes[0] : null);
   const p = getPodcastData();
   const dev = getDevotionalData();
-  const spotifyUrl = (dev && dev.spotifyUrl) || (p && p.spotifyEpisodeUrl) || window.location.href;
+  const spotifyUrl = (featuredEp && featuredEp.spotifyUrl) || (dev && dev.spotifyUrl) || (p && p.spotifyEpisodeUrl) || window.location.href;
   const showUrl = (p && p.spotifyShowUrl && p.spotifyShowUrl !== 'https://open.spotify.com') 
     ? p.spotifyShowUrl 
     : 'https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX';
-  const msg = `🦁 *VOX ARIEH CAST — PODCAST GOSPEL*\n\nOuça a mensagem ministrada pela Evangelista Alexandra Maia:\n🎧 *Episódio:* ${spotifyUrl}\n✨ *Siga nosso canal no Spotify:* ${showUrl}\n\n*Rádio Vox Arieh* — O rugido da libertação em cada frequência!`;
+  const msg = `🦁 *VOX ARIEH CAST — PODCAST GOSPEL*\n\nOuça ministrações e pregações da Palavra de Deus:\n🎧 *Episódio:* ${spotifyUrl}\n✨ *Siga nosso canal no Spotify:* ${showUrl}\n\n*Rádio Vox Arieh* — O rugido da libertação em cada frequência!`;
   const shareUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
   window.open(shareUrl, '_blank');
 }
@@ -704,6 +840,7 @@ function openAdminDashboard() {
   // Carrega os dados em cada aba
   renderAdminSponsors();
   populateAdminDevotional();
+  renderAdminPodcastEpisodes();
   renderAdminSchedule();
   populateAdminSettings();
 }
@@ -932,6 +1069,131 @@ async function handleSaveDevotional(event) {
   closeModals();
 }
 
+/* Gestão da Galeria de Podcasts & Pregações no ADM */
+function renderAdminPodcastEpisodes() {
+  const container = document.getElementById('adminPodcastList');
+  const countBadge = document.getElementById('adminPodcastCount');
+  if (!container) return;
+
+  const episodes = getPodcastEpisodes();
+  if (countBadge) {
+    countBadge.textContent = episodes.length === 1 ? '1 episódio' : `${episodes.length} episódios`;
+  }
+
+  if (episodes.length === 0) {
+    container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum episódio cadastrado na galeria ainda. Clique em "➕ Novo Episódio / Mensagem" acima para adicionar.</p>`;
+    return;
+  }
+
+  container.innerHTML = episodes.map((ep, idx) => {
+    const isFeatured = !!ep.featured;
+    return `
+      <div class="admin-item-row" style="${isFeatured ? 'border-color: var(--gold-primary); background: rgba(36, 0, 70, 0.4);' : ''}">
+        <div class="admin-item-info">
+          <h4>
+            ${sanitizeHTML(ep.title)}
+            ${isFeatured ? '<span style="color: var(--gold-bright); font-size: 0.75rem; margin-left: 8px; border: 1px solid var(--border-gold); padding: 2px 8px; border-radius: 12px; font-weight: 700;">⭐ Destaque no Topo</span>' : ''}
+          </h4>
+          <p><strong>Ministrante:</strong> ${sanitizeHTML(ep.speaker)} | <strong>Tema:</strong> ${sanitizeHTML(ep.category || 'Geral')}</p>
+          <p style="font-size: 0.8rem; color: var(--gold-light); word-break: break-all; margin-top: 4px;">
+            🎧 <strong>Spotify:</strong> <a href="${sanitizeUrl(ep.spotifyUrl)}" target="_blank" rel="noopener noreferrer" style="color: var(--gold-bright); text-decoration: underline;">${sanitizeHTML(ep.spotifyUrl)}</a>
+          </p>
+        </div>
+        <div class="admin-item-actions">
+          ${!isFeatured ? `<button type="button" class="btn-sm-action btn-gold" style="background: rgba(212,175,55,0.2); border: 1px solid var(--border-gold); color: var(--gold-bright); border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="setFeaturedPodcast(${idx})">⭐ Destacar</button>` : ''}
+          <button type="button" class="btn-sm-action btn-delete" onclick="deletePodcastEpisode(${idx})">🗑️ Remover</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleAddPodcastForm(show) {
+  const box = document.getElementById('podcastFormBox');
+  if (!box) return;
+  if (show === undefined) {
+    box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+  } else {
+    box.style.display = show ? 'block' : 'none';
+  }
+}
+
+function handleSavePodcastEpisode(event) {
+  event.preventDefault();
+  const title = document.getElementById('podEpTitle').value.trim();
+  const speaker = document.getElementById('podEpSpeaker').value.trim();
+  const category = document.getElementById('podEpCategory').value.trim();
+  let url = document.getElementById('podEpUrl').value.trim();
+  const isFeatured = document.getElementById('podEpFeatured').checked;
+
+  if (!url) {
+    alert("Por favor, informe o link do episódio no Spotify.");
+    return;
+  }
+
+  const episodes = getPodcastEpisodes();
+
+  if (isFeatured) {
+    episodes.forEach(e => e.featured = false);
+  }
+
+  const newEp = {
+    id: 'ep_' + Date.now(),
+    title: title,
+    speaker: speaker,
+    category: category || 'Geral',
+    date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
+    spotifyUrl: url,
+    featured: isFeatured || episodes.length === 0
+  };
+
+  episodes.unshift(newEp);
+  savePodcastEpisodes(episodes);
+
+  // Limpa formulário
+  document.getElementById('adminPodcastForm').reset();
+  toggleAddPodcastForm(false);
+
+  renderAdminPodcastEpisodes();
+  renderPodcastGallery();
+  renderPodcast();
+
+  showToast(`Episódio "${title}" adicionado à galeria com sucesso!`);
+}
+
+function setFeaturedPodcast(index) {
+  const episodes = getPodcastEpisodes();
+  if (!episodes[index]) return;
+
+  episodes.forEach((e, idx) => {
+    e.featured = (idx === index);
+  });
+
+  savePodcastEpisodes(episodes);
+  renderAdminPodcastEpisodes();
+  renderPodcastGallery();
+  renderPodcast();
+  showToast(`Episódio "${episodes[index].title}" definido como destaque principal!`);
+}
+
+function deletePodcastEpisode(index) {
+  const episodes = getPodcastEpisodes();
+  const ep = episodes[index];
+  if (!ep) return;
+
+  if (confirm(`Remover o episódio "${ep.title}" da galeria de podcasts?`)) {
+    episodes.splice(index, 1);
+    if (ep.featured && episodes.length > 0) {
+      episodes[0].featured = true;
+    }
+    savePodcastEpisodes(episodes);
+    renderAdminPodcastEpisodes();
+    renderPodcastGallery();
+    renderPodcast();
+    showToast("Episódio removido da galeria!");
+  }
+}
+
 /* Gestão de Grade no ADM */
 function renderAdminSchedule() {
   const container = document.getElementById('adminScheduleList');
@@ -1067,6 +1329,7 @@ function exportAdminConfig() {
   const backup = {
     streamUrl: getStreamUrl(),
     dailyDevotional: getDevotionalData(),
+    podcastEpisodes: getPodcastEpisodes(),
     schedule: getScheduleData(),
     sponsors: getSponsorsData(),
     contact: {
