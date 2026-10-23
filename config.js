@@ -62,15 +62,15 @@ const RADIO_CONFIG = {
 
   // Grade de Programação 24 Horas Oficial (Calculada dinamicamente com base no horário real)
   schedule: [
-    { start: "00:00", end: "01:00", title: "Momento da Palavra — Clamor da Meia-Noite", host: "Ev. Alexandra Maia", desc: "Ministração bíblica, oração forte de libertação e quebra de cadeias." },
+    { start: "00:00", end: "01:00", title: "Momento da Palavra — Clamor da Meia-Noite", host: "Pregações & Ministrações de Fé", desc: "Mensagens bíblicas edificantes, clamor da madrugada e reflexões ungidas para a sua vida." },
     { start: "01:00", end: "03:00", title: "Madrugada com Deus", host: "Louvores & Adoração Profunda", desc: "Os mais belos louvores nacionais de adoração e consagração nas madrugadas." },
-    { start: "03:00", end: "04:00", title: "Momento da Palavra — Vigília da Madrugada", host: "Ev. Alexandra Maia", desc: "Palavra ungida e intercessão pela cura da alma e causas urgentes." },
+    { start: "03:00", end: "04:00", title: "Momento da Palavra — Vigília da Madrugada", host: "Palavra Pastoral & Pregações", desc: "Ministrações bíblicas e palavras de consolo, encorajamento e cura para a sua alma." },
     { start: "04:00", end: "06:00", title: "Alvorada da Vitória", host: "Louvores Pentecostais", desc: "Louvores que despertam a fé para começar o dia cheio da presença de Deus." },
-    { start: "06:00", end: "07:00", title: "Momento da Palavra — Despertar da Fé", host: "Ev. Alexandra Maia", desc: "Pílula bíblica matinal e clamor pelas famílias para abençoar o seu dia." },
+    { start: "06:00", end: "07:00", title: "Momento da Palavra — Despertar da Fé", host: "Mensagens da Palavra & Oração", desc: "Pílula bíblica e oração matinal para você começar o seu dia na presença do Senhor." },
     { start: "07:00", end: "12:00", title: "Manhã de Louvor & Glória", host: "Grandes Clássicos Gospel 24h", desc: "Músicas que edificam sua casa, sucessos contemporâneos e harpa cristã." },
-    { start: "12:00", end: "13:00", title: "Momento da Palavra — Alimento do Meio-Dia", host: "Ev. Alexandra Maia", desc: "Mensagem devocional, reflexão da Palavra de Deus e oração pastoral." },
+    { start: "12:00", end: "13:00", title: "Momento da Palavra — Alimento do Meio-Dia", host: "Pregações & Alimento Espiritual", desc: "Grandes reflexões da Palavra de Deus, estudos bíblicos e devocionais edificando sua família." },
     { start: "13:00", end: "18:00", title: "Tarde de Avivamento", host: "Conexão Vox Arieh Louvores", desc: "Tarde de unção, louvores inspiradores e comunhão com os ouvintes." },
-    { start: "18:00", end: "19:00", title: "Momento da Palavra — Clamor do Entardecer", host: "Ev. Alexandra Maia", desc: "Oração pelas causas impossíveis, ministração e gratidão pelas bênçãos." },
+    { start: "18:00", end: "19:00", title: "Momento da Palavra — Clamor do Entardecer", host: "Ministrações & Vozes da Fé", desc: "Pregações impactantes, oração pelas famílias e gratidão ao entardecer." },
     { start: "19:00", end: "23:59", title: "Noite de Celebração & Intimidade", host: "Louvores Especiais AD Madureira", desc: "Termine o seu dia debaixo da paz do Senhor com profunda adoração." }
   ],
 

@@ -162,8 +162,8 @@ try {
   const savedSched = localStorage.getItem('vox_arieh_schedule');
   if (savedSched) {
     const parsed = JSON.parse(savedSched);
-    // Se a grade salva estiver vazia ou for a versão antiga sem o bloco das 03:00, limpa para atualizar automaticamente
-    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "03:00")) {
+    // Se a grade salva estiver vazia, sem o bloco das 03:00 ou contiver o nome individual anterior, limpa para atualizar automaticamente
+    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "03:00") || parsed.some(p => p.host === "Ev. Alexandra Maia")) {
       localStorage.removeItem('vox_arieh_schedule');
     }
   }
