@@ -6,7 +6,7 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg?v=5.0">
-  <link rel="stylesheet" href="styles.css?v=5.6">
+  <link rel="stylesheet" href="styles.css?v=5.7">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -226,22 +226,28 @@
         </div>
 
         <!-- Galeria / Acervo Completo de Ministrações & Podcasts -->
-        <div style="margin-top: 45px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+        <div style="margin-top: 40px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 15px;">
             <div>
               <h3 class="gold-text" style="font-size: 1.35rem; margin-bottom: 4px;">Acervo de Ministrações & Podcasts</h3>
-              <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">Ouça mensagens completas, reflexões e orações na hora que quiser.</p>
+              <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">Toque em qualquer ministração para ouvir imediatamente no reprodutor acima.</p>
             </div>
             <a href="https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
               </svg>
-              Ver Canal Completo no Spotify
+              Ver Canal no Spotify
             </a>
           </div>
 
-          <div class="podcast-gallery-grid" id="podcastGalleryGrid">
-            <!-- Renderizado dinamicamente pelo JavaScript com quantos links a usuária quiser -->
+          <!-- Barra de Busca Rápida -->
+          <div class="podcast-search-wrap">
+            <input type="text" id="podcastSearchInput" class="podcast-search-input" placeholder="🔍 Digite para filtrar ministrações por tema ou pregador(a)..." oninput="filterPodcasts(this.value)">
+          </div>
+
+          <!-- Lista de Faixas Compacta e Clicável -->
+          <div class="podcast-tracklist" id="podcastGalleryGrid">
+            <!-- Renderizado dinamicamente pelo JavaScript no formato compacto -->
           </div>
         </div>
       </div>
@@ -913,7 +919,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=5.6"></script>
-  <script src="app.js?v=5.6"></script>
+  <script src="config.js?v=5.7"></script>
+  <script src="app.js?v=5.7"></script>
 </body>
 </html>

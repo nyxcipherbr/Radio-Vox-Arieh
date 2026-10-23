@@ -552,6 +552,9 @@ function renderPodcast() {
 
   const episodes = getPodcastEpisodes();
   const featuredEp = episodes.find(e => e.featured) || (episodes.length > 0 ? episodes[0] : null);
+  if (!currentActiveEpisodeId && featuredEp) {
+    currentActiveEpisodeId = featuredEp.id;
+  }
   const p = getPodcastData();
   const dev = getDevotionalData();
 
@@ -595,17 +598,42 @@ function renderPodcast() {
   }
 }
 
-function renderPodcastGallery() {
+let currentActiveEpisodeId = null;
+
+function filterPodcasts(query) {
+  renderPodcastGallery(query);
+}
+
+function renderPodcastGallery(filterText = '') {
   const container = document.getElementById('podcastGalleryGrid');
   if (!container) return;
 
-  const episodes = getPodcastEpisodes();
+  let episodes = getPodcastEpisodes();
   if (!episodes || episodes.length === 0) {
     container.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 35px 20px; background: rgba(36, 0, 70, 0.3); border: 1px dashed var(--border-violet); border-radius: var(--radius-md);">
-        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
-          Nenhum episódio cadastrado na galeria ainda. Adicione novos links de ministrações no <strong>Painel ADM</strong>!
+      <div style="text-align: center; padding: 30px 20px; background: rgba(36, 0, 70, 0.3); border: 1px dashed var(--border-violet); border-radius: var(--radius-md);">
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.92rem;">
+          Nenhuma ministração cadastrada ainda. Adicione novos links pelo <strong>Painel ADM</strong>!
         </p>
+      </div>
+    `;
+    return;
+  }
+
+  // Se houver busca/filtro
+  if (filterText && filterText.trim() !== '') {
+    const q = filterText.toLowerCase().trim();
+    episodes = episodes.filter(ep => 
+      (ep.title && ep.title.toLowerCase().includes(q)) ||
+      (ep.speaker && ep.speaker.toLowerCase().includes(q)) ||
+      (ep.category && ep.category.toLowerCase().includes(q))
+    );
+  }
+
+  if (episodes.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 25px 20px; color: var(--text-muted); font-size: 0.88rem;">
+        🔍 Nenhuma ministração encontrada para "<strong>${sanitizeHTML(filterText)}</strong>".
       </div>
     `;
     return;
@@ -613,41 +641,42 @@ function renderPodcastGallery() {
 
   container.innerHTML = episodes.map((ep) => {
     const isFeatured = !!ep.featured;
+    const isActive = (currentActiveEpisodeId === ep.id);
     const title = sanitizeHTML(ep.title || 'Ministração Bíblica');
     const speaker = sanitizeHTML(ep.speaker || 'Ev. Alexandra Maia');
-    const category = sanitizeHTML(ep.category || 'Palavra de Fé');
+    const category = sanitizeHTML(ep.category || 'Palavra');
     const date = ep.date ? sanitizeHTML(ep.date) : '';
     const safeUrl = sanitizeUrl(ep.spotifyUrl || '#');
 
     return `
-      <div class="podcast-gallery-card ${isFeatured ? 'is-featured-card' : ''}">
-        <div>
-          <div class="podcast-card-meta">
-            <span class="podcast-category-badge">${category}</span>
-            ${isFeatured ? '<span style="color: var(--gold-bright); font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; gap: 4px;">⭐ Em Destaque</span>' : ''}
+      <div class="podcast-track-row ${isActive ? 'is-active-track' : ''}" onclick="playEpisodeInPlayer('${ep.id}')" title="Toque para ouvir no reprodutor">
+        <div class="podcast-track-left">
+          <div class="podcast-track-play-btn">
+            ${isActive ? '🔊' : '▶'}
           </div>
-          <h4 class="podcast-card-title">${title}</h4>
-          <div class="podcast-card-speaker">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <span>${speaker}</span>
-            ${date ? `<span style="color: var(--text-muted); font-size: 0.75rem;">• ${date}</span>` : ''}
+          <div class="podcast-track-info">
+            <div class="podcast-track-title">${title}</div>
+            <div class="podcast-track-sub">
+              <span>👤 ${speaker}</span>
+              <span>•</span>
+              <span class="podcast-track-tag">${category}</span>
+              ${date ? `<span>•</span><span>${date}</span>` : ''}
+              ${isFeatured ? `<span style="color: var(--gold-bright); font-weight: 700;">• ⭐ Destaque</span>` : ''}
+            </div>
           </div>
         </div>
-        <div class="podcast-card-actions">
-          <button class="btn btn-gold btn-sm" onclick="playEpisodeInPlayer('${ep.id}')" title="Tocar esta mensagem no player do site">
-            ▶️ Tocar no Site
-          </button>
-          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm" title="Ouvir diretamente no aplicativo Spotify">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <div class="podcast-track-actions">
+          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="podcast-action-icon-btn btn-spotify-icon" onclick="event.stopPropagation();" title="Abrir no app Spotify">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
             </svg>
-            Spotify
+            <span>Spotify</span>
           </a>
-          <button class="btn btn-violet btn-sm" onclick="shareSpecificPodcast('${ep.id}')" title="Compartilhar esta palavra no WhatsApp">
-            📲 Compartilhar
+          <button type="button" class="podcast-action-icon-btn btn-share-icon" onclick="event.stopPropagation(); shareSpecificPodcast('${ep.id}')" title="Compartilhar no WhatsApp">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24"/>
+            </svg>
+            <span>Compartilhar</span>
           </button>
         </div>
       </div>
@@ -659,6 +688,8 @@ function playEpisodeInPlayer(episodeId) {
   const episodes = getPodcastEpisodes();
   const ep = episodes.find(e => e.id === episodeId);
   if (!ep || !ep.spotifyUrl) return;
+
+  currentActiveEpisodeId = episodeId;
 
   const container = document.getElementById('spotifyPlayerContainer');
   const episodeBtn = document.getElementById('btnSpotifyEpisode');
@@ -679,6 +710,10 @@ function playEpisodeInPlayer(episodeId) {
   if (playerBox) {
     playerBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  const searchInput = document.getElementById('podcastSearchInput');
+  const searchVal = searchInput ? searchInput.value : '';
+  renderPodcastGallery(searchVal);
 
   showToast(`Tocando agora: ${ep.title}`);
 }
