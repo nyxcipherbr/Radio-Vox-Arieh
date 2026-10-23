@@ -69,7 +69,8 @@ const RADIO_CONFIG = {
     { start: "06:00", end: "07:00", title: "Momento da Palavra — Despertar da Fé", host: "Mensagens da Palavra & Oração", desc: "Pílula bíblica e oração matinal para você começar o seu dia na presença do Senhor." },
     { start: "07:00", end: "12:00", title: "Manhã de Louvor & Glória", host: "Grandes Clássicos Gospel 24h", desc: "Músicas que edificam sua casa, sucessos contemporâneos e harpa cristã." },
     { start: "12:00", end: "13:00", title: "Momento da Palavra — Alimento do Meio-Dia", host: "Pregações & Alimento Espiritual", desc: "Grandes reflexões da Palavra de Deus, estudos bíblicos e devocionais edificando sua família." },
-    { start: "13:00", end: "18:00", title: "Tarde de Avivamento", host: "Conexão Vox Arieh Louvores", desc: "Tarde de unção, louvores inspiradores e comunhão com os ouvintes." },
+    { start: "13:00", end: "16:00", title: "Tarde de Avivamento & Central de Pedidos", host: "Participação dos Ouvintes", desc: "Envie seu pedido de louvor pelo WhatsApp das 13h às 16h para tocar hoje na rádio!" },
+    { start: "16:00", end: "18:00", title: "Conexão Vox Arieh — Louvores Pedidos no Ar", host: "A Voz do Ouvinte & Intercessão", desc: "O momento mais aguardado: rodando os louvores pedidos pelos ouvintes durante a tarde!" },
     { start: "18:00", end: "19:00", title: "Momento da Palavra — Clamor do Entardecer", host: "Ministrações & Vozes da Fé", desc: "Pregações impactantes, oração pelas famílias e gratidão ao entardecer." },
     { start: "19:00", end: "23:59", title: "Noite de Celebração & Intimidade", host: "Louvores Especiais AD Madureira", desc: "Termine o seu dia debaixo da paz do Senhor com profunda adoração." }
   ],

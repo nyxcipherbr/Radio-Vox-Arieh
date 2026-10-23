@@ -6,7 +6,7 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg?v=5.0">
-  <link rel="stylesheet" href="styles.css?v=5.4">
+  <link rel="stylesheet" href="styles.css?v=5.5">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -452,9 +452,17 @@
     <div class="modal-box">
       <button class="modal-close" onclick="closeModals()">&times;</button>
       <h3 class="gold-text" style="margin-bottom: 8px;">Pedir Louvor ou Oração</h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
-        Sua mensagem será enviada diretamente para o WhatsApp oficial da Evangelista Alexandra Maia.
-      </p>
+      
+      <!-- Aviso Oficial de Horários -->
+      <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border-gold); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 18px; font-size: 0.83rem; line-height: 1.5; text-align: left;">
+        <div style="font-weight: 700; color: var(--gold-bright); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <span>⏰</span> Horário de Pedidos de Louvor: das 13:00 às 16:00
+        </div>
+        <p style="color: var(--text-secondary); margin: 0;">
+          Os louvores pedidos entram no ar no programa especial das <strong>16:00 às 18:00</strong>!<br>
+          <span style="color: #64dfdf;">🕊️ Pedidos de oração são aceitos <strong>24 horas por dia</strong> no clamor da rádio.</span>
+        </p>
+      </div>
 
       <form id="prayerForm" onsubmit="handleSendPrayer(event)">
         <div class="form-group">
@@ -466,7 +474,7 @@
           <input type="text" id="prayerCity" class="form-control" placeholder="Ex: Padre Lothar, Rondonópolis" required>
         </div>
         <div class="form-group">
-          <label for="prayerSong">Louvor que gostaria de ouvir:</label>
+          <label for="prayerSong">Louvor que gostaria de ouvir (Pedidos das 13h às 16h):</label>
           <input type="text" id="prayerSong" class="form-control" placeholder="Ex: O Leão Rugiu ou Porque Ele Vive">
         </div>
         <div class="form-group">
@@ -832,7 +840,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=5.4"></script>
-  <script src="app.js?v=5.4"></script>
+  <script src="config.js?v=5.5"></script>
+  <script src="app.js?v=5.5"></script>
 </body>
 </html>

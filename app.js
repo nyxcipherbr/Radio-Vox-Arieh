@@ -162,8 +162,8 @@ try {
   const savedSched = localStorage.getItem('vox_arieh_schedule');
   if (savedSched) {
     const parsed = JSON.parse(savedSched);
-    // Se a grade salva estiver vazia, sem o bloco das 03:00 ou contiver o nome individual anterior, limpa para atualizar automaticamente
-    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "03:00") || parsed.some(p => p.host === "Ev. Alexandra Maia")) {
+    // Se a grade salva estiver vazia, sem o bloco das 16:00 ou contiver o nome individual anterior, limpa para atualizar automaticamente
+    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "16:00") || parsed.some(p => p.host === "Ev. Alexandra Maia")) {
       localStorage.removeItem('vox_arieh_schedule');
     }
   }
@@ -617,7 +617,7 @@ function handleSendPrayer(event) {
   let msg = `🕊️ *PEDIDO DE ORAÇÃO & LOUVOR - RÁDIO VOX ARIEH*\n\n`;
   msg += `👤 *Nome:* ${name}\n`;
   msg += `📍 *Localização:* ${city}\n`;
-  if (song) msg += `🎵 *Louvor Desejado:* ${song}\n`;
+  if (song) msg += `🎵 *Louvor Desejado:* ${song} (Para tocar no programa das 16h às 18h)\n`;
   msg += `🙏 *Causa / Pedido de Oração:* ${request}\n\n`;
   msg += `_Enviado pelo Portal Oficial da Rádio Vox Arieh com consentimento LGPD._`;
 
