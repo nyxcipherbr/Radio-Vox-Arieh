@@ -4,6 +4,18 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Purga e bloqueio preventivo de qualquer resquício de vídeo no cache
+  try {
+    const savedDev = localStorage.getItem('vox_arieh_devotional');
+    if (savedDev) {
+      const parsed = JSON.parse(savedDev);
+      if (parsed.videoUrl) {
+        delete parsed.videoUrl;
+        localStorage.setItem('vox_arieh_devotional', JSON.stringify(parsed));
+      }
+    }
+  } catch(e) {}
+
   initPlayer();
   renderDevotional();
   renderSchedule();
@@ -390,30 +402,10 @@ function renderDevotional() {
   if (msgElem) msgElem.textContent = d.message;
   if (speakerElem && d.speaker) speakerElem.textContent = d.speaker;
 
-  // Renderização Dinâmica de Vídeo (se houver)
+  // Remoção total de vídeo: site exclusivo de áudio e palavra
   if (videoContainer) {
-    if (d.videoUrl && d.videoUrl.trim()) {
-      const ytEmbed = getYouTubeEmbedUrl(d.videoUrl);
-      if (ytEmbed) {
-        videoContainer.innerHTML = `
-          <div class="devotional-video-wrapper">
-            <iframe src="${ytEmbed}" title="Palavra Devocional" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-          </div>
-        `;
-        videoContainer.style.display = 'block';
-      } else {
-        const cleanVidUrl = sanitizeUrl(d.videoUrl);
-        videoContainer.innerHTML = `
-          <div class="devotional-video-wrapper">
-            <video src="${cleanVidUrl}" controls playsinline preload="metadata"></video>
-          </div>
-        `;
-        videoContainer.style.display = 'block';
-      }
-    } else {
-      videoContainer.innerHTML = '';
-      videoContainer.style.display = 'none';
-    }
+    videoContainer.innerHTML = '';
+    videoContainer.style.display = 'none';
   }
 
   // Ajusta visibilidade do áudio
@@ -1016,14 +1008,12 @@ function populateAdminDevotional() {
   const v = document.getElementById('devFormVerse');
   const s = document.getElementById('devFormSpeaker');
   const m = document.getElementById('devFormMessage');
-  const vid = document.getElementById('devFormVideo');
   const a = document.getElementById('devFormAudio');
 
   if (t) t.value = d.title || '';
   if (v) v.value = d.verse || '';
   if (s) s.value = d.speaker || '';
   if (m) m.value = d.message || '';
-  if (vid) vid.value = d.videoUrl || '';
   const spot = document.getElementById('devFormSpotify');
   if (spot) spot.value = d.spotifyUrl || (p && p.spotifyEpisodeUrl) || '';
   const spotShow = document.getElementById('devFormSpotifyShow');
@@ -1049,18 +1039,11 @@ async function handleSaveDevotional(event) {
   if (urlInput && urlInput.value.trim()) {
     audioSample = urlInput.value.trim();
   }
-  const videoUrl = vidInput ? vidInput.value.trim() : (current.videoUrl || '');
   const spotifyUrl = spotInput ? spotInput.value.trim() : (current.spotifyUrl || '');
   const spotifyShowUrl = spotShowInput ? spotShowInput.value.trim() : '';
 
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
-
-    // Detecção se o arquivo selecionado for vídeo
-    if (file.type && file.type.startsWith('video/')) {
-      alert("💡 Você selecionou um arquivo de VÍDEO (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\n\n• Para exibir o VÍDEO no site: Suba no YouTube e cole o link no campo 'Vídeo da Palavra' acima!\n• Para tocar o ÁUDIO: Selecione um arquivo de gravação de voz (áudio MP3 ou M4A) ou informe o link.");
-      return;
-    }
 
     // Limite preventivo para gravação direta no navegador
     if (file.size > 5 * 1024 * 1024) {
@@ -1085,10 +1068,10 @@ async function handleSaveDevotional(event) {
     verse: document.getElementById('devFormVerse').value.trim(),
     speaker: document.getElementById('devFormSpeaker').value.trim(),
     message: document.getElementById('devFormMessage').value.trim(),
-    videoUrl: videoUrl,
     spotifyUrl: spotifyUrl,
     audioSample: audioSample
   };
+  delete updated.videoUrl;
 
   saveDevotionalData(updated);
 

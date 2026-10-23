@@ -6,14 +6,14 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg?v=5.0">
-  <link rel="stylesheet" href="styles.css?v=5.7">
+  <link rel="stylesheet" href="styles.css?v=5.8">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
        ========================================== -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtu.be https://open.spotify.com; connect-src * 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; frame-src 'self' https://open.spotify.com; connect-src * 'self';">
 </head>
 <body>
 
@@ -150,7 +150,6 @@
         </div>
 
         <div class="devotional-action-box" id="devotionalActionBox">
-          <div id="devotionalVideoContainer"></div>
           <div id="devotionalAudioBox">
             <h4 id="devotionalActionTitle">Mensagem da Palavra</h4>
             <p id="devotionalActionSubtitle">Pílula devocional e oração pelas causas impossíveis.</p>
@@ -714,13 +713,6 @@
             <textarea id="devFormMessage" class="form-control" style="min-height: 120px;" required></textarea>
           </div>
           <div class="form-group">
-            <label>Vídeo da Palavra (YouTube, Shorts ou Link MP4):</label>
-            <input type="text" id="devFormVideo" class="form-control" placeholder="Ex: https://www.youtube.com/watch?v=... ou YouTube Shorts">
-            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
-              🎥 Para vídeos do celular de qualquer tamanho (50MB a 500MB), suba no YouTube (pode ser "Não Listado") e cole o link aqui! Fica em HD e não sobrecarrega a rádio.
-            </small>
-          </div>
-          <div class="form-group">
             <label>Podcast no Spotify (Link do Episódio):</label>
             <input type="text" id="devFormSpotify" class="form-control" placeholder="Ex: https://open.spotify.com/episode/... ou link do Spotify">
             <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
@@ -919,7 +911,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=5.7"></script>
-  <script src="app.js?v=5.7"></script>
+  <script src="config.js?v=5.8"></script>
+  <script src="app.js?v=5.8"></script>
 </body>
 </html>
