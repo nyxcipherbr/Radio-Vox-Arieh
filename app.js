@@ -3,7 +3,57 @@
  * Hardening de Cibersegurança: Sanitização Anti-XSS, Hash Criptográfico SHA-256 e Conformidade LGPD
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+let SERVER_DATA = null;
+
+async function loadServerData() {
+  try {
+    const res = await fetch('data.json?t=' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === 'object') {
+        SERVER_DATA = data;
+        return true;
+      }
+    }
+  } catch (e) {
+    console.warn("[VOX ARIEH] Usando cache local (API offline ou estático):", e);
+  }
+  return false;
+}
+
+async function syncToServer(type, data) {
+  try {
+    const hash = getAdminHash();
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Hash': hash
+      },
+      body: JSON.stringify({ type, data, hash })
+    });
+    if (res.ok) {
+      const result = await res.json();
+      if (result.success) {
+        if (!SERVER_DATA) SERVER_DATA = {};
+        if (type === 'devotional') SERVER_DATA.dailyDevotional = data;
+        if (type === 'podcastEpisodes') SERVER_DATA.podcastEpisodes = data;
+        if (type === 'sponsors') SERVER_DATA.sponsors = data;
+        if (type === 'schedule') SERVER_DATA.schedule = data;
+        if (type === 'settings') {
+          if (data.streamUrl) SERVER_DATA.streamUrl = data.streamUrl;
+          if (data.contact) SERVER_DATA.contact = { ...SERVER_DATA.contact, ...data.contact };
+        }
+        return true;
+      }
+    }
+  } catch (e) {
+    console.warn("[VOX ARIEH] Aviso: salvo no navegador local. Sincronização direta com /api/save pendente:", e);
+  }
+  return false;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
   // Purga e bloqueio preventivo de qualquer resquício de vídeo no cache
   try {
     const savedDev = localStorage.getItem('vox_arieh_devotional');
@@ -15,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   } catch(e) {}
+
+  // Carrega em tempo real os dados gravados no servidor para todos os ouvintes
+  await loadServerData();
 
   initPlayer();
   renderDevotional();
@@ -105,6 +158,9 @@ function getAdminHash() {
    GESTÃO DE DADOS (LOCALSTORAGE / BACKUP DINÂMICO)
    ======================================================== */
 function getSponsorsData() {
+  if (SERVER_DATA && Array.isArray(SERVER_DATA.sponsors) && SERVER_DATA.sponsors.length > 0) {
+    return SERVER_DATA.sponsors;
+  }
   try {
     const saved = localStorage.getItem('vox_arieh_sponsors');
     return saved ? JSON.parse(saved) : RADIO_CONFIG.sponsors;
@@ -115,10 +171,18 @@ function getSponsorsData() {
 }
 
 function saveSponsorsData(data) {
-  localStorage.setItem('vox_arieh_sponsors', JSON.stringify(data));
+  try {
+    localStorage.setItem('vox_arieh_sponsors', JSON.stringify(data));
+  } catch (e) {}
+  syncToServer('sponsors', data).then(saved => {
+    if (saved) showToast("✅ Patrocinadores salvos no servidor!");
+  });
 }
 
 function getDevotionalData() {
+  if (SERVER_DATA && SERVER_DATA.dailyDevotional) {
+    return SERVER_DATA.dailyDevotional;
+  }
   try {
     const saved = localStorage.getItem('vox_arieh_devotional');
     return saved ? JSON.parse(saved) : RADIO_CONFIG.dailyDevotional;
@@ -135,9 +199,17 @@ function saveDevotionalData(data) {
     console.error("Erro ao salvar devocional no localStorage:", e);
     alert("⚠️ Limite de armazenamento local atingido! Se enviou uma gravação de áudio pesada, envie um arquivo menor (até 4MB) ou insira o link direto.");
   }
+  syncToServer('devotional', data).then(saved => {
+    if (saved) {
+      showToast("✅ Palavra do Dia gravada no servidor!");
+    }
+  });
 }
 
 function getPodcastData() {
+  if (SERVER_DATA && SERVER_DATA.podcastShow) {
+    return SERVER_DATA.podcastShow;
+  }
   try {
     const saved = localStorage.getItem('vox_arieh_podcast');
     return saved ? JSON.parse(saved) : (RADIO_CONFIG.podcast || {});
@@ -152,6 +224,7 @@ function savePodcastData(data) {
   } catch (e) {
     console.error("Erro ao salvar podcast no localStorage:", e);
   }
+  syncToServer('podcastShow', data);
 }
 
 function getDeletedEpisodes() {
@@ -176,6 +249,9 @@ function trackDeletedEpisode(spotifyUrl) {
 }
 
 function getPodcastEpisodes() {
+  if (SERVER_DATA && Array.isArray(SERVER_DATA.podcastEpisodes) && SERVER_DATA.podcastEpisodes.length > 0) {
+    return SERVER_DATA.podcastEpisodes;
+  }
   const defaultEpisodes = (RADIO_CONFIG.podcast && Array.isArray(RADIO_CONFIG.podcast.episodes))
     ? RADIO_CONFIG.podcast.episodes
     : [];
@@ -191,7 +267,6 @@ function getPodcastEpisodes() {
     }
 
     // Fusão inteligente (Smart Merge) para proteger registros do celular:
-    // Começa com a lista que já está no dispositivo do usuário
     const normalize = url => (url || '').split('?')[0].trim().toLowerCase();
     const existingUrls = new Set(parsed.map(ep => normalize(ep.spotifyUrl)).filter(Boolean));
     const deletedUrls = getDeletedEpisodes();
@@ -199,7 +274,6 @@ function getPodcastEpisodes() {
     let updated = false;
     const merged = [...parsed];
 
-    // Adiciona os episódios oficiais de RADIO_CONFIG que ainda não existam no cache do dispositivo
     for (const defEp of defaultEpisodes) {
       const norm = normalize(defEp.spotifyUrl);
       if (norm && !existingUrls.has(norm) && !deletedUrls.has(norm)) {
@@ -209,7 +283,6 @@ function getPodcastEpisodes() {
       }
     }
 
-    // Se novos episódios oficiais foram agregados, sincroniza de volta sem apagar nada
     if (updated) {
       localStorage.setItem('vox_arieh_episodes', JSON.stringify(merged));
     }
@@ -227,9 +300,15 @@ function savePodcastEpisodes(episodes) {
     console.error("Erro ao salvar episódios no localStorage:", e);
     alert("⚠️ Erro ao salvar lista de episódios no navegador!");
   }
+  syncToServer('podcastEpisodes', episodes).then(saved => {
+    if (saved) showToast("✅ Galeria de podcasts salva no servidor!");
+  });
 }
 
 function getScheduleData() {
+  if (SERVER_DATA && Array.isArray(SERVER_DATA.schedule) && SERVER_DATA.schedule.length > 0) {
+    return SERVER_DATA.schedule;
+  }
   try {
     const saved = localStorage.getItem('vox_arieh_schedule');
     if (saved) {
@@ -250,7 +329,6 @@ try {
   const savedSched = localStorage.getItem('vox_arieh_schedule');
   if (savedSched) {
     const parsed = JSON.parse(savedSched);
-    // Se a grade salva estiver vazia, sem o bloco das 16:00 ou contiver o nome individual anterior, limpa para atualizar automaticamente
     if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "16:00") || parsed.some(p => p.host === "Ev. Alexandra Maia")) {
       localStorage.removeItem('vox_arieh_schedule');
     }
@@ -260,18 +338,32 @@ try {
 }
 
 function saveScheduleData(data) {
-  localStorage.setItem('vox_arieh_schedule', JSON.stringify(data));
+  try {
+    localStorage.setItem('vox_arieh_schedule', JSON.stringify(data));
+  } catch (e) {}
+  syncToServer('schedule', data).then(saved => {
+    if (saved) showToast("✅ Grade salva no servidor!");
+  });
 }
 
 function getStreamUrl() {
+  if (SERVER_DATA && SERVER_DATA.streamUrl) {
+    return sanitizeUrl(SERVER_DATA.streamUrl);
+  }
   return sanitizeUrl(localStorage.getItem('vox_arieh_streamUrl') || RADIO_CONFIG.streamUrl);
 }
 
 function getRadioWhatsapp() {
+  if (SERVER_DATA && SERVER_DATA.contact && SERVER_DATA.contact.whatsapp) {
+    return SERVER_DATA.contact.whatsapp.replace(/\D/g, '');
+  }
   return (localStorage.getItem('vox_arieh_whatsapp') || RADIO_CONFIG.contact.whatsapp).replace(/\D/g, '');
 }
 
 function getRadioInstagram() {
+  if (SERVER_DATA && SERVER_DATA.contact && SERVER_DATA.contact.instagram) {
+    return sanitizeHTML(SERVER_DATA.contact.instagram);
+  }
   return sanitizeHTML(localStorage.getItem('vox_arieh_instagram') || RADIO_CONFIG.contact.instagram);
 }
 
@@ -1374,6 +1466,11 @@ async function handleSaveSettings(event) {
   if (whatsapp) localStorage.setItem('vox_arieh_whatsapp', whatsapp);
   if (instagram) localStorage.setItem('vox_arieh_instagram', instagram);
 
+  const settingsData = {
+    streamUrl,
+    contact: { whatsapp, instagram }
+  };
+
   if (newPass) {
     if (newPass.length < 6) {
       alert("Por motivos de segurança cibernética, a nova senha deve conter pelo menos 6 caracteres.");
@@ -1381,11 +1478,14 @@ async function handleSaveSettings(event) {
     }
     const newHash = await sha256(newPass);
     localStorage.setItem('vox_arieh_admin_hash', newHash);
+    settingsData.newAdminHash = newHash;
     document.getElementById('settAdminPass').value = '';
     alert("✅ Configurações salvas e NOVA SENHA criptografada com sucesso!\n\nStreaming conectado:\n" + streamUrl);
   } else {
     alert("✅ Configurações salvas com sucesso!\n\nStreaming conectado:\n" + streamUrl);
   }
+
+  syncToServer('settings', settingsData);
 
   // Recarrega visualizadores e fecha o modal
   renderPlans();

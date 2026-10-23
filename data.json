@@ -1,0 +1,211 @@
+{
+  "dailyDevotional": {
+    "title": "O Rugido do Leão de Judá na Sua Vida",
+    "verse": "O leão rugiu, quem não temerá? O Senhor Deus falou, quem não profetizará? — Amós 3:8",
+    "speaker": "Evangelista Alexandra Maia",
+    "message": "Quando o Leão da Tribo de Judá ruge, as correntes caem, a enfermidade recua e as portas que estavam fechadas se abrem em nome de Jesus. Permaneça firme em oração hoje!",
+    "audioSample": "",
+    "videoUrl": "",
+    "spotifyUrl": "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w"
+  },
+  "podcastEpisodes": [
+    {
+      "id": "ep_2",
+      "title": "Ativação Profetica",
+      "speaker": "Evangelista Alexandra Maia",
+      "category": "Profético & Fé",
+      "date": "22 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
+      "featured": true
+    },
+    {
+      "id": "ep_3",
+      "title": "O preço do calvario",
+      "speaker": "Missionária Zete Alves",
+      "category": "Cruz & Salvação",
+      "date": "23 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/3NX1yg1jEQOjDIzKCMyvEF",
+      "featured": false
+    },
+    {
+      "id": "ep_4",
+      "title": "Congresso de Cura",
+      "speaker": "Missionária Gina",
+      "category": "Cura & Milagres",
+      "date": "23 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/1EWANq8EVGOuilnzRd8zqg",
+      "featured": false
+    },
+    {
+      "id": "ep_5",
+      "title": "Os melhores soldados de Deus",
+      "speaker": "Tony Calado",
+      "category": "Guerra Espiritual",
+      "date": "23 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/3m0gjKaySq7c5x6bjr0bpT",
+      "featured": false
+    },
+    {
+      "id": "ep_6",
+      "title": "Espírito Santo",
+      "speaker": "Rádio Vox Arieh",
+      "category": "Avivamento & Poder",
+      "date": "23 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/4OH7HxMtyHQ1jWOAKtCr4k",
+      "featured": false
+    },
+    {
+      "id": "ep_7",
+      "title": "Filhos no Altar",
+      "speaker": "Missionária Zete Alves",
+      "category": "Família & Santidade",
+      "date": "23 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/27z2ZMbm0Dy2vkdwV3nDFv",
+      "featured": false
+    },
+    {
+      "id": "ep_8",
+      "title": "Armas para vencer batalhas Espirituais",
+      "speaker": "Rádio Vox Arieh",
+      "category": "Guerra Espiritual",
+      "date": "23 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/3I3zvqiyd0hkzWclex9Zsp",
+      "featured": false
+    },
+    {
+      "id": "ep_1",
+      "title": "Palavra sobre Cura da Alma",
+      "speaker": "Evangelista Alexandra Maia",
+      "category": "Cura & Libertação",
+      "date": "22 de Outubro",
+      "spotifyUrl": "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w",
+      "featured": false
+    }
+  ],
+  "podcastShow": {
+    "title": "Rádio Vox Arieh — Momento da Palavra",
+    "subtitle": "O rugido da Palavra de Deus em cada episódio",
+    "spotifyEpisodeUrl": "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
+    "spotifyShowUrl": "https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX",
+    "description": "Devocionais diários, orações de poder e mensagens ministradas pela Evangelista Alexandra Maia e convidados."
+  },
+  "sponsors": [
+    {
+      "name": "Alexa Soluções",
+      "category": "Central de Vendas • Internet Fibra Óptica",
+      "description": "Especialista em internet fibra de ultra velocidade (Pedranet, Amigo, Vivo e Federal), planos de celular e conectividade para residências e empresas de Rondonópolis. Atendimento humanizado, consultoria especializada e suporte sem robôs.",
+      "phone": "(66) 99953-6712",
+      "whatsappUrl": "https://wa.me/5566999536712?text=Ol%C3%A1%20Alexa%20Solu%C3%A7%C3%B5es!%20Vi%20seu%20an%C3%BAncio%20na%20R%C3%A1dio%20Vox%20Arieh%20e%20gostaria%20de%20consultar%20planos%20de%20internet%20fibra.",
+      "instagram": "@alexa.conect",
+      "instagramUrl": "https://www.instagram.com/alexa.conect",
+      "badge": "Patrocinador Master Oficial"
+    },
+    {
+      "name": "Alexa Prime — Beleza & Educação",
+      "category": "Centro de Estética, Bronzeamento Natural & Cursos",
+      "description": "Espaço exclusivo de bem-estar, beleza e transformação em Rondonópolis. Especialista em bronzeamento natural com biquíni de fita, estética facial e corporal, massoterapia, além de cursos profissionalizantes com mentoria e certificação.",
+      "phone": "(66) 99612-8149",
+      "whatsappUrl": "https://wa.me/5566996128149?text=Ol%C3%A1%20Alexa%20Prime!%20Vi%20seu%20an%C3%BAncio%20na%20R%C3%A1dio%20Vox%20Arieh%20e%20gostaria%20de%20agendar%20um%20hor%C3%A1rio%20ou%20saber%20sobre%20os%20cursos.",
+      "instagram": "@alexaprime.estetica",
+      "instagramUrl": "https://www.instagram.com/alexaprime.estetica",
+      "badge": "Patrocinador Master VIP"
+    },
+    {
+      "name": "Rony Cesar — Pintor Profissional",
+      "category": "Pintura Residencial & Comercial • Acabamentos",
+      "description": "Serviços especializados de pintura residencial, predial e comercial em Rondonópolis e região. Pintura interna e externa, texturas, restauração de fachadas e acabamentos de fino padrão com pontualidade, limpeza e honestidade.",
+      "phone": "(66) 99621-4341",
+      "whatsappUrl": "https://wa.me/5566996214341?text=Ol%C3%A1%20Rony%20Cesar!%20Vi%20seu%20an%C3%BAncio%20na%20R%C3%A1dio%20Vox%20Arieh%20e%20gostaria%20de%20solicitar%20um%20or%C3%A7amento%20de%20pintura.",
+      "instagram": "",
+      "instagramUrl": "",
+      "badge": "Parceiro Oficial"
+    }
+  ],
+  "schedule": [
+    {
+      "start": "00:00",
+      "end": "01:00",
+      "title": "Momento da Palavra — Clamor da Meia-Noite",
+      "host": "Pregações & Ministrações de Fé",
+      "desc": "Mensagens bíblicas edificantes, clamor da madrugada e reflexões ungidas para a sua vida."
+    },
+    {
+      "start": "01:00",
+      "end": "03:00",
+      "title": "Madrugada com Deus",
+      "host": "Louvores & Adoração Profunda",
+      "desc": "Os mais belos louvores nacionais de adoração e consagração nas madrugadas."
+    },
+    {
+      "start": "03:00",
+      "end": "04:00",
+      "title": "Momento da Palavra — Vigília da Madrugada",
+      "host": "Palavra Pastoral & Pregações",
+      "desc": "Ministrações bíblicas e palavras de consolo, encorajamento e cura para a sua alma."
+    },
+    {
+      "start": "04:00",
+      "end": "06:00",
+      "title": "Alvorada da Vitória",
+      "host": "Louvores Pentecostais",
+      "desc": "Louvores que despertam a fé para começar o dia cheio da presença de Deus."
+    },
+    {
+      "start": "06:00",
+      "end": "07:00",
+      "title": "Momento da Palavra — Despertar da Fé",
+      "host": "Mensagens da Palavra & Oração",
+      "desc": "Pílula bíblica e oração matinal para você começar o seu dia na presença do Senhor."
+    },
+    {
+      "start": "07:00",
+      "end": "12:00",
+      "title": "Manhã de Louvor & Glória",
+      "host": "Grandes Clássicos Gospel 24h",
+      "desc": "Músicas que edificam sua casa, sucessos contemporâneos e harpa cristã."
+    },
+    {
+      "start": "12:00",
+      "end": "13:00",
+      "title": "Momento da Palavra — Alimento do Meio-Dia",
+      "host": "Pregações & Alimento Espiritual",
+      "desc": "Grandes reflexões da Palavra de Deus, estudos bíblicos e devocionais edificando sua família."
+    },
+    {
+      "start": "13:00",
+      "end": "16:00",
+      "title": "Tarde de Avivamento & Central de Pedidos",
+      "host": "Participação dos Ouvintes",
+      "desc": "Envie seu pedido de louvor pelo WhatsApp das 13h às 16h para tocar hoje na rádio!"
+    },
+    {
+      "start": "16:00",
+      "end": "18:00",
+      "title": "Conexão Vox Arieh — Louvores Pedidos no Ar",
+      "host": "A Voz do Ouvinte & Intercessão",
+      "desc": "O momento mais aguardado: rodando os louvores pedidos pelos ouvintes durante a tarde!"
+    },
+    {
+      "start": "18:00",
+      "end": "19:00",
+      "title": "Momento da Palavra — Clamor do Entardecer",
+      "host": "Ministrações & Vozes da Fé",
+      "desc": "Pregações impactantes, oração pelas famílias e gratidão ao entardecer."
+    },
+    {
+      "start": "19:00",
+      "end": "23:59",
+      "title": "Noite de Celebração & Intimidade",
+      "host": "Louvores Especiais AD Madureira",
+      "desc": "Termine o seu dia debaixo da paz do Senhor com profunda adoração."
+    }
+  ],
+  "contact": {
+    "whatsapp": "5566999536712",
+    "whatsappDisplay": "(66) 99953-6712",
+    "instagram": "@voxarieh.radio",
+    "email": "contato@voxarieh.com.br"
+  },
+  "streamUrl": "https://stream.lexaapp.com.br/listen/voxarieh/radio.mp3",
+  "updatedAt": "2026-10-23T15:18:30.192Z"
+}
