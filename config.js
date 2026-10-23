@@ -153,6 +153,16 @@ const RADIO_CONFIG = {
       instagram: "@alexaprime.estetica",
       instagramUrl: "https://www.instagram.com/alexaprime.estetica",
       badge: "Patrocinador Master VIP"
+    },
+    {
+      name: "Rony Cesar — Pintor Profissional",
+      category: "Pintura Residencial & Comercial • Acabamentos",
+      description: "Serviços especializados de pintura residencial, predial e comercial em Rondonópolis e região. Pintura interna e externa, texturas, restauração de fachadas e acabamentos de fino padrão com pontualidade, limpeza e honestidade.",
+      phone: "(66) 99621-4341",
+      whatsappUrl: "https://wa.me/5566996214341?text=Ol%C3%A1%20Rony%20Cesar!%20Vi%20seu%20an%C3%BAncio%20na%20R%C3%A1dio%20Vox%20Arieh%20e%20gostaria%20de%20solicitar%20um%20or%C3%A7amento%20de%20pintura.",
+      instagram: "",
+      instagramUrl: "",
+      badge: "Parceiro Oficial"
     }
   ]
 };
