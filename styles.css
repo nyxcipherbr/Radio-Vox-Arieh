@@ -1830,3 +1830,242 @@ textarea.form-control {
   to { transform: translateX(0); opacity: 1; }
 }
 
+/* ========================================================
+   PWA - APLICATIVO INSTALÁVEL (BOTÕES & BANNERS)
+   ======================================================== */
+.btn-pwa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(255, 215, 0, 0.1));
+  border: 1.5px solid var(--gold-bright);
+  color: var(--gold-bright);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.btn-pwa:hover {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-bright));
+  color: #0b0014;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px var(--gold-glow);
+}
+
+.pwa-mobile-banner {
+  display: none;
+  background: linear-gradient(90deg, #190530, #2c0b4d);
+  border-bottom: 1.5px solid var(--gold-primary);
+  padding: 10px 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 1000;
+  position: relative;
+}
+
+.pwa-mobile-banner.is-visible {
+  display: flex;
+}
+
+.pwa-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pwa-banner-content img {
+  border-radius: 8px;
+  border: 1px solid var(--gold-bright);
+}
+
+.pwa-banner-text h4 {
+  font-size: 0.85rem;
+  color: #ffffff;
+  margin: 0;
+  font-weight: 700;
+}
+
+.pwa-banner-text p {
+  font-size: 0.72rem;
+  color: var(--gold-light);
+  margin: 0;
+}
+
+.pwa-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ========================================================
+   MURAL DE CLAMOR & PEDIDOS DE ORAÇÃO (SEÇÃO)
+   ======================================================== */
+.prayer-section-card {
+  background: linear-gradient(135deg, rgba(22, 10, 38, 0.95), rgba(36, 0, 70, 0.8));
+  border: 1.5px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 35px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.prayer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+}
+
+@media (max-width: 900px) {
+  .prayer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.prayer-side-box {
+  background: rgba(18, 0, 36, 0.6);
+  border: 1px solid var(--border-violet);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.prayer-badge-category {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--gold-bright);
+  border: 1px solid var(--border-gold);
+}
+
+.prayer-admin-item {
+  background: rgba(22, 10, 38, 0.8);
+  border: 1px solid var(--border-violet);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  transition: all var(--transition-fast);
+}
+
+.prayer-admin-item:hover {
+  border-color: var(--gold-primary);
+  background: rgba(36, 0, 70, 0.5);
+}
+
+/* ========================================================
+   STICKY MINI-PLAYER FLUTUANTE (RODAPÉ)
+   ======================================================== */
+.sticky-mini-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(14, 2, 26, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1.5px solid var(--gold-bright);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(212, 175, 55, 0.2);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 2500;
+  transform: translateY(110%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sticky-mini-player.is-active {
+  transform: translateY(0);
+}
+
+.mini-player-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mini-player-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1.5px solid var(--gold-bright);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mini-player-text {
+  min-width: 0;
+}
+
+.mini-player-text h5 {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+
+.mini-player-text p {
+  font-size: 0.74rem;
+  color: var(--gold-bright);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.btn-mini-play {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-bright));
+  color: #0b0014;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px var(--gold-glow);
+  transition: transform 0.2s ease;
+}
+
+.btn-mini-play:hover {
+  transform: scale(1.08);
+}
+
+.btn-mini-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.btn-mini-close:hover {
+  color: var(--gold-bright);
+}
+
+

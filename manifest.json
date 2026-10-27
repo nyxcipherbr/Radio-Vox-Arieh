@@ -1,0 +1,32 @@
+{
+  "name": "Rádio Vox Arieh — Web Rádio 24h & Palavra",
+  "short_name": "Vox Arieh",
+  "description": "O rugido da libertação em cada frequência. Web rádio gospel 24 horas no ar com louvores, Momento da Palavra, podcasts e oração diária.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0014",
+  "theme_color": "#120024",
+  "categories": ["music", "lifestyle", "spiritual"],
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "assets/lion_logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/lion_logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

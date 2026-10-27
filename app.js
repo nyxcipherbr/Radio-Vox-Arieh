@@ -40,6 +40,7 @@ async function syncToServer(type, data) {
         if (type === 'podcastEpisodes') SERVER_DATA.podcastEpisodes = data;
         if (type === 'sponsors') SERVER_DATA.sponsors = data;
         if (type === 'schedule') SERVER_DATA.schedule = data;
+        if (type === 'prayers') SERVER_DATA.prayers = data;
         if (type === 'settings') {
           if (data.streamUrl) SERVER_DATA.streamUrl = data.streamUrl;
           if (data.contact) SERVER_DATA.contact = { ...SERVER_DATA.contact, ...data.contact };
@@ -70,6 +71,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadServerData();
 
   initPlayer();
+  initMiniPlayer();
+  initPWA();
   renderDevotional();
   renderSchedule();
   renderSponsors();
@@ -77,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderPodcast();
   renderPodcastGallery();
   updateLiveShow();
+  updatePrayerCountBadges();
   
   // Atualiza o programa no ar a cada 60 segundos
   setInterval(updateLiveShow, 60000);
@@ -346,6 +350,31 @@ function saveScheduleData(data) {
   });
 }
 
+function getPrayersData() {
+  if (SERVER_DATA && Array.isArray(SERVER_DATA.prayers)) {
+    return SERVER_DATA.prayers;
+  }
+  try {
+    const saved = localStorage.getItem('vox_arieh_prayers');
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.error("Erro ao carregar pedidos de oração:", e);
+    return [];
+  }
+}
+
+function savePrayersData(data) {
+  try {
+    localStorage.setItem('vox_arieh_prayers', JSON.stringify(data));
+  } catch (e) {}
+  if (SERVER_DATA) {
+    SERVER_DATA.prayers = data;
+  }
+  syncToServer('prayers', data).then(saved => {
+    if (saved) showToast("✅ Pedidos de oração atualizados no servidor!");
+  });
+}
+
 function getStreamUrl() {
   if (SERVER_DATA && SERVER_DATA.streamUrl) {
     return sanitizeUrl(SERVER_DATA.streamUrl);
@@ -422,6 +451,8 @@ function togglePlayStream() {
     if (pauseIcon) pauseIcon.style.display = 'none';
     if (fixedPlayer) fixedPlayer.classList.remove('is-playing');
     if (heroBtnText) heroBtnText.textContent = 'Ouvir a Rádio Agora';
+    updateMediaSession();
+    updateMiniPlayerUI();
   } else {
     if (devotionalAudio && !devotionalAudio.paused) {
       devotionalAudio.pause();
@@ -440,6 +471,8 @@ function togglePlayStream() {
         if (pauseIcon) pauseIcon.style.display = 'block';
         if (fixedPlayer) fixedPlayer.classList.add('is-playing');
         if (heroBtnText) heroBtnText.textContent = 'Pausar Transmissão';
+        updateMediaSession();
+        updateMiniPlayerUI();
       }).catch(error => {
         console.warn("Autoplay bloqueado pelo navegador ou stream indisponível. Alternando para áudio de demonstração...", error);
         radioAudio.src = RADIO_CONFIG.fallbackAudio;
@@ -449,10 +482,16 @@ function togglePlayStream() {
           if (pauseIcon) pauseIcon.style.display = 'block';
           if (fixedPlayer) fixedPlayer.classList.add('is-playing');
           if (heroBtnText) heroBtnText.textContent = 'Pausar Transmissão';
+          updateMediaSession();
+          updateMiniPlayerUI();
         }).catch(err => console.error("Falha ao tocar áudio:", err));
       });
     }
   }
+}
+
+function togglePlay() {
+  togglePlayStream();
 }
 
 function playDevotionalAudio() {
@@ -517,6 +556,11 @@ function updateLiveShow() {
   if (trackElem) trackElem.textContent = sanitizeHTML(activeProg.title);
   if (hostElem) hostElem.textContent = `${sanitizeHTML(activeProg.host)} • AD Madureira`;
 
+  const miniTitle = document.getElementById('miniPlayerTitle');
+  const miniProg = document.getElementById('miniPlayerProgram');
+  if (miniTitle) miniTitle.textContent = sanitizeHTML(activeProg.title);
+  if (miniProg) miniProg.textContent = isPlaying ? `No Ar • ${activeProg.host}` : `Pausado • ${activeProg.title}`;
+
   const cards = document.querySelectorAll('.schedule-card');
   cards.forEach(card => {
     const timeText = card.getAttribute('data-time-range');
@@ -526,6 +570,158 @@ function updateLiveShow() {
       card.classList.remove('is-now');
     }
   });
+
+  if (isPlaying) {
+    updateMediaSession();
+  }
+}
+
+/* Integração com a Media Session API (Notificação na Tela de Bloqueio & Bluetooth) */
+function updateMediaSession() {
+  if (!('mediaSession' in navigator)) return;
+
+  const activeProg = getActiveProgram();
+  const progTitle = activeProg ? activeProg.title : 'Rádio Vox Arieh 24h';
+  const progHost = activeProg ? activeProg.host : 'Assembleia de Deus Madureira';
+
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: progTitle,
+      artist: `Rádio Vox Arieh • ${progHost}`,
+      album: 'O rugido da libertação em cada frequência',
+      artwork: [
+        { src: 'assets/lion_logo.jpg?v=5.0', sizes: '192x192', type: 'image/jpeg' },
+        { src: 'assets/lion_logo.jpg?v=5.0', sizes: '512x512', type: 'image/jpeg' }
+      ]
+    });
+
+    navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      if (!isPlaying) togglePlayStream();
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      if (isPlaying) togglePlayStream();
+    });
+    navigator.mediaSession.setActionHandler('stop', () => {
+      if (isPlaying) togglePlayStream();
+    });
+  } catch (e) {
+    console.warn("[MediaSession] Não suportado pelo navegador:", e);
+  }
+}
+
+/* Sincronização e Controle do Mini-Player Flutuante (Rodapé) */
+let miniPlayerDismissed = false;
+
+function updateMiniPlayerUI() {
+  const btn = document.getElementById('btnMiniPlay');
+  const progElem = document.getElementById('miniPlayerProgram');
+  const activeProg = getActiveProgram();
+  if (progElem) {
+    progElem.textContent = isPlaying ? `No Ar • ${activeProg.host}` : `Pausado • ${activeProg.title}`;
+  }
+  if (btn) {
+    btn.innerHTML = isPlaying 
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    btn.title = isPlaying ? 'Pausar Rádio' : 'Tocar Rádio';
+  }
+}
+
+function initMiniPlayer() {
+  window.addEventListener('scroll', () => {
+    const mini = document.getElementById('stickyMiniPlayer');
+    if (!mini || miniPlayerDismissed) return;
+    if (window.scrollY > 380) {
+      mini.classList.add('is-active');
+    } else {
+      mini.classList.remove('is-active');
+    }
+  });
+}
+
+function dismissMiniPlayer() {
+  const mini = document.getElementById('stickyMiniPlayer');
+  if (mini) mini.classList.remove('is-active');
+  miniPlayerDismissed = true;
+}
+
+/* ========================================================
+   PROGRESSIVE WEB APP (PWA) - INSTALAÇÃO & SERVICE WORKER
+   ======================================================== */
+let deferredPrompt = null;
+
+function initPWA() {
+  // 1. Registro do Service Worker para cache offline e funcionamento como App
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => {
+          console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
+        })
+        .catch(err => {
+          console.warn('[PWA] Falha ao registrar Service Worker:', err);
+        });
+    });
+  }
+
+  // 2. Captura do evento de instalação no Android/Chrome/Desktop
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const banner = document.getElementById('pwaBanner');
+    try {
+      const dismissed = sessionStorage.getItem('vox_pwa_banner_dismissed');
+      if (banner && !dismissed) {
+        banner.style.display = 'flex';
+      }
+    } catch (err) {
+      if (banner) banner.style.display = 'flex';
+    }
+  });
+
+  // 3. Notificação pós-instalação
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    dismissPwaBanner();
+    showToast("🦁 Aplicativo Rádio Vox Arieh instalado com sucesso!");
+  });
+}
+
+function installPWA() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) {
+    closeModals();
+    const iosModal = document.getElementById('iosInstallModal');
+    if (iosModal) {
+      iosModal.classList.add('is-active');
+    }
+    return;
+  }
+
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('[PWA] Usuário aceitou a instalação.');
+      }
+      deferredPrompt = null;
+      dismissPwaBanner();
+    });
+  } else {
+    alert("📲 Para instalar o App Oficial da Rádio Vox Arieh:\n\n• No Android/Chrome: Toque no menu de três pontinhos (⋮) no topo do navegador e escolha 'Instalar aplicativo' ou 'Adicionar à tela inicial'.\n• No iPhone/Safari: Toque no ícone Compartilhar (⎋) e escolha 'Adicionar à Tela de Início' (➕).\n• No Computador: Clique no ícone de instalação (+) na barra de endereços do navegador!");
+  }
+}
+
+function dismissPwaBanner() {
+  const banner = document.getElementById('pwaBanner');
+  if (banner) {
+    banner.style.display = 'none';
+  }
+  try {
+    sessionStorage.setItem('vox_pwa_banner_dismissed', 'true');
+  } catch (e) {}
 }
 
 /* ========================================================
@@ -918,6 +1114,33 @@ function handleSendPrayer(event) {
   const request = document.getElementById('prayerRequest').value.trim();
   const whatsapp = getRadioWhatsapp();
 
+  const prayerObj = {
+    id: 'pray_' + Date.now(),
+    name,
+    city: city || 'Não informado',
+    category: 'Clamor 24h',
+    song: song || '',
+    request,
+    date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+    status: 'Recebido'
+  };
+
+  // 1. Salva localmente de imediato
+  const localPrayers = getPrayersData();
+  localPrayers.unshift(prayerObj);
+  try { localStorage.setItem('vox_arieh_prayers', JSON.stringify(localPrayers)); } catch (e) {}
+  if (SERVER_DATA) SERVER_DATA.prayers = localPrayers;
+  updatePrayerCountBadges();
+
+  // 2. Persiste no servidor /api/prayer
+  try {
+    fetch('/api/prayer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, city, category: 'Clamor 24h', song, request })
+    }).catch(err => console.warn("[API Prayer] Offline ou em background:", err));
+  } catch (e) {}
+
   let msg = `🕊️ *PEDIDO DE ORAÇÃO & LOUVOR - RÁDIO VOX ARIEH*\n\n`;
   msg += `👤 *Nome:* ${name}\n`;
   msg += `📍 *Localização:* ${city}\n`;
@@ -928,6 +1151,74 @@ function handleSendPrayer(event) {
   const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
   closeModals();
+  showToast("✅ Seu pedido foi enviado para o Altar de Oração!");
+}
+
+function handleSendPrayerPage(event) {
+  event.preventDefault();
+  const nameInput = document.getElementById('pagePrayerName');
+  const cityInput = document.getElementById('pagePrayerCity');
+  const catInput = document.getElementById('pagePrayerCategory');
+  const songInput = document.getElementById('pagePrayerSong');
+  const reqInput = document.getElementById('pagePrayerRequest');
+
+  const name = nameInput ? nameInput.value.trim() : '';
+  const city = cityInput ? cityInput.value.trim() : '';
+  const category = catInput ? catInput.value.trim() : 'Geral';
+  const song = songInput ? songInput.value.trim() : '';
+  const request = reqInput ? reqInput.value.trim() : '';
+  const whatsapp = getRadioWhatsapp();
+
+  if (!name || !request) {
+    alert("Por favor, preencha seu nome e o motivo de oração.");
+    return;
+  }
+
+  const prayerObj = {
+    id: 'pray_' + Date.now(),
+    name,
+    city: city || 'Não informado',
+    category: category || 'Geral',
+    song: song || '',
+    request,
+    date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+    status: 'Recebido'
+  };
+
+  // 1. Salva localmente de imediato
+  const localPrayers = getPrayersData();
+  localPrayers.unshift(prayerObj);
+  try { localStorage.setItem('vox_arieh_prayers', JSON.stringify(localPrayers)); } catch (e) {}
+  if (SERVER_DATA) SERVER_DATA.prayers = localPrayers;
+  updatePrayerCountBadges();
+
+  // 2. Persiste no servidor /api/prayer
+  try {
+    fetch('/api/prayer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, city, category, song, request })
+    }).catch(err => console.warn("[API Prayer] Offline ou em background:", err));
+  } catch (e) {}
+
+  let msg = `🕊️ *NOVO PEDIDO DE ORAÇÃO & INTERCESSÃO — RÁDIO VOX ARIEH*\n\n`;
+  msg += `👤 *Nome:* ${name}\n`;
+  if (city) msg += `📍 *Cidade / Bairro:* ${city}\n`;
+  msg += `🏷️ *Causa / Área:* ${category}\n`;
+  if (song) msg += `🎵 *Louvor Desejado:* ${song}\n`;
+  msg += `🙏 *Causa / Pedido de Oração:* ${request}\n\n`;
+  msg += `_Enviado pelo Altar de Clamor da Rádio Vox Arieh._`;
+
+  const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  // Limpa campos
+  if (nameInput) nameInput.value = '';
+  if (cityInput) cityInput.value = '';
+  if (songInput) songInput.value = '';
+  if (reqInput) reqInput.value = '';
+
+  showToast("✅ Seu pedido foi enviado para o Altar de Oração!");
 }
 
 function handleSendAd(event) {
@@ -1010,6 +1301,7 @@ function openAdminDashboard() {
   populateAdminDevotional();
   renderAdminPodcastEpisodes();
   renderAdminSchedule();
+  renderAdminPrayers();
   populateAdminSettings();
 }
 
@@ -1023,6 +1315,119 @@ function switchAdminTab(tabId, btn) {
   const target = document.getElementById(tabId);
   if (target) target.classList.add('is-active');
   if (btn) btn.classList.add('is-active');
+
+  if (tabId === 'tabPrayers') {
+    renderAdminPrayers();
+  }
+}
+
+/* ========================================================
+   GESTÃO DE PEDIDOS DE ORAÇÃO & INTERCESSÃO NO ADM
+   ======================================================== */
+function updatePrayerCountBadges() {
+  const prayers = getPrayersData();
+  const pendingCount = prayers.filter(p => p.status !== 'Orado').length;
+  const badge = document.getElementById('adminPrayerCount');
+  const countHeader = document.getElementById('adminPrayerCountBadge');
+  if (badge) badge.textContent = pendingCount;
+  if (countHeader) {
+    countHeader.textContent = `${prayers.length} ${prayers.length === 1 ? 'pedido' : 'pedidos'} (${pendingCount} pendentes)`;
+  }
+}
+
+function renderAdminPrayers() {
+  const container = document.getElementById('adminPrayersList');
+  updatePrayerCountBadges();
+  if (!container) return;
+
+  const prayers = getPrayersData();
+  if (prayers.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 35px 20px; color: var(--text-muted); background: rgba(36, 0, 70, 0.3); border: 1px dashed var(--border-violet); border-radius: var(--radius-md);">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">🕊️</div>
+        <h4 style="color: #fff; margin-bottom: 6px;">Nenhum pedido de oração recebido ainda</h4>
+        <p style="font-size: 0.88rem; margin: 0;">Quando os ouvintes enviarem causas pelo mural ou modal, os pedidos aparecerão aqui para intercessão pastoral.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = prayers.map((p, idx) => {
+    const isAnswered = (p.status === 'Orado');
+    const badgeColor = isAnswered 
+      ? 'background: rgba(46, 204, 113, 0.15); border: 1px solid #2ecc71; color: #2ecc71;' 
+      : 'background: rgba(212, 175, 55, 0.15); border: 1px solid var(--border-gold); color: var(--gold-bright);';
+
+    return `
+      <div class="prayer-admin-item" style="border-left: 4px solid ${isAnswered ? '#2ecc71' : 'var(--gold-bright)'};">
+        <div class="prayer-admin-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+              <h4 style="color: #fff; margin: 0; font-size: 1.05rem;">👤 ${sanitizeHTML(p.name)}</h4>
+              <span class="prayer-badge-category">${sanitizeHTML(p.category || 'Geral')}</span>
+              <span class="sponsor-badge" style="${badgeColor}; font-size: 0.72rem; padding: 2px 8px;">
+                ${isAnswered ? '✅ Orado & Apresentado' : '⏳ Aguardando Oração'}
+              </span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+              📍 ${sanitizeHTML(p.city || 'Cidade não informada')} • 🗓️ ${sanitizeHTML(p.date || 'Data recente')}
+              ${p.song ? ` • 🎵 <strong>Louvor:</strong> "${sanitizeHTML(p.song)}"` : ''}
+            </p>
+          </div>
+        </div>
+
+        <div style="background: rgba(20, 0, 40, 0.6); border: 1px solid rgba(255, 215, 0, 0.12); border-radius: 8px; padding: 12px 14px; margin: 12px 0; font-size: 0.92rem; color: #f5f5f5; line-height: 1.6;">
+          <strong style="color: var(--gold-light);">🙏 Motivo de Oração:</strong><br>
+          ${sanitizeHTML(p.request)}
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin-top: 10px;">
+          ${!isAnswered ? `
+            <button type="button" class="btn-sm-action btn-gold" style="background: rgba(212, 175, 55, 0.2); border: 1px solid var(--border-gold); color: var(--gold-bright); border-radius: 6px; padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" onclick="markPrayerAnswered(${idx})">
+              <span>🙏</span> Marcar como Orado
+            </button>
+          ` : `
+            <button type="button" class="btn-sm-action btn-violet" style="background: rgba(157, 78, 221, 0.15); border: 1px solid var(--border-violet); color: #c77dff; border-radius: 6px; padding: 6px 12px; cursor: pointer;" onclick="markPrayerPending(${idx})">
+              ↩️ Reabrir Causa
+            </button>
+          `}
+          <button type="button" class="btn-sm-action btn-delete" style="border-radius: 6px; padding: 6px 12px; cursor: pointer;" onclick="deletePrayer(${idx})">
+            🗑️ Excluir
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function markPrayerAnswered(index) {
+  const prayers = getPrayersData();
+  if (!prayers[index]) return;
+  prayers[index].status = 'Orado';
+  savePrayersData(prayers);
+  renderAdminPrayers();
+  showToast(`Pedido de ${prayers[index].name} marcado como orado no altar!`);
+}
+
+function markPrayerPending(index) {
+  const prayers = getPrayersData();
+  if (!prayers[index]) return;
+  prayers[index].status = 'Recebido';
+  savePrayersData(prayers);
+  renderAdminPrayers();
+  showToast(`Pedido reaberto com sucesso!`);
+}
+
+function deletePrayer(index) {
+  const prayers = getPrayersData();
+  const p = prayers[index];
+  if (!p) return;
+  if (confirm(`Remover o pedido de oração de "${p.name}"?`)) {
+    prayers.splice(index, 1);
+    savePrayersData(prayers);
+    renderAdminPrayers();
+    showToast("Pedido de oração removido!");
+  }
 }
 
 /* Gestão de Patrocinadores no ADM */
@@ -1500,6 +1905,7 @@ function exportAdminConfig() {
     podcastEpisodes: getPodcastEpisodes(),
     schedule: getScheduleData(),
     sponsors: getSponsorsData(),
+    prayers: getPrayersData(),
     contact: {
       whatsapp: getRadioWhatsapp(),
       instagram: getRadioInstagram()
@@ -1531,6 +1937,7 @@ function handleImportBackup(event) {
       if (data.podcastEpisodes && Array.isArray(data.podcastEpisodes)) savePodcastEpisodes(data.podcastEpisodes);
       if (data.schedule && Array.isArray(data.schedule)) saveScheduleData(data.schedule);
       if (data.sponsors && Array.isArray(data.sponsors)) saveSponsorsData(data.sponsors);
+      if (data.prayers && Array.isArray(data.prayers)) savePrayersData(data.prayers);
       if (data.streamUrl) localStorage.setItem('vox_arieh_streamUrl', data.streamUrl);
       if (data.contact) {
         if (data.contact.whatsapp) localStorage.setItem('vox_arieh_whatsapp', data.contact.whatsapp);
@@ -1544,6 +1951,7 @@ function handleImportBackup(event) {
       renderAdminPodcastEpisodes();
       renderAdminSponsors();
       renderAdminSchedule();
+      renderAdminPrayers();
       populateAdminDevotional();
       populateAdminSettings();
       showToast("Backup restaurado com sucesso!");

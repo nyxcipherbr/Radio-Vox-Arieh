@@ -120,6 +120,8 @@ const server = http.createServer((req, res) => {
           currentData.sponsors = updateData;
         } else if (type === 'schedule') {
           currentData.schedule = updateData;
+        } else if (type === 'prayers') {
+          currentData.prayers = updateData;
         } else if (type === 'settings') {
           if (updateData.streamUrl) currentData.streamUrl = updateData.streamUrl;
           if (updateData.contact) currentData.contact = { ...currentData.contact, ...updateData.contact };
@@ -144,6 +146,71 @@ const server = http.createServer((req, res) => {
         console.error('[API] Erro no processamento do POST /api/save:', err);
         res.writeHead(400);
         res.end(JSON.stringify({ error: 'JSON inválido no corpo da requisição.' }));
+      }
+    });
+    return;
+  }
+
+  // 4. Recebimento público de Pedidos de Oração de ouvintes (POST /api/prayer)
+  if (req.method === 'POST' && pathname === '/api/prayer') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 100 * 1024) { // 100KB max para pedido
+        res.writeHead(413);
+        res.end(JSON.stringify({ error: 'Pedido muito extenso.' }));
+        req.destroy();
+      }
+    });
+
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const name = (payload.name || '').trim().slice(0, 100);
+        const city = (payload.city || '').trim().slice(0, 100);
+        const song = (payload.song || '').trim().slice(0, 150);
+        const prayerRequest = (payload.request || '').trim().slice(0, 2000);
+        const category = (payload.category || 'Geral').trim().slice(0, 50);
+
+        if (!name || !prayerRequest) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ error: 'Nome e pedido de oração são obrigatórios.' }));
+          return;
+        }
+
+        const currentData = loadData() || {};
+        if (!Array.isArray(currentData.prayers)) {
+          currentData.prayers = [];
+        }
+
+        const newPrayer = {
+          id: 'pray_' + Date.now(),
+          name,
+          city,
+          song,
+          request: prayerRequest,
+          category,
+          date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          status: 'Recebido'
+        };
+
+        currentData.prayers.unshift(newPrayer);
+        // Mantém os últimos 300 pedidos para otimizar espaço
+        if (currentData.prayers.length > 300) {
+          currentData.prayers = currentData.prayers.slice(0, 300);
+        }
+
+        if (saveData(currentData)) {
+          console.log(`[API] Novo pedido de oração de "${name}" (${city}) recebido em ${new Date().toISOString()}`);
+          res.writeHead(200);
+          res.end(JSON.stringify({ success: true, message: 'Pedido de oração recebido com sucesso!', prayer: newPrayer }));
+        } else {
+          res.writeHead(500);
+          res.end(JSON.stringify({ error: 'Erro ao registrar pedido de oração.' }));
+        }
+      } catch (err) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'Formato inválido.' }));
       }
     });
     return;

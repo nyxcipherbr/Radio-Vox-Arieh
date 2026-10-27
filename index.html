@@ -6,7 +6,13 @@
   <title>Rádio Vox Arieh | O rugido da libertação em cada frequência</title>
   <meta name="description" content="Rádio Gospel Vox Arieh 24h no ar. Louvores que edificam, Momento da Palavra e oração diária. Assembleia de Deus Madureira - Rondonópolis / MT.">
   <link rel="icon" type="image/jpeg" href="assets/lion_logo.jpg?v=5.0">
-  <link rel="stylesheet" href="styles.css?v=5.9">
+  <link rel="apple-touch-icon" href="assets/lion_logo.jpg?v=5.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#120024">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vox Arieh">
+  <link rel="stylesheet" href="styles.css?v=6.0">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -16,6 +22,23 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src * 'self' blob:; img-src 'self' data: https:; frame-src 'self' https://open.spotify.com; connect-src * 'self';">
 </head>
 <body>
+
+  <!-- ==========================================
+       BANNER DE INSTALAÇÃO PWA (CELULARES)
+       ========================================== -->
+  <div id="pwaBanner" class="pwa-mobile-banner">
+    <div class="pwa-banner-content">
+      <img src="assets/lion_logo.jpg?v=5.0" width="34" height="34" alt="Vox Arieh">
+      <div class="pwa-banner-text">
+        <h4>Instalar Rádio Vox Arieh</h4>
+        <p>Ouça em 1 toque na tela do seu celular</p>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button class="btn btn-gold btn-sm" onclick="installPWA()" style="padding: 6px 12px; font-size: 0.78rem;">📲 Instalar</button>
+      <button class="btn-mini-close" onclick="dismissPwaBanner()" style="font-size: 1.1rem; color: #fff;">&times;</button>
+    </div>
+  </div>
 
   <!-- ==========================================
        NAVBAR SUPERIOR
@@ -36,6 +59,7 @@
         <li><a href="#hero">Início</a></li>
         <li><a href="#devocional">Palavra do Dia</a></li>
         <li><a href="#podcasts">Podcasts</a></li>
+        <li><a href="#oracao">Pedidos de Oração</a></li>
         <li><a href="#programacao">Grade 24h</a></li>
         <li><a href="#patrocinadores">Guia Comercial</a></li>
         <li><a href="#anuncie">Anuncie</a></li>
@@ -47,6 +71,9 @@
           <span class="pulse-dot"></span>
           <span>NO AR 24H</span>
         </div>
+        <button class="btn-pwa" id="btnNavInstall" onclick="installPWA()" title="Instalar aplicativo da rádio">
+          📲 Baixar App
+        </button>
         <button class="btn btn-gold btn-sm" onclick="openPrayerModal()">
           Pedir Oração
         </button>
@@ -247,6 +274,94 @@
           <!-- Lista de Faixas Compacta e Clicável -->
           <div class="podcast-tracklist" id="podcastGalleryGrid">
             <!-- Renderizado dinamicamente pelo JavaScript no formato compacto -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       MURAL DE PEDIDOS DE ORAÇÃO & INTERCESSÃO
+       ========================================== -->
+  <section id="oracao" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Altar de Intercessão & Fé</span>
+        <h2 class="section-title">Mural de <span class="gold-text">Pedidos de Oração</span></h2>
+      </div>
+
+      <div class="prayer-section-card">
+        <div class="prayer-grid">
+          <div>
+            <h3 class="gold-text" style="font-size: 1.4rem; margin-bottom: 12px;">Apresente a sua causa diante do Senhor</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6;">
+              Toda a equipe ministerial da <strong>Rádio Vox Arieh</strong> e da <strong>AD Madureira</strong> estará intercedendo pela sua vida, família, saúde e causas impossíveis no <em>Momento da Palavra</em> e nas vigílias de oração.
+            </p>
+
+            <form onsubmit="handleSendPrayerPage(event)" style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="form-group" style="margin: 0;">
+                  <label>Seu Nome / Família:</label>
+                  <input type="text" id="pagePrayerName" class="form-control" placeholder="Ex: Maria de Fátima" required>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                  <label>Cidade e Bairro:</label>
+                  <input type="text" id="pagePrayerCity" class="form-control" placeholder="Ex: Rondonópolis - MT" required>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="form-group" style="margin: 0;">
+                  <label>Motivo da Causa:</label>
+                  <select id="pagePrayerCategory" class="form-control" required>
+                    <option value="Família & Casamento">👨‍👩‍👧‍👦 Família & Casamento</option>
+                    <option value="Cura & Saúde">🩺 Cura Divina & Saúde</option>
+                    <option value="Portas de Emprego & Finanças">💼 Portas de Emprego & Finanças</option>
+                    <option value="Causas na Justiça">⚖️ Causas na Justiça / Impossíveis</option>
+                    <option value="Libertação Espiritual">🕊️ Libertação Espiritual</option>
+                    <option value="Agradecimento / Testemunho">🙌 Agradecimento / Testemunho</option>
+                    <option value="Outro Motivo">✨ Outro Motivo</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                  <label>Louvor para Tocar no Ar (opcional):</label>
+                  <input type="text" id="pagePrayerSong" class="form-control" placeholder="Ex: Alívio - Jessé Aguiar">
+                </div>
+              </div>
+
+              <div class="form-group" style="margin: 0;">
+                <label>Descreva seu Pedido de Oração:</label>
+                <textarea id="pagePrayerRequest" class="form-control" style="min-height: 90px;" placeholder="Escreva sua causa com fé para colocarmos no altar de oração..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-gold" style="align-self: flex-start; padding: 12px 28px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;">
+                <span>🕊️ Enviar Pedido para Intercessão</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="prayer-side-box">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                <img src="assets/lion_logo.jpg?v=5.0" width="48" height="48" style="border-radius: 10px; border: 1.5px solid var(--gold-bright);" alt="Leão de Judá">
+                <div>
+                  <h4 style="color: #fff; margin: 0; font-size: 1.05rem;">Altar de Clamor 24h</h4>
+                  <p style="color: var(--gold-bright); margin: 0; font-size: 0.78rem;">AD Madureira — Rondonópolis / MT</p>
+                </div>
+              </div>
+              <blockquote style="font-style: italic; color: var(--gold-light); font-size: 0.92rem; line-height: 1.6; border-left: 2px solid var(--gold-bright); padding-left: 14px; margin-bottom: 18px;">
+                "A oração feita por um justo pode muito em seus efeitos." — Tiago 5:16
+              </blockquote>
+              <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
+                Seu pedido é enviado diretamente para a direção ministerial da <strong>Evangelista Alexandra Maia</strong> e apresentado nas orações da madrugada e no <em>Momento da Palavra</em>.
+              </p>
+            </div>
+
+            <div style="background: rgba(36, 0, 70, 0.4); border: 1px solid var(--border-gold); border-radius: 8px; padding: 12px; margin-top: 20px;">
+              <p style="color: #fff; font-size: 0.82rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+                <span>🛡️</span> <strong>Sigilo & Respeito:</strong> Seus dados são guardados em sigilo com a equipe de intercessão da igreja.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -632,6 +747,9 @@
         <button class="admin-tab-btn" onclick="switchAdminTab('tabSchedule', this)">
           ⏰ Grade 24 Horas
         </button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('tabPrayers', this)">
+          🙏 Pedidos de Intercessão (<span id="adminPrayerCount">0</span>)
+        </button>
         <button class="admin-tab-btn" onclick="switchAdminTab('tabSettings', this)">
           ⚙️ Transmissão & Senha
         </button>
@@ -872,6 +990,20 @@
         </form>
       </div>
 
+      <!-- ABA 5: PEDIDOS DE ORAÇÃO & INTERCESSÃO -->
+      <div id="tabPrayers" class="admin-tab-content">
+        <div class="admin-section-title">
+          <span>Pedidos de Oração Recebidos pelo Site</span>
+          <span id="adminPrayerCountBadge" class="badge-live" style="background: rgba(212, 175, 55, 0.2); border: 1px solid var(--border-gold); color: var(--gold-bright); font-size: 0.8rem;">0 pedidos</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 20px;">
+          Aqui estão listadas todas as causas apresentadas pelos ouvintes no site para intercessão no <em>Momento da Palavra</em> e nas vigílias.
+        </p>
+        <div id="adminPrayersList" class="admin-card-list">
+          <!-- Renderizado dinamicamente pelo JavaScript -->
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -908,6 +1040,46 @@
     </div>
   </div>
 
+  <!-- ==========================================
+       STICKY MINI-PLAYER FLUTUANTE (RODAPÉ)
+       ========================================== -->
+  <div id="stickyMiniPlayer" class="sticky-mini-player">
+    <div class="mini-player-info">
+      <img src="assets/lion_logo.jpg?v=5.0" alt="Logo" class="mini-player-logo">
+      <div class="mini-player-text">
+        <h5 id="miniPlayerTitle">Rádio Vox Arieh 24h</h5>
+        <p id="miniPlayerProgram">Ao Vivo • O rugido da libertação</p>
+      </div>
+    </div>
+    <div class="mini-player-controls">
+      <button class="btn-mini-play" id="btnMiniPlay" onclick="togglePlay()" title="Tocar / Pausar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+      <button class="btn-mini-close" onclick="dismissMiniPlayer()" title="Ocultar Mini-Player">&times;</button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL GUIA DE INSTALAÇÃO IPHONE / SAFARI
+       ========================================== -->
+  <div id="iosInstallModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 440px; text-align: center;">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <img src="assets/lion_logo.jpg?v=5.0" width="68" height="68" style="border-radius: 14px; border: 2px solid var(--gold-bright); margin-bottom: 12px;" alt="Vox Arieh">
+      <h3 class="gold-text" style="font-size: 1.3rem; margin-bottom: 8px;">Instalar App no iPhone</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+        Para ter a Rádio Vox Arieh como aplicativo oficial na tela do seu iPhone ou iPad, siga os 2 passos rápidos:
+      </p>
+      <div style="background: rgba(36, 0, 70, 0.4); border: 1px solid var(--border-gold); border-radius: 10px; padding: 15px; text-align: left; font-size: 0.88rem; color: #fff; margin-bottom: 20px;">
+        <p style="margin-bottom: 10px;">1️⃣ Toque no botão de <strong>Compartilhar</strong> (ícone do quadrado com a seta para cima ⎋ na barra inferior do Safari).</p>
+        <p style="margin: 0;">2️⃣ Role para baixo e selecione <strong>"Adicionar à Tela de Início"</strong> ➕.</p>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="closeModals()" style="width: 100%;">Entendi!</button>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION FLUTUANTE -->
   <div id="toastBox" class="toast-box">
     <span>✅</span>
@@ -915,7 +1087,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=5.9"></script>
-  <script src="app.js?v=5.9"></script>
+  <script src="config.js?v=6.0"></script>
+  <script src="app.js?v=6.0"></script>
 </body>
 </html>
