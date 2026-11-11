@@ -15,6 +15,40 @@ const DATA_FILE = path.join(__dirname, 'data.json');
 // Hash mestre de autenticação da administração (SHA-256)
 const DEFAULT_ADMIN_HASH = 'a1b8457ae946c6ea54d9d7ee69e835249eb75c8c4b3de11ce82cf9f84b4daf5b';
 
+// Sistema Anti-Brute Force e Anti-Flood (Rate Limiting em memória)
+const requestCounts = new Map();
+const RATE_WINDOW_MS = 60 * 1000; // 1 minuto
+const MAX_REQUESTS_PER_MIN = 40; // Max 40 requisições por IP por minuto
+const MAX_SAVE_ATTEMPTS_PER_MIN = 10; // Max 10 tentativas de login/save por minuto
+
+function checkRateLimit(ip, isSensitive = false) {
+  const now = Date.now();
+  const limit = isSensitive ? MAX_SAVE_ATTEMPTS_PER_MIN : MAX_REQUESTS_PER_MIN;
+  const key = `${ip}_${isSensitive ? 'sens' : 'gen'}`;
+  
+  const record = requestCounts.get(key);
+  if (!record || (now - record.startTime) > RATE_WINDOW_MS) {
+    requestCounts.set(key, { count: 1, startTime: now });
+    return true;
+  }
+  
+  record.count++;
+  if (record.count > limit) {
+    return false;
+  }
+  return true;
+}
+
+// Limpeza periódica do mapa de rate limiting a cada 5 minutos
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, record] of requestCounts.entries()) {
+    if ((now - record.startTime) > RATE_WINDOW_MS) {
+      requestCounts.delete(key);
+    }
+  }
+}, 5 * 60 * 1000);
+
 function loadData() {
   try {
     if (fs.existsSync(DATA_FILE)) {
@@ -37,26 +71,46 @@ function saveData(data) {
   }
 }
 
+// Comparação criptográfica segura em tempo constante (Anti-Timing Attacks)
 function verifyAuth(req, bodyHash) {
   const headerHash = req.headers['x-admin-hash'];
-  const providedHash = headerHash || bodyHash;
-  if (!providedHash) return false;
+  const providedHash = String(headerHash || bodyHash || '').trim().toLowerCase();
+  if (!providedHash || providedHash.length !== 64) return false;
 
   const data = loadData();
-  const allowedHash = (data && data.adminHash) ? data.adminHash : DEFAULT_ADMIN_HASH;
-  return providedHash.toLowerCase() === allowedHash.toLowerCase();
+  const allowedHash = String((data && data.adminHash) ? data.adminHash : DEFAULT_ADMIN_HASH).trim().toLowerCase();
+
+  try {
+    const bufProvided = Buffer.from(providedHash, 'hex');
+    const bufAllowed = Buffer.from(allowedHash, 'hex');
+    if (bufProvided.length !== bufAllowed.length) return false;
+    return crypto.timingSafeEqual(bufProvided, bufAllowed);
+  } catch (e) {
+    return false;
+  }
 }
 
 const server = http.createServer((req, res) => {
-  // CORS e cabeçalhos de segurança
+  const clientIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+
+  // Cabeçalhos de Segurança da API (OWASP Hardening)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Hash');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
     res.end();
+    return;
+  }
+
+  // Rate Limiting Geral
+  if (!checkRateLimit(clientIp, false)) {
+    res.writeHead(429);
+    res.end(JSON.stringify({ error: 'Muitas requisições. Por favor, aguarde um momento.' }));
     return;
   }
 
@@ -87,6 +141,11 @@ const server = http.createServer((req, res) => {
 
   // 3. Salvar alterações do ADM (POST /api/save)
   if (req.method === 'POST' && pathname === '/api/save') {
+    if (!checkRateLimit(clientIp, true)) {
+      res.writeHead(429);
+      res.end(JSON.stringify({ error: 'Muitas tentativas de gravação/login. Aguarde 1 minuto.' }));
+      return;
+    }
     let body = '';
     req.on('data', chunk => {
       body += chunk;
@@ -153,10 +212,15 @@ const server = http.createServer((req, res) => {
 
   // 4. Recebimento público de Pedidos de Oração de ouvintes (POST /api/prayer)
   if (req.method === 'POST' && pathname === '/api/prayer') {
+    if (!checkRateLimit(clientIp, true)) {
+      res.writeHead(429);
+      res.end(JSON.stringify({ error: 'Muitos envios recentes. Aguarde 1 minuto.' }));
+      return;
+    }
     let body = '';
     req.on('data', chunk => {
       body += chunk;
-      if (body.length > 100 * 1024) { // 100KB max para pedido
+      if (body.length > 50 * 1024) { // 50KB max para pedido
         res.writeHead(413);
         res.end(JSON.stringify({ error: 'Pedido muito extenso.' }));
         req.destroy();
@@ -166,11 +230,15 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const payload = JSON.parse(body);
-        const name = (payload.name || '').trim().slice(0, 100);
-        const city = (payload.city || '').trim().slice(0, 100);
-        const song = (payload.song || '').trim().slice(0, 150);
-        const prayerRequest = (payload.request || '').trim().slice(0, 2000);
-        const category = (payload.category || 'Geral').trim().slice(0, 50);
+        const sanitizeClean = str => String(str || '')
+          .replace(/[<>]/g, '')
+          .trim();
+
+        const name = sanitizeClean(payload.name).slice(0, 80);
+        const city = sanitizeClean(payload.city).slice(0, 80);
+        const song = sanitizeClean(payload.song).slice(0, 100);
+        const prayerRequest = sanitizeClean(payload.request).slice(0, 1500);
+        const category = sanitizeClean(payload.category || 'Geral').slice(0, 40);
 
         if (!name || !prayerRequest) {
           res.writeHead(400);
