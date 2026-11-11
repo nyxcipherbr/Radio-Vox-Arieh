@@ -1229,16 +1229,52 @@ function handleSendAd(event) {
   const plan = document.getElementById('adPlan').value;
   const whatsapp = getRadioWhatsapp();
 
-  let msg = `💼 *PROPOSTA COMERCIAL / ANÚNCIO - RÁDIO VOX ARIEH*\n\n`;
-  msg += `🏢 *Empresa:* ${company}\n`;
+  let msg = `🤝 *INTERESSE EM PARCERIA & DIVULGAÇÃO — RÁDIO VOX ARIEH*\n\n`;
+  msg += `🏢 *Empresa / Atividade:* ${company}\n`;
   msg += `👤 *Responsável:* ${person}\n`;
-  msg += `🏷️ *Segmento:* ${segment}\n`;
-  msg += `⭐ *Plano de Interesse:* ${plan}\n\n`;
-  msg += `_Gostaria de receber informações sobre veiculação e contrato comercial (LGPD Compliant)._`;
+  msg += `🏷️ *Ramo:* ${segment}\n`;
+  msg += `⭐ *Interesse:* ${plan}\n\n`;
+  msg += `_Olá Evangelista Alexandra! Gostaria de apoiar a rádio com uma oferta voluntária e divulgar meu trabalho na programação da Vox Arieh._`;
 
   const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
   closeModals();
+}
+
+function copyPixKey() {
+  const pixInput = document.getElementById('pixKeyText');
+  const btn = document.getElementById('btnCopyPix');
+  const cleanPix = (pixInput ? pixInput.value : '071.462.111-00').replace(/\D/g, '');
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(cleanPix).then(() => {
+      if (btn) btn.innerHTML = '<span>✅ Copiado!</span>';
+      showToast('Chave PIX copiada! Abra seu app de banco para colar.');
+      setTimeout(() => {
+        if (btn) btn.innerHTML = '<span>📋 Copiar Chave</span>';
+      }, 3000);
+    }).catch(() => fallbackCopyPix(cleanPix, btn));
+  } else {
+    fallbackCopyPix(cleanPix, btn);
+  }
+}
+
+function fallbackCopyPix(text, btn) {
+  try {
+    const tempInput = document.createElement('input');
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    if (btn) btn.innerHTML = '<span>✅ Copiado!</span>';
+    showToast('Chave PIX copiada com sucesso!');
+    setTimeout(() => {
+      if (btn) btn.innerHTML = '<span>📋 Copiar Chave</span>';
+    }, 3000);
+  } catch (err) {
+    alert('Chave PIX: ' + text + '\n\nCopie a chave acima para realizar sua oferta voluntária!');
+  }
 }
 
 function shareDevotional() {

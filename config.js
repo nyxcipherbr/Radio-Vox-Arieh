@@ -37,7 +37,11 @@ const RADIO_CONFIG = {
     whatsapp: "5566999536712",
     whatsappDisplay: "(66) 99953-6712",
     instagram: "@voxarieh.radio",
-    email: "contato@voxarieh.com.br"
+    email: "contato@voxarieh.com.br",
+    pixKey: "07146211100",
+    pixKeyDisplay: "071.462.111-00",
+    pixReceiver: "Davi Emanuel G Araujo",
+    pixLeader: "Evangelista Alexandra Maia"
   },
 
   // Devocional em Destaque

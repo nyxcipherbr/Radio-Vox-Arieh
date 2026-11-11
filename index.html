@@ -62,7 +62,7 @@
         <li><a href="#oracao">Pedidos de Oração</a></li>
         <li><a href="#programacao">Grade 24h</a></li>
         <li><a href="#patrocinadores">Guia Comercial</a></li>
-        <li><a href="#anuncie">Anuncie</a></li>
+        <li><a href="#anuncie">Apoie & Divulgue</a></li>
         <li><a href="#igreja">AD Madureira</a></li>
       </ul>
 
@@ -409,25 +409,109 @@
   <section id="anuncie" class="section">
     <div class="container">
       <div class="section-header">
-        <span class="section-subtitle">Monetização & Divulgação Comercial</span>
-        <h2 class="section-title">Anuncie sua Empresa na <span class="gold-text">Vox Arieh</span></h2>
-        <p style="color: var(--text-muted); max-width: 700px; margin: 12px auto 0;">
-          Associe a sua marca a uma rádio de valores cristãos, alta fidelidade de audiência e alcance milhares de ouvintes diariamente. Emitimos <strong>Nota Fiscal (CNPJ)</strong> e contrato formal.
+        <span class="section-subtitle">Parcerias & Semeadura no Reino</span>
+        <h2 class="section-title">Apoie & Divulgue na <span class="gold-text">Vox Arieh</span></h2>
+        <p style="color: var(--text-muted); max-width: 720px; margin: 12px auto 0; line-height: 1.6;">
+          <em>"Cada um contribua segundo propôs no seu coração, não com tristeza ou por necessidade; porque Deus ama ao que dá com alegria."</em> — <strong>2 Coríntios 9:7</strong>
         </p>
       </div>
 
-      <div class="plans-grid" id="plansContainer">
-        <!-- Renderizado dinamicamente pelo JavaScript -->
+      <!-- Grid com as 2 Vias de Apoio: Parceria Comercial & Oferta Voluntária -->
+      <div class="partnership-grid">
+        
+        <!-- CARD 1: EMPRESAS & AUTÔNOMOS (SEM VALORES FIXOS) -->
+        <div class="partnership-card">
+          <div class="partnership-badge">🏢 Para Comércio & Autônomos</div>
+          <div class="partnership-header">
+            <h3 class="partnership-title">Divulgue Seu Trabalho</h3>
+            <p class="partnership-subtitle">
+              Apoie a rádio com uma <strong>oferta de amor voluntária</strong> e divulgue seus produtos ou serviços para milhares de ouvintes!
+            </p>
+          </div>
+
+          <ul class="partnership-features">
+            <li>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span><strong>Sem planos ou preços engessados:</strong> Você semeia o valor que Deus colocar no seu coração.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span><strong>Divulgação no ar 24h:</strong> Inserções de áudio e menções durante a programação diária.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span><strong>Presença no Guia Comercial do site:</strong> Seu contato, WhatsApp e ramo em destaque no portal.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span><strong>Oração pelos seus negócios:</strong> Apresentamos seu comércio e clientes no clamor da rádio.</span>
+            </li>
+          </ul>
+
+          <div class="partnership-action">
+            <button class="btn btn-gold" style="width: 100%; padding: 13px; font-size: 0.95rem;" onclick="openCustomAdModal()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+              </svg>
+              Quero Divulgar Minha Empresa / Trabalho
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 2: OFERTA DO CORAÇÃO & SEMEADORES (PIX DIRETO) -->
+        <div class="partnership-card is-featured">
+          <div class="partnership-badge-gold">🕊️ Oferta do Coração</div>
+          <div class="partnership-header">
+            <h3 class="partnership-title">Seja um Mantenedor da Palavra</h3>
+            <p class="partnership-subtitle">
+              Qualquer valor ofertado de coração mantém o sinal da rádio, os servidores e o evangelismo no ar 24 horas por dia!
+            </p>
+          </div>
+
+          <!-- Caixa Informativa do PIX -->
+          <div class="pix-card-box">
+            <div class="pix-header">
+              <span class="pix-tag">CHAVE PIX OFICIAL (CPF)</span>
+              <span class="pix-status">🟢 Ativo 24h</span>
+            </div>
+
+            <div class="pix-key-display">
+              <input type="text" id="pixKeyText" value="071.462.111-00" readonly class="pix-input">
+              <button type="button" class="btn btn-gold btn-sm" onclick="copyPixKey()" id="btnCopyPix" title="Copiar Chave PIX">
+                <span>📋 Copiar Chave</span>
+              </button>
+            </div>
+
+            <div class="pix-details">
+              <p><strong>Favorecido:</strong> Davi Emanuel G Araujo</p>
+              <p><strong>Destino:</strong> Manutenção & Expansão da Rádio Vox Arieh</p>
+            </div>
+          </div>
+
+          <!-- Chamada para Oração com a Evangelista Alexandra -->
+          <div class="pix-prayer-call">
+            <div style="font-size: 1.4rem;">🙏</div>
+            <div style="font-size: 0.85rem; color: #f5f5f5; line-height: 1.5;">
+              Envie o comprovante pelo WhatsApp com o nome da sua família para a <strong>Evangelista Alexandra Maia</strong> apresentar sua vida e sua oferta em oração no altar!
+            </div>
+          </div>
+
+          <div class="partnership-action">
+            <a href="https://wa.me/5566999536712?text=Ol%C3%A1%20Evangelista%20Alexandra!%20Realizei%20uma%20oferta%20do%20cora%C3%A7%C3%A3o%20para%20a%20R%C3%A1dio%20Vox%20Arieh.%20Gostaria%20de%20enviar%20o%20comprovante%20para%20ora%C3%A7%C3%A3o%20pela%20minha%20fam%C3%ADlia!" 
+               target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="width: 100%; padding: 13px; font-size: 0.95rem;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+              </svg>
+              Enviar Comprovante para Oração no WhatsApp
+            </a>
+          </div>
+        </div>
+
       </div>
 
-      <div style="text-align: center; margin-top: 40px;">
-        <button class="btn btn-gold btn-lg" onclick="openCustomAdModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-          </svg>
-          Solicitar Proposta Personalizada para Minha Empresa
-        </button>
-      </div>
+      <!-- Container dinâmico oculto para manter compatibilidade com app.js -->
+      <div id="plansContainer" style="display: none;"></div>
+
     </div>
   </section>
 
@@ -499,7 +583,7 @@
           <li><a href="#devocional">Momento Devocional</a></li>
           <li><a href="#programacao">Grade de Horários</a></li>
           <li><a href="#patrocinadores">Guia Comercial</a></li>
-          <li><a href="#anuncie">Mídia Kit & Planos</a></li>
+          <li><a href="#anuncie">Apoie & Divulgue (PIX)</a></li>
         </ul>
       </div>
 
@@ -641,42 +725,42 @@
   <div class="modal-overlay" id="adModal">
     <div class="modal-box">
       <button class="modal-close" onclick="closeModals()">&times;</button>
-      <h3 class="gold-text" style="margin-bottom: 8px;">Anunciar na Rádio Vox Arieh</h3>
+      <h3 class="gold-text" style="margin-bottom: 8px;">Divulgar na Rádio Vox Arieh</h3>
       <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
-        Receba nossa proposta comercial e veicule sua marca para os fiéis e ouvintes de Rondonópolis.
+        Apoie a obra da rádio com a oferta voluntária que desejar e divulgue sua empresa, comércio ou serviço para os ouvintes de Rondonópolis.
       </p>
 
       <form id="adForm" onsubmit="handleSendAd(event)">
         <div class="form-group">
-          <label for="adCompany">Nome da Empresa:</label>
-          <input type="text" id="adCompany" class="form-control" placeholder="Ex: Supermercado São José" required>
+          <label for="adCompany">Nome da Empresa / Comércio / Atividade:</label>
+          <input type="text" id="adCompany" class="form-control" placeholder="Ex: Supermercado São José ou Pintor Autônomo" required>
         </div>
         <div class="form-group">
-          <label for="adContactPerson">Seu Nome / Cargo:</label>
-          <input type="text" id="adContactPerson" class="form-control" placeholder="Ex: Carlos (Proprietário)" required>
+          <label for="adContactPerson">Seu Nome / Responsável:</label>
+          <input type="text" id="adContactPerson" class="form-control" placeholder="Ex: Carlos" required>
         </div>
         <div class="form-group">
-          <label for="adSegment">Segmento / Ramo de Atuação:</label>
-          <input type="text" id="adSegment" class="form-control" placeholder="Ex: Farmácia, Varejo, Oficina..." required>
+          <label for="adSegment">Ramo de Atuação:</label>
+          <input type="text" id="adSegment" class="form-control" placeholder="Ex: Farmácia, Oficina, Salgados, Pintura, Serviços..." required>
         </div>
         <div class="form-group">
-          <label for="adPlan">Plano de Interesse:</label>
+          <label for="adPlan">Tipo de Parceria Desejada:</label>
           <select id="adPlan" class="form-control">
-            <option value="Plano Bronze (R$ 50/mês)">Plano Bronze (R$ 50/mês - 6 inserções/dia)</option>
-            <option value="Plano Prata (R$ 100/mês)" selected>Plano Prata (R$ 100/mês - 12 inserções + Banner)</option>
-            <option value="Plano Ouro (R$ 200/mês)">Plano Ouro Master (R$ 200/mês - Patrocínio do Devocional)</option>
-            <option value="Personalizado">Quero uma Proposta Personalizada</option>
+            <option value="Parceria de Divulgação com Oferta Voluntária" selected>🤝 Parceria de Divulgação com Oferta do Coração</option>
+            <option value="Divulgação no Ar 24h & Guia do Site">📻 Inserções no Ar 24h + Guia Comercial do Site</option>
+            <option value="Patrocínio do Devocional / Momento da Palavra">⭐ Apoio Especial do Momento da Palavra</option>
+            <option value="Outro formato">✨ Conversar Diretamente com a Ev. Alexandra</option>
           </select>
         </div>
         <!-- Conformidade LGPD -->
         <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px; margin: 15px 0;">
           <input type="checkbox" id="lgpdAdConsent" required style="margin-top: 3px; accent-color: var(--gold-bright);">
           <label for="lgpdAdConsent" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin: 0;">
-            Concordo com o compartilhamento dos dados para fins de proposta comercial e veiculação publicitária, em conformidade com a <strong>LGPD (Lei nº 13.709/2018)</strong>.
+            Concordo com o envio das informações para atendimento direto com a direção da rádio via WhatsApp, nos termos da <strong>LGPD (Lei nº 13.709/2018)</strong>.
           </label>
         </div>
         <button type="submit" class="btn btn-whatsapp" style="width: 100%;">
-          Falar com o Comercial via WhatsApp
+          Conversar com a Ev. Alexandra no WhatsApp
         </button>
       </form>
     </div>
@@ -1087,7 +1171,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=6.0"></script>
-  <script src="app.js?v=6.0"></script>
+  <script src="config.js?v=6.1"></script>
+  <script src="app.js?v=6.1"></script>
 </body>
 </html>
