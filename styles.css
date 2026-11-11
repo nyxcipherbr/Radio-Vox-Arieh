@@ -985,62 +985,178 @@ h1, h2, h3, .font-serif {
 }
 
 /* ========================================================
-   GUIA COMERCIAL / PATROCINADORES (APOIO CULTURAL)
+   GUIA DE PARCEIROS & AMIGOS DA VOX ARIEH (BARRA DE ROLAGEM)
    ======================================================== */
-.sponsors-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 22px;
+.sponsors-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.sponsors-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(22, 10, 38, 0.85);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  flex: 1;
+  max-width: 440px;
+}
+
+.sponsors-search-box svg {
+  color: var(--gold-bright);
+  flex-shrink: 0;
+}
+
+.sponsors-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.88rem;
+  width: 100%;
+}
+
+.sponsors-search-box input::placeholder {
+  color: var(--text-muted);
+}
+
+.sponsors-scroll-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sponsors-count-badge {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-bright);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-right: 6px;
+}
+
+.btn-scroll-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(36, 0, 70, 0.8);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-bright);
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.btn-scroll-arrow:hover {
+  background: var(--gold-primary);
+  color: #0b0014;
+  transform: scale(1.08);
+}
+
+/* Área de Rolagem Horizontal Elegante com Scrollbar Personalizada */
+.sponsors-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 4px 22px 4px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar Dourada & Violeta Estilizada */
+.sponsors-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.sponsors-scroll-wrapper::-webkit-scrollbar-track {
+  background: rgba(22, 10, 38, 0.7);
+  border-radius: 10px;
+}
+
+.sponsors-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--gold-primary), var(--gold-bright));
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.sponsors-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-bright);
+}
+
+.sponsors-carousel {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
 }
 
 .sponsor-card {
+  flex: 0 0 310px;
+  max-width: 310px;
   background: var(--bg-card);
-  border: 1px solid var(--border-gold);
+  border: 1.5px solid var(--border-violet);
   border-radius: var(--radius-md);
-  padding: 24px;
-  transition: var(--transition);
+  padding: 22px;
+  transition: all var(--transition-fast);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
 }
 
 .sponsor-card:hover {
   border-color: var(--gold-bright);
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25);
 }
 
 .sponsor-badge {
   align-self: flex-start;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 12px;
   background: rgba(212, 175, 55, 0.15);
   color: var(--gold-bright);
   border: 1px solid var(--gold-primary);
-  margin-bottom: 14px;
-}
-
-.sponsor-name {
-  font-size: 1.2rem;
-  margin-bottom: 6px;
-  color: var(--text-primary);
-}
-
-.sponsor-category {
-  font-size: 0.78rem;
-  color: var(--violet-light);
-  font-weight: 600;
-  text-transform: uppercase;
   margin-bottom: 12px;
 }
 
+.sponsor-name {
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sponsor-category {
+  font-size: 0.75rem;
+  color: var(--gold-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
 .sponsor-desc {
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 20px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .sponsor-phone {

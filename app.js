@@ -790,11 +790,51 @@ function renderSchedule() {
   }).join('');
 }
 
-function renderSponsors() {
+function filterSponsors(query) {
+  renderSponsors(query);
+}
+
+function scrollSponsors(direction) {
+  const wrapper = document.getElementById('sponsorsScrollWrapper');
+  if (!wrapper) return;
+  const scrollAmount = 330;
+  if (direction === 'left') {
+    wrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  } else {
+    wrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  }
+}
+
+function renderSponsors(filterText = '') {
   const container = document.getElementById('sponsorsContainer');
+  const countBadge = document.getElementById('sponsorsCountBadge');
   if (!container) return;
 
-  const sponsors = getSponsorsData();
+  let sponsors = getSponsorsData();
+  const totalCount = sponsors.length;
+
+  if (filterText && filterText.trim() !== '') {
+    const q = filterText.toLowerCase().trim();
+    sponsors = sponsors.filter(sp => 
+      (sp.name && sp.name.toLowerCase().includes(q)) ||
+      (sp.category && sp.category.toLowerCase().includes(q)) ||
+      (sp.description && sp.description.toLowerCase().includes(q)) ||
+      (sp.badge && sp.badge.toLowerCase().includes(q))
+    );
+  }
+
+  if (countBadge) {
+    countBadge.textContent = `${sponsors.length} de ${totalCount} parceiros`;
+  }
+
+  if (sponsors.length === 0) {
+    container.innerHTML = `
+      <div style="padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; width: 100%;">
+        🔍 Nenhum parceiro encontrado com o termo "<strong>${sanitizeHTML(filterText)}</strong>".
+      </div>
+    `;
+    return;
+  }
 
   container.innerHTML = sponsors.map(sp => {
     const cleanWaUrl = sanitizeUrl(sp.whatsappUrl);
@@ -803,30 +843,30 @@ function renderSponsors() {
     return `
       <div class="sponsor-card">
         <div>
-          <span class="sponsor-badge">${sanitizeHTML(sp.badge)}</span>
+          <span class="sponsor-badge">${sanitizeHTML(sp.badge || 'Amigo da Rádio')}</span>
           <h3 class="sponsor-name">${sanitizeHTML(sp.name)}</h3>
           <div class="sponsor-category">${sanitizeHTML(sp.category)}</div>
-          <p class="sponsor-desc">${sanitizeHTML(sp.description)}</p>
+          <p class="sponsor-desc" title="${sanitizeHTML(sp.description)}">${sanitizeHTML(sp.description)}</p>
           <div class="sponsor-phone">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
             </svg>
             <span>${sanitizeHTML(sp.phone)}</span>
           </div>
         </div>
         <div class="sponsor-actions">
-          <a href="${cleanWaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="width: 100%; padding: 11px; font-size: 0.88rem;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <a href="${cleanWaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="width: 100%; padding: 10px; font-size: 0.84rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
             </svg>
-            Falar no WhatsApp Oficial
+            Conversar no WhatsApp
           </a>
           ${sp.instagram ? `
-          <a href="${cleanInstaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-instagram" style="width: 100%; padding: 10px; font-size: 0.85rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <a href="${cleanInstaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-instagram" style="width: 100%; padding: 8px; font-size: 0.8rem;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.79-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
             </svg>
-            Seguir ${sanitizeHTML(sp.instagram)}
+            Instagram
           </a>
           ` : ''}
         </div>
