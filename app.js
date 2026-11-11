@@ -1284,7 +1284,7 @@ function handleSendAd(event) {
 function copyPixKey() {
   const pixInput = document.getElementById('pixKeyText');
   const btn = document.getElementById('btnCopyPix');
-  const cleanPix = (pixInput ? pixInput.value : '071.462.111-00').replace(/\D/g, '');
+  const cleanPix = (pixInput ? pixInput.value : 'a90c419e-3cbb-4584-b1ae-e07ab456998e').trim();
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(cleanPix).then(() => {

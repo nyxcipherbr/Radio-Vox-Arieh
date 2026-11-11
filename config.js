@@ -38,8 +38,8 @@ const RADIO_CONFIG = {
     whatsappDisplay: "(66) 99953-6712",
     instagram: "@voxarieh.radio",
     email: "contato@voxarieh.com.br",
-    pixKey: "07146211100",
-    pixKeyDisplay: "071.462.111-00",
+    pixKey: "a90c419e-3cbb-4584-b1ae-e07ab456998e",
+    pixKeyDisplay: "a90c419e-3cbb-4584-b1ae-e07ab456998e",
     pixReceiver: "Davi Emanuel G Araujo",
     pixLeader: "Evangelista Alexandra Maia"
   },
