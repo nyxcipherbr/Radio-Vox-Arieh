@@ -1721,6 +1721,9 @@ textarea.form-control {
   .nav-links {
     display: none;
   }
+  .btn-nav-prayer {
+    display: none;
+  }
   .hero-title {
     font-size: 2.2rem;
   }
@@ -2286,16 +2289,22 @@ textarea.form-control {
   color: var(--text-secondary);
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   line-height: 1.45;
 }
 
 .partnership-features li svg {
-  min-width: 18px;
-  height: 18px;
-  color: var(--gold-bright);
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  color: var(--gold-bright) !important;
+  fill: var(--gold-bright) !important;
   margin-top: 2px;
   flex-shrink: 0;
+  display: inline-block;
 }
 
 /* Caixa Visual do PIX */
@@ -2305,6 +2314,7 @@ textarea.form-control {
   border-radius: var(--radius-md);
   padding: 20px;
   margin-bottom: 18px;
+  box-sizing: border-box;
 }
 
 .pix-header {
@@ -2332,20 +2342,29 @@ textarea.form-control {
   gap: 10px;
   align-items: center;
   margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pix-input {
   flex: 1;
+  min-width: 0;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-gold);
   border-radius: var(--radius-sm);
   color: #ffffff;
-  font-size: 1.05rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 8px 12px;
-  letter-spacing: 1px;
+  padding: 10px 12px;
+  letter-spacing: 0.5px;
   text-align: center;
   font-family: monospace;
+  box-sizing: border-box;
+}
+
+#btnCopyPix {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .pix-details p {
@@ -2371,6 +2390,116 @@ textarea.form-control {
 
 .partnership-action {
   margin-top: auto;
+}
+
+/* ========================================================
+   RESPONSIVIDADE MOBILE REFINADA (TELA LIMPA & ORGANIZADA)
+   ======================================================== */
+@media (max-width: 600px) {
+  .nav-container {
+    height: 68px;
+    padding: 0 14px;
+  }
+  .nav-brand {
+    gap: 10px;
+  }
+  .nav-logo-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+  .nav-brand-text h1 {
+    font-size: 1.15rem;
+  }
+  .nav-brand-text span {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+  }
+  .nav-actions {
+    gap: 8px;
+  }
+  .badge-live {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    gap: 5px;
+  }
+  .btn-pwa {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+    gap: 4px;
+  }
+  
+  .partnership-card {
+    padding: 24px 16px;
+    border-radius: var(--radius-md);
+  }
+  .partnership-badge,
+  .partnership-badge-gold {
+    left: 18px;
+    top: -12px;
+    font-size: 0.72rem;
+    padding: 3px 12px;
+  }
+  .partnership-header {
+    margin-top: 6px;
+    margin-bottom: 16px;
+  }
+  .partnership-title {
+    font-size: 1.3rem;
+  }
+  .partnership-subtitle {
+    font-size: 0.85rem;
+  }
+  .pix-card-box {
+    padding: 14px 12px;
+  }
+  .pix-header {
+    margin-bottom: 10px;
+  }
+  .pix-key-display {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .pix-input {
+    font-size: 0.76rem !important;
+    padding: 10px 8px !important;
+    letter-spacing: 0;
+    width: 100%;
+    word-break: break-all;
+    text-align: center;
+  }
+  #btnCopyPix {
+    width: 100%;
+    padding: 11px;
+    font-size: 0.88rem;
+    display: flex;
+    justify-content: center;
+  }
+  .pix-prayer-call {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 12px 10px;
+  }
+  .partnership-action .btn {
+    font-size: 0.88rem !important;
+    padding: 12px 10px !important;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .badge-live-text {
+    display: none;
+  }
+  .badge-live {
+    padding: 6px;
+  }
+  .nav-brand-text span {
+    display: none;
+  }
 }
 
 

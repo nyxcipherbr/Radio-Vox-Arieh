@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Vox Arieh">
-  <link rel="stylesheet" href="styles.css?v=6.0">
+  <link rel="stylesheet" href="styles.css?v=6.3">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -69,12 +69,12 @@
       <div class="nav-actions">
         <div class="badge-live">
           <span class="pulse-dot"></span>
-          <span>NO AR 24H</span>
+          <span class="badge-live-text">NO AR 24H</span>
         </div>
         <button class="btn-pwa" id="btnNavInstall" onclick="installPWA()" title="Instalar aplicativo da rádio">
           📲 Baixar App
         </button>
-        <button class="btn btn-gold btn-sm" onclick="openPrayerModal()">
+        <button class="btn btn-gold btn-sm btn-nav-prayer" onclick="openPrayerModal()">
           Pedir Oração
         </button>
       </div>
@@ -460,19 +460,19 @@
 
           <ul class="partnership-features">
             <li>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               <span><strong>Sem planos ou preços engessados:</strong> Você semeia o valor que Deus colocar no seu coração.</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               <span><strong>Divulgação no ar 24h:</strong> Inserções de áudio e menções durante a programação diária.</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               <span><strong>Presença no Guia Comercial do site:</strong> Seu contato, WhatsApp e ramo em destaque no portal.</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               <span><strong>Oração pelos seus negócios:</strong> Apresentamos seu comércio e clientes no clamor da rádio.</span>
             </li>
           </ul>
@@ -505,7 +505,7 @@
             </div>
 
             <div class="pix-key-display">
-              <input type="text" id="pixKeyText" value="a90c419e-3cbb-4584-b1ae-e07ab456998e" readonly class="pix-input" style="font-size: 0.88rem;">
+              <input type="text" id="pixKeyText" value="a90c419e-3cbb-4584-b1ae-e07ab456998e" readonly class="pix-input" spellcheck="false" autocomplete="off">
               <button type="button" class="btn btn-gold btn-sm" onclick="copyPixKey()" id="btnCopyPix" title="Copiar Chave PIX">
                 <span>📋 Copiar Chave</span>
               </button>
@@ -1200,7 +1200,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=6.2"></script>
-  <script src="app.js?v=6.2"></script>
+  <script src="config.js?v=6.3"></script>
+  <script src="app.js?v=6.3"></script>
 </body>
 </html>
