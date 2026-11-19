@@ -1,4 +1,66 @@
 {
+  "wordStudies": [
+    {
+      "id": "study_1",
+      "title": "Saindo dos Personagens - Agar - Parte 1",
+      "speaker": "Eder Gregorio",
+      "verse": "Gênesis 16 — O Deus que me vê no deserto",
+      "description": "Uma ministração profunda sobre cura emocional, identidade e como Deus restaura quem foi ferido e abandonado no deserto da vida.",
+      "audioUrl": "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f",
+      "audioFile": "",
+      "duration": "35 min",
+      "date": "18 de Novembro",
+      "featured": true
+    },
+    {
+      "id": "study_2",
+      "title": "O Rugido do Leão de Judá na Sua Vida",
+      "speaker": "Evangelista Alexandra Maia",
+      "verse": "Amós 3:8 — O leão rugiu, quem não temerá?",
+      "description": "Quando o Leão da Tribo de Judá ruge, as correntes caem, a enfermidade recua e as portas que estavam fechadas se abrem em nome de Jesus.",
+      "audioUrl": "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
+      "audioFile": "",
+      "duration": "28 min",
+      "date": "15 de Novembro",
+      "featured": false
+    },
+    {
+      "id": "study_3",
+      "title": "Palavra Profética e Ativação da Fé",
+      "speaker": "Evangelista Alexandra Maia",
+      "verse": "Hebreus 11:1 — A certeza das coisas que se esperam",
+      "description": "Ministração de edificação espiritual para destravar propósitos e renovar a esperança no Senhor diante dos desafios diários.",
+      "audioUrl": "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
+      "audioFile": "",
+      "duration": "24 min",
+      "date": "10 de Novembro",
+      "featured": false
+    },
+    {
+      "id": "study_4",
+      "title": "Armas Espirituais para Vencer Batalhas",
+      "speaker": "Rádio Vox Arieh",
+      "verse": "Efésios 6:10-18 — Toda a armadura de Deus",
+      "description": "Estudo bíblico prático sobre a armadura da fé, oração contínua e posicionamento cristão em tempos de provação.",
+      "audioUrl": "https://open.spotify.com/episode/3I3zvqiyd0hkzWclex9Zsp",
+      "audioFile": "",
+      "duration": "30 min",
+      "date": "05 de Novembro",
+      "featured": false
+    },
+    {
+      "id": "study_5",
+      "title": "Cura da Alma e Libertação do Passado",
+      "speaker": "Evangelista Alexandra Maia",
+      "verse": "Salmos 147:3 — Ele sara os de coração quebrantado",
+      "description": "Deus não apenas perdoa, mas restaura memórias e sara dores profundas. Receba a paz que excede todo o entendimento.",
+      "audioUrl": "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f",
+      "audioFile": "",
+      "duration": "33 min",
+      "date": "01 de Novembro",
+      "featured": false
+    }
+  ],
   "dailyDevotional": {
     "title": "O Rugido do Leão de Judá na Sua Vida",
     "verse": "O leão rugiu, quem não temerá? O Senhor Deus falou, quem não profetizará? — Amós 3:8",

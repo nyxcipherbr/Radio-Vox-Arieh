@@ -57,7 +57,7 @@
 
       <ul class="nav-links">
         <li><a href="#hero">Início</a></li>
-        <li><a href="#devocional">Palavra do Dia</a></li>
+        <li><a href="#palavra">Estudando a Palavra</a></li>
         <li><a href="#podcasts">Podcasts</a></li>
         <li><a href="#oracao">Pedidos de Oração</a></li>
         <li><a href="#programacao">Grade 24h</a></li>
@@ -145,59 +145,104 @@
   </header>
 
   <!-- ==========================================
-       MOMENTO DA PALAVRA / DEVOCIONAL DO DIA
+       ESTUDANDO A PALAVRA (MENSAGENS & ESTUDOS EM ÁUDIO)
        ========================================== -->
-  <section id="devocional" class="section">
+  <section id="palavra" class="section">
     <div class="container">
       <div class="section-header">
-        <span class="section-subtitle">Alimento para o seu Espírito</span>
-        <h2 class="section-title">Momento da <span class="gold-text">Palavra Devocional</span></h2>
+        <span class="section-subtitle">Alimento & Edificação para o seu Espírito</span>
+        <h2 class="section-title">Estudando a <span class="gold-text">Palavra</span></h2>
+        <p class="section-desc" style="max-width: 680px; margin: 12px auto 0; color: var(--text-muted); font-size: 0.95rem;">
+          Prefere ouvir uma mensagem bíblica ao invés de louvores agora? Escolha abaixo qualquer ministração gravada e estude a Palavra de Deus no seu tempo.
+        </p>
       </div>
 
-      <div class="devotional-card">
-        <div class="devotional-content">
-          <div class="devotional-badge">
-            📖 Versículo do Dia
-          </div>
-          <blockquote class="devotional-verse" id="devotionalVerse">
-            "O leão rugiu, quem não temerá? O Senhor Deus falou, quem não profetizará?" — Amós 3:8
-          </blockquote>
-          <p class="devotional-body" id="devotionalMessage">
-            Quando o Leão da Tribo de Judá ruge, as cadeias do medo e da angústia são quebradas. Que o poder de Deus alcance a sua casa hoje, trazendo cura, restauração e vitória sobre cada desafio!
-          </p>
-          <div class="devotional-author">
-            <div class="author-avatar">
-              <img src="assets/evangelista_alexandra.jpg?v=5.1" alt="Evangelista Alexandra Maia">
+      <div class="word-study-grid">
+        <!-- COLUNA 1: REPRODUTOR EM DESTAQUE COM CAPA DA BÍBLIA ABERTA -->
+        <div class="word-study-player-card">
+          <div class="word-study-cover-box">
+            <img src="assets/biblia_aberta.jpg?v=6.4" alt="Estudando a Palavra - Bíblia Sagrada Aberta" class="word-study-cover-img" id="wordStudyCoverImg">
+            <div class="word-study-badge">
+              <span>📖 Estudando a Palavra</span>
             </div>
-            <div class="author-info">
-              <h4 id="devotionalSpeaker">Evangelista Alexandra Maia</h4>
-              <p>AD Madureira — Padre Lothar</p>
+            <div class="word-study-live-indicator" id="wordStudyLiveBadge" style="display: none;">
+              <span class="pulse-dot"></span> Tocando Agora
+            </div>
+          </div>
+
+          <div class="word-study-player-info">
+            <span class="word-study-verse-tag" id="currentStudyVerse">Gênesis 16 — O Deus que me vê no deserto</span>
+            <h3 class="word-study-title" id="currentStudyTitle">Saindo dos Personagens - Agar - Parte 1</h3>
+            <div class="word-study-speaker-wrap">
+              <span class="speaker-icon">🎙️</span>
+              <span class="speaker-name" id="currentStudySpeaker">Eder Gregorio</span>
+              <span class="study-date" id="currentStudyDate">• 18 de Novembro</span>
+            </div>
+            <p class="word-study-desc" id="currentStudyDesc">
+              Uma ministração profunda sobre cura emocional, identidade e como Deus restaura quem foi ferido e abandonado no deserto da vida.
+            </p>
+          </div>
+
+          <!-- REPRODUTOR DE ÁUDIO INTEGRADO -->
+          <div class="word-study-audio-box">
+            <audio id="wordStudyAudio" preload="metadata"></audio>
+
+            <div class="audio-progress-wrap">
+              <span class="audio-time" id="studyCurrentTime">00:00</span>
+              <input type="range" id="studyProgressBar" class="audio-progress-bar" min="0" max="100" value="0" oninput="seekStudyAudio(this.value)">
+              <span class="audio-time" id="studyTotalDuration">35:00</span>
+            </div>
+
+            <div class="audio-controls-row">
+              <button class="btn-study-play" id="btnStudyPlay" onclick="toggleStudyAudio()" title="Tocar / Pausar Ministração">
+                <svg id="iconStudyPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="iconStudyPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+              </button>
+
+              <div class="audio-speed-wrap">
+                <button class="btn-speed" id="btnStudySpeed" onclick="cycleStudySpeed()" title="Velocidade da Ministração">1.0x</button>
+              </div>
+
+              <a id="btnStudySpotify" href="https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm" title="Ouvir no Spotify">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
+                </svg>
+                <span>Spotify</span>
+              </a>
+
+              <button class="btn btn-whatsapp btn-sm" onclick="shareCurrentStudy()" title="Compartilhar no WhatsApp">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+                </svg>
+                <span>Compartilhar</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="devotional-action-box" id="devotionalActionBox">
-          <div id="devotionalAudioBox">
-            <h4 id="devotionalActionTitle">Mensagem da Palavra</h4>
-            <p id="devotionalActionSubtitle">Pílula devocional e oração pelas causas impossíveis.</p>
-            <button class="btn btn-gold" id="btnPlayDevotional" onclick="playDevotionalAudio()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-              </svg>
-              Ouvir Áudio da Palavra
-            </button>
+        <!-- COLUNA 2: BIBLIOTECA DE ESTUDOS COM BARRA DE ROLAGEM -->
+        <div class="word-study-library-card">
+          <div class="library-header">
+            <div>
+              <h3 class="gold-text" style="font-size: 1.3rem; margin-bottom: 3px;">Acervo de Ministrações</h3>
+              <p style="color: var(--text-muted); font-size: 0.82rem; margin: 0;">Toque em qualquer áudio para ouvir imediatamente</p>
+            </div>
+            <span class="badge-count" id="studyListCount">5 Ministrações</span>
           </div>
-          <div id="devotionalSpotifyBox" style="display: none; margin-bottom: 12px;">
-            <a id="devotionalSpotifyBtn" href="https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f?si=odHD6LcwQ-69y7YzWYOi9w" target="_blank" rel="noopener noreferrer" class="btn btn-spotify" style="width: 100%;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
-              </svg>
-              Ouvir Palavra no Spotify
-            </a>
+
+          <!-- Filtro de Busca Rápida -->
+          <div class="study-search-wrap">
+            <input type="text" id="studySearchInput" class="form-control" placeholder="🔍 Digite para buscar por tema, pregador ou versículo..." oninput="filterWordStudies(this.value)">
           </div>
-          <button class="btn btn-violet" onclick="shareDevotional()">
-            Compartilhar no WhatsApp
-          </button>
+
+          <!-- LISTA COM BARRA DE ROLAGEM DOURADA -->
+          <div class="word-study-scroll-box" id="wordStudyList">
+            <!-- Renderizado dinamicamente pelo JavaScript -->
+          </div>
         </div>
       </div>
     </div>
@@ -609,7 +654,7 @@
         <h4>Navegação</h4>
         <ul>
           <li><a href="#hero">Início</a></li>
-          <li><a href="#devocional">Momento Devocional</a></li>
+          <li><a href="#palavra">Estudando a Palavra</a></li>
           <li><a href="#programacao">Grade de Horários</a></li>
           <li><a href="#patrocinadores">Parceiros & Amigos</a></li>
           <li><a href="#anuncie">Apoie & Divulgue (PIX)</a></li>
@@ -852,7 +897,7 @@
           🏢 Patrocinadores
         </button>
         <button class="admin-tab-btn" onclick="switchAdminTab('tabDevotional', this)">
-          📖 Palavra do Dia
+          📖 Estudando a Palavra
         </button>
         <button class="admin-tab-btn" onclick="switchAdminTab('tabPodcasts', this)">
           🎙️ Galeria Podcasts
@@ -925,54 +970,72 @@
         <div id="adminSponsorsList" class="admin-card-list"></div>
       </div>
 
-      <!-- ABA 2: DEVOCIONAL DO DIA -->
+      <!-- ABA 2: ESTUDANDO A PALAVRA -->
       <div id="tabDevotional" class="admin-tab-content">
         <div class="admin-section-title">
-          <span>Editar Palavra Devocional em Destaque</span>
-        </div>
-        <form onsubmit="handleSaveDevotional(event)" style="background: rgba(22, 10, 38, 0.8); border: 1px solid var(--border-violet); border-radius: var(--radius-md); padding: 25px;">
-          <div class="form-group">
-            <label>Título da Palavra:</label>
-            <input type="text" id="devFormTitle" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Versículo Bíblico em Destaque:</label>
-            <input type="text" id="devFormVerse" class="form-control" placeholder='Ex: "O leão rugiu, quem não temerá?" — Amós 3:8' required>
-          </div>
-          <div class="form-group">
-            <label>Ministrante / Pregador(a):</label>
-            <input type="text" id="devFormSpeaker" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Mensagem Pastoral / Reflexão Bíblica:</label>
-            <textarea id="devFormMessage" class="form-control" style="min-height: 120px;" required></textarea>
-          </div>
-          <div class="form-group">
-            <label>Podcast no Spotify (Link do Episódio):</label>
-            <input type="text" id="devFormSpotify" class="form-control" placeholder="Ex: https://open.spotify.com/episode/... ou link do Spotify">
-            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
-              🎧 Cole o link do episódio publicado no <strong>Spotify for Podcasters</strong> para o player oficial tocar direto no site!
-            </small>
-          </div>
-          <div class="form-group">
-            <label>Canal da Rádio no Spotify (Link do Perfil / Show):</label>
-            <input type="text" id="devFormSpotifyShow" class="form-control" placeholder="Ex: https://open.spotify.com/show/3EzAq8DExatDJzkdlgdogX">
-            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
-              🔗 Link oficial do perfil do podcast no Spotify. Os ouvintes serão redirecionados diretamente para o seu portfólio oficial ao clicar em "Seguir no Spotify".
-            </small>
-          </div>
-          <div class="form-group">
-            <label>Áudio da Palavra Gravada (Arquivo MP3/M4A ou Link):</label>
-            <input type="text" id="devFormAudio" class="form-control" placeholder="Link de áudio (ex: https://...)">
-            <input type="file" id="devFormAudioFile" accept="audio/*" class="form-control" style="margin-top: 6px;">
-            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
-              🎙️ Envie o áudio leve do seu celular/computador (até 4MB) ou informe o link da gravação.
-            </small>
-          </div>
-          <button type="submit" class="btn btn-gold" style="margin-top: 10px;">
-            Salvar e Publicar no Site
+          <span>Acervo "Estudando a Palavra" (<span id="adminStudyCount" style="color: var(--gold-bright);">5 mensagens</span>)</span>
+          <button class="btn btn-gold btn-sm" onclick="toggleAddStudyForm()">
+            ➕ Nova Mensagem / Estudo em Áudio
           </button>
-        </form>
+        </div>
+
+        <!-- Formulário de Criação/Edição de Estudo em Áudio -->
+        <div id="studyFormBox" style="display: none; background: rgba(36, 0, 70, 0.4); border: 1.5px solid var(--border-gold); border-radius: var(--radius-md); padding: 22px; margin-bottom: 25px;">
+          <h4 class="gold-text" id="studyFormHeading" style="margin-bottom: 15px;">Adicionar Nova Mensagem em Áudio</h4>
+          <form id="adminStudyForm" onsubmit="handleSaveWordStudy(event)">
+            <input type="hidden" id="studyFormId" value="">
+            <div class="admin-form-grid">
+              <div class="form-group admin-form-full">
+                <label>Título da Ministração / Estudo:</label>
+                <input type="text" id="studyFormTitle" class="form-control" placeholder="Ex: Saindo dos Personagens - Agar" required>
+              </div>
+              <div class="form-group">
+                <label>Ministrante / Pregador(a):</label>
+                <input type="text" id="studyFormSpeaker" class="form-control" placeholder="Ex: Evangelista Alexandra Maia" required>
+              </div>
+              <div class="form-group">
+                <label>Referência Bíblica / Tema:</label>
+                <input type="text" id="studyFormVerse" class="form-control" placeholder="Ex: Gênesis 16 — O Deus que me vê no deserto" required>
+              </div>
+              <div class="form-group">
+                <label>Duração Estimada:</label>
+                <input type="text" id="studyFormDuration" class="form-control" placeholder="Ex: 35 min" value="30 min">
+              </div>
+              <div class="form-group">
+                <label>Data / Ocasião:</label>
+                <input type="text" id="studyFormDate" class="form-control" placeholder="Ex: 18 de Novembro">
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Resumo / Reflexão da Palavra:</label>
+                <textarea id="studyFormDesc" class="form-control" style="min-height: 85px;" placeholder="Breve introdução sobre o tema ministrado para edificação do ouvinte..." required></textarea>
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Áudio da Palavra (Link MP3/Streaming ou Spotify):</label>
+                <input type="text" id="studyFormAudioUrl" class="form-control" placeholder="Ex: https://open.spotify.com/episode/... ou link direto do MP3">
+              </div>
+              <div class="form-group admin-form-full">
+                <label>Ou Enviar Áudio Gravado do Computador/Celular (MP3/M4A):</label>
+                <input type="file" id="studyFormAudioFile" accept="audio/*" class="form-control">
+                <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+                  🎙️ Você pode anexar áudio gravado do seu celular ou do WhatsApp (até 15MB).
+                </small>
+              </div>
+              <div class="form-group admin-form-full" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="studyFormFeatured" style="accent-color: var(--gold-bright);">
+                <label for="studyFormFeatured" style="margin: 0; cursor: pointer; font-size: 0.85rem; color: var(--gold-light);">
+                  ⭐ Colocar como estudo em destaque principal no reprodutor
+                </label>
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 15px;">
+              <button type="submit" class="btn btn-gold">Salvar Estudo</button>
+              <button type="button" class="btn btn-violet" onclick="toggleAddStudyForm(false)">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista Rolável dos Estudos no ADM -->
+        <div id="adminStudiesList" class="admin-card-list"></div>
       </div>
 
       <!-- ABA 3: GALERIA DE PODCASTS / MENSAGENS -->

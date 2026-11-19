@@ -169,7 +169,9 @@ const server = http.createServer((req, res) => {
 
         const currentData = loadData() || {};
 
-        if (type === 'devotional') {
+        if (type === 'wordStudies') {
+          currentData.wordStudies = updateData;
+        } else if (type === 'devotional') {
           currentData.dailyDevotional = updateData;
         } else if (type === 'podcastEpisodes') {
           currentData.podcastEpisodes = updateData;

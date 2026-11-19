@@ -36,6 +36,7 @@ async function syncToServer(type, data) {
       const result = await res.json();
       if (result.success) {
         if (!SERVER_DATA) SERVER_DATA = {};
+        if (type === 'wordStudies') SERVER_DATA.wordStudies = data;
         if (type === 'devotional') SERVER_DATA.dailyDevotional = data;
         if (type === 'podcastEpisodes') SERVER_DATA.podcastEpisodes = data;
         if (type === 'sponsors') SERVER_DATA.sponsors = data;
@@ -72,7 +73,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initPlayer();
   initMiniPlayer();
+  initWordStudyPlayer();
   initPWA();
+  renderWordStudies();
   renderDevotional();
   renderSchedule();
   renderSponsors();
@@ -180,6 +183,32 @@ function saveSponsorsData(data) {
   } catch (e) {}
   syncToServer('sponsors', data).then(saved => {
     if (saved) showToast("✅ Patrocinadores salvos no servidor!");
+  });
+}
+
+function getWordStudiesData() {
+  if (SERVER_DATA && SERVER_DATA.wordStudies && Array.isArray(SERVER_DATA.wordStudies)) {
+    return SERVER_DATA.wordStudies;
+  }
+  try {
+    const saved = localStorage.getItem('vox_arieh_word_studies');
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.error("Erro ao carregar estudos bíblicos:", e);
+  }
+  return (RADIO_CONFIG && RADIO_CONFIG.wordStudies) ? RADIO_CONFIG.wordStudies : [];
+}
+
+function saveWordStudiesData(data) {
+  try {
+    localStorage.setItem('vox_arieh_word_studies', JSON.stringify(data));
+  } catch (e) {
+    console.error("Erro ao salvar estudos no localStorage:", e);
+  }
+  syncToServer('wordStudies', data).then(saved => {
+    if (saved) {
+      showToast("✅ Acervo Estudando a Palavra salvo no servidor!");
+    }
   });
 }
 
@@ -402,10 +431,14 @@ function getRadioInstagram() {
 let isPlaying = false;
 let radioAudio = null;
 let devotionalAudio = null;
+let wordStudyAudio = null;
+let currentStudyIndex = 0;
+let currentStudySpeed = 1.0;
 
 function initPlayer() {
   radioAudio = document.getElementById('radioAudio');
   devotionalAudio = document.getElementById('devotionalAudio');
+  wordStudyAudio = document.getElementById('wordStudyAudio');
   
   const volumeControl = document.getElementById('volumeControl');
   const savedVolume = localStorage.getItem('vox_arieh_vol') || '0.8';
@@ -414,11 +447,13 @@ function initPlayer() {
     volumeControl.value = savedVolume;
     radioAudio.volume = parseFloat(savedVolume);
     if (devotionalAudio) devotionalAudio.volume = parseFloat(savedVolume);
+    if (wordStudyAudio) wordStudyAudio.volume = parseFloat(savedVolume);
 
     volumeControl.addEventListener('input', (e) => {
       const vol = parseFloat(e.target.value);
       radioAudio.volume = vol;
       if (devotionalAudio) devotionalAudio.volume = vol;
+      if (wordStudyAudio) wordStudyAudio.volume = vol;
       localStorage.setItem('vox_arieh_vol', vol.toString());
     });
   }
@@ -433,6 +468,16 @@ function initPlayer() {
       }
     }
   });
+}
+
+function initWordStudyPlayer() {
+  wordStudyAudio = document.getElementById('wordStudyAudio');
+  if (!wordStudyAudio) return;
+
+  wordStudyAudio.addEventListener('timeupdate', updateStudyProgress);
+  wordStudyAudio.addEventListener('ended', onStudyAudioEnded);
+  wordStudyAudio.addEventListener('play', () => updateStudyPlayUI(true));
+  wordStudyAudio.addEventListener('pause', () => updateStudyPlayUI(false));
 }
 
 function togglePlayStream() {
@@ -454,6 +499,10 @@ function togglePlayStream() {
     updateMediaSession();
     updateMiniPlayerUI();
   } else {
+    // Se estiver ouvindo um estudo bíblico gravado, pausa o estudo para tocar a rádio ao vivo
+    if (wordStudyAudio && !wordStudyAudio.paused) {
+      pauseStudyAudio();
+    }
     if (devotionalAudio && !devotionalAudio.paused) {
       devotionalAudio.pause();
     }
@@ -494,28 +543,248 @@ function togglePlay() {
   togglePlayStream();
 }
 
-function playDevotionalAudio() {
-  if (!devotionalAudio) return;
+/* ========================================================
+   ESTUDANDO A PALAVRA (MENSAGENS & ESTUDOS EM ÁUDIO)
+   ======================================================== */
+function renderWordStudies() {
+  const studies = getWordStudiesData();
+  const listContainer = document.getElementById('wordStudyList');
+  const countBadge = document.getElementById('studyListCount');
 
+  if (countBadge) {
+    countBadge.textContent = `${studies.length} Ministraç${studies.length === 1 ? 'ão' : 'ões'}`;
+  }
+
+  if (studies.length > 0) {
+    if (currentStudyIndex >= studies.length) currentStudyIndex = 0;
+    loadStudyIntoPlayer(studies[currentStudyIndex], false);
+  }
+
+  if (!listContainer) return;
+
+  if (studies.length === 0) {
+    listContainer.innerHTML = `
+      <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+        <p>Nenhuma ministração cadastrada no momento.</p>
+      </div>`;
+    return;
+  }
+
+  listContainer.innerHTML = studies.map((st, idx) => {
+    const isActive = idx === currentStudyIndex;
+    return `
+      <div class="study-item ${isActive ? 'is-active' : ''}" onclick="selectStudyByIndex(${idx})">
+        <div class="study-item-left">
+          <div class="study-item-icon">
+            <span>📖</span>
+          </div>
+          <div class="study-item-info">
+            <h4 class="study-item-title">${escapeHTML(st.title)}</h4>
+            <div class="study-item-meta">
+              <span>🎙️ ${escapeHTML(st.speaker || 'Evangelista Alexandra Maia')}</span>
+              <span>•</span>
+              <span>${escapeHTML(st.verse || '')}</span>
+              <span>•</span>
+              <span>⏱️ ${escapeHTML(st.duration || '30 min')}</span>
+            </div>
+          </div>
+        </div>
+        <button class="study-item-btn" title="Ouvir esta ministração" onclick="event.stopPropagation(); selectStudyByIndex(${idx}, true);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function loadStudyIntoPlayer(study, autoPlay = false) {
+  if (!study) return;
+
+  const verseElem = document.getElementById('currentStudyVerse');
+  const titleElem = document.getElementById('currentStudyTitle');
+  const speakerElem = document.getElementById('currentStudySpeaker');
+  const dateElem = document.getElementById('currentStudyDate');
+  const descElem = document.getElementById('currentStudyDesc');
+  const durationElem = document.getElementById('studyTotalDuration');
+  const spotifyBtn = document.getElementById('btnStudySpotify');
+
+  if (verseElem) verseElem.textContent = study.verse || 'Bíblia Sagrada';
+  if (titleElem) titleElem.textContent = study.title || 'Ministração da Palavra';
+  if (speakerElem) speakerElem.textContent = study.speaker || 'Evangelista Alexandra Maia';
+  if (dateElem) dateElem.textContent = study.date ? `• ${study.date}` : '';
+  if (descElem) descElem.textContent = study.description || '';
+  if (durationElem) durationElem.textContent = study.duration || '35:00';
+
+  if (spotifyBtn) {
+    if (study.audioUrl && study.audioUrl.includes('spotify')) {
+      spotifyBtn.href = sanitizeUrl(study.audioUrl);
+      spotifyBtn.style.display = 'inline-flex';
+    } else {
+      spotifyBtn.style.display = 'none';
+    }
+  }
+
+  if (wordStudyAudio) {
+    const audioSrc = study.audioFile || (study.audioUrl && !study.audioUrl.includes('spotify') ? study.audioUrl : '') || RADIO_CONFIG.fallbackAudio;
+    if (wordStudyAudio.src !== audioSrc) {
+      wordStudyAudio.src = audioSrc;
+    }
+    if (autoPlay) {
+      playStudyAudio();
+    }
+  }
+}
+
+function selectStudyByIndex(index, autoPlay = true) {
+  const studies = getWordStudiesData();
+  if (index < 0 || index >= studies.length) return;
+  currentStudyIndex = index;
+  loadStudyIntoPlayer(studies[currentStudyIndex], autoPlay);
+
+  const listItems = document.querySelectorAll('.study-item');
+  listItems.forEach((item, idx) => {
+    if (idx === index) item.classList.add('is-active');
+    else item.classList.remove('is-active');
+  });
+}
+
+function toggleStudyAudio() {
+  if (!wordStudyAudio) {
+    wordStudyAudio = document.getElementById('wordStudyAudio');
+  }
+  if (!wordStudyAudio) return;
+
+  if (wordStudyAudio.paused) {
+    playStudyAudio();
+  } else {
+    pauseStudyAudio();
+  }
+}
+
+function playStudyAudio() {
+  if (!wordStudyAudio) return;
+
+  // Pausa a rádio ao vivo para o ouvinte ouvir a Palavra!
   if (isPlaying) {
     togglePlayStream();
   }
 
-  const dev = getDevotionalData();
-  const audioSrc = dev.audioSample || RADIO_CONFIG.dailyDevotional.audioSample;
+  const studies = getWordStudiesData();
+  const current = studies[currentStudyIndex];
+  const audioSrc = (current && current.audioFile) 
+    ? current.audioFile 
+    : ((current && current.audioUrl && !current.audioUrl.includes('spotify')) ? current.audioUrl : RADIO_CONFIG.fallbackAudio);
 
-  if (!audioSrc) {
-    alert("Nenhum áudio devocional gravado no momento.");
-    return;
+  if (!wordStudyAudio.src || wordStudyAudio.src === '' || wordStudyAudio.src === window.location.href) {
+    wordStudyAudio.src = audioSrc;
   }
 
-  devotionalAudio.src = audioSrc;
-  devotionalAudio.play().then(() => {
-    const speaker = dev.speaker || "Evangelista Alexandra Maia";
-    showToast("Tocando Palavra Devocional com " + speaker + "!");
-  }).catch(e => {
-    console.error("Erro ao tocar devocional:", e);
-    alert("Não foi possível reproduzir o áudio. Verifique o formato do arquivo (MP3, M4A, WAV).");
+  wordStudyAudio.playbackRate = currentStudySpeed;
+
+  wordStudyAudio.play().then(() => {
+    updateStudyPlayUI(true);
+    showToast(`📖 Tocando: ${current ? current.title : 'Estudando a Palavra'}`);
+  }).catch(err => {
+    console.warn("Erro ao reproduzir áudio do estudo:", err);
+    wordStudyAudio.src = RADIO_CONFIG.fallbackAudio;
+    wordStudyAudio.play().then(() => {
+      updateStudyPlayUI(true);
+    }).catch(e => {
+      alert("Para ouvir este estudo completo, utilize o botão do Spotify ou contate a rádio no WhatsApp!");
+    });
+  });
+}
+
+function pauseStudyAudio() {
+  if (!wordStudyAudio) return;
+  wordStudyAudio.pause();
+  updateStudyPlayUI(false);
+}
+
+function updateStudyPlayUI(playing) {
+  const iconPlay = document.getElementById('iconStudyPlay');
+  const iconPause = document.getElementById('iconStudyPause');
+  const liveBadge = document.getElementById('wordStudyLiveBadge');
+
+  if (iconPlay) iconPlay.style.display = playing ? 'none' : 'block';
+  if (iconPause) iconPause.style.display = playing ? 'block' : 'none';
+  if (liveBadge) liveBadge.style.display = playing ? 'inline-flex' : 'none';
+}
+
+function updateStudyProgress() {
+  if (!wordStudyAudio) return;
+  const curTime = wordStudyAudio.currentTime;
+  const dur = wordStudyAudio.duration;
+
+  const curTimeElem = document.getElementById('studyCurrentTime');
+  const durElem = document.getElementById('studyTotalDuration');
+  const bar = document.getElementById('studyProgressBar');
+
+  if (curTimeElem) curTimeElem.textContent = formatAudioTime(curTime);
+  if (dur && !isNaN(dur) && durElem) durElem.textContent = formatAudioTime(dur);
+
+  if (bar && dur && !isNaN(dur)) {
+    bar.value = (curTime / dur) * 100;
+  }
+}
+
+function seekStudyAudio(val) {
+  if (!wordStudyAudio || !wordStudyAudio.duration) return;
+  const seekTo = (val / 100) * wordStudyAudio.duration;
+  wordStudyAudio.currentTime = seekTo;
+}
+
+function cycleStudySpeed() {
+  const speeds = [1.0, 1.25, 1.5, 2.0];
+  let idx = speeds.indexOf(currentStudySpeed);
+  idx = (idx + 1) % speeds.length;
+  currentStudySpeed = speeds[idx];
+  if (wordStudyAudio) {
+    wordStudyAudio.playbackRate = currentStudySpeed;
+  }
+  const btn = document.getElementById('btnStudySpeed');
+  if (btn) btn.textContent = `${currentStudySpeed}x`;
+}
+
+function onStudyAudioEnded() {
+  updateStudyPlayUI(false);
+  const studies = getWordStudiesData();
+  if (currentStudyIndex < studies.length - 1) {
+    selectStudyByIndex(currentStudyIndex + 1, true);
+  }
+}
+
+function formatAudioTime(secs) {
+  if (isNaN(secs) || secs < 0) return "00:00";
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+function shareCurrentStudy() {
+  const studies = getWordStudiesData();
+  const current = studies[currentStudyIndex];
+  if (!current) return;
+  const text = `🦁 *Rádio Vox Arieh — Estudando a Palavra*\n\nOuça este estudo bíblico abençoado: *"${current.title}"*\n🎙️ Ministrado por: ${current.speaker}\n📖 ${current.verse}\n\nOuça agora em: ${window.location.origin}/#palavra`;
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+function filterWordStudies(query) {
+  const q = query.toLowerCase().trim();
+  const items = document.querySelectorAll('.study-item');
+  const studies = getWordStudiesData();
+
+  items.forEach((item, idx) => {
+    const st = studies[idx];
+    if (!st) return;
+    const match = st.title.toLowerCase().includes(q) || 
+                  (st.speaker && st.speaker.toLowerCase().includes(q)) ||
+                  (st.verse && st.verse.toLowerCase().includes(q)) ||
+                  (st.description && st.description.toLowerCase().includes(q));
+    item.style.display = match ? 'flex' : 'none';
   });
 }
 
@@ -1374,6 +1643,7 @@ function openAdminDashboard() {
 
   // Carrega os dados em cada aba
   renderAdminSponsors();
+  renderAdminWordStudies();
   populateAdminDevotional();
   renderAdminPodcastEpisodes();
   renderAdminSchedule();
@@ -1394,6 +1664,9 @@ function switchAdminTab(tabId, btn) {
 
   if (tabId === 'tabPrayers') {
     renderAdminPrayers();
+  }
+  if (tabId === 'tabDevotional') {
+    renderAdminWordStudies();
   }
 }
 
@@ -1622,58 +1895,190 @@ function handleSaveSponsor(event) {
   renderSponsors();
 }
 
-/* Gestão do Devocional no ADM */
-function populateAdminDevotional() {
-  const d = getDevotionalData();
-  const p = getPodcastData();
-  const t = document.getElementById('devFormTitle');
-  const v = document.getElementById('devFormVerse');
-  const s = document.getElementById('devFormSpeaker');
-  const m = document.getElementById('devFormMessage');
-  const a = document.getElementById('devFormAudio');
+/* ========================================================
+   GESTÃO DO ACERVO "ESTUDANDO A PALAVRA" NO ADM
+   ======================================================== */
+function renderAdminWordStudies() {
+  const container = document.getElementById('adminStudiesList');
+  const countBadge = document.getElementById('adminStudyCount');
+  if (!container) return;
 
-  if (t) t.value = d.title || '';
-  if (v) v.value = d.verse || '';
-  if (s) s.value = d.speaker || '';
-  if (m) m.value = d.message || '';
-  const spot = document.getElementById('devFormSpotify');
-  if (spot) spot.value = d.spotifyUrl || (p && p.spotifyEpisodeUrl) || '';
-  const spotShow = document.getElementById('devFormSpotifyShow');
-  if (spotShow) {
-    const showUrlVal = (p && p.spotifyShowUrl && p.spotifyShowUrl !== 'https://open.spotify.com') 
-      ? p.spotifyShowUrl 
-      : (RADIO_CONFIG.podcast && RADIO_CONFIG.podcast.spotifyShowUrl ? RADIO_CONFIG.podcast.spotifyShowUrl : '');
-    spotShow.value = showUrlVal;
+  const studies = getWordStudiesData();
+  if (countBadge) {
+    countBadge.textContent = studies.length === 1 ? '1 mensagem' : `${studies.length} mensagens`;
   }
-  if (a) a.value = (d.audioSample && !d.audioSample.startsWith('data:')) ? d.audioSample : '';
+
+  if (studies.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 35px 20px; color: var(--text-muted); background: rgba(36, 0, 70, 0.3); border: 1px dashed var(--border-violet); border-radius: var(--radius-md);">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">📖</div>
+        <h4 style="color: #fff; margin-bottom: 6px;">Nenhuma ministração cadastrada no acervo</h4>
+        <p style="font-size: 0.88rem; margin: 0;">Clique no botão acima "➕ Nova Mensagem / Estudo em Áudio" para cadastrar áudios e ministrações da Palavra de Deus.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = studies.map((st, idx) => {
+    const isFeatured = !!st.featured;
+    const hasAudio = !!(st.audioFile || (st.audioUrl && !st.audioUrl.includes('spotify')));
+    const hasSpotify = !!(st.spotifyUrl || (st.audioUrl && st.audioUrl.includes('spotify')));
+
+    return `
+      <div class="admin-item-row" style="${isFeatured ? 'border-color: var(--gold-primary); background: rgba(36, 0, 70, 0.4);' : ''}">
+        <div class="admin-item-info">
+          <h4>
+            ${sanitizeHTML(st.title)}
+            ${isFeatured ? '<span style="color: var(--gold-bright); font-size: 0.75rem; margin-left: 8px; border: 1px solid var(--border-gold); padding: 2px 8px; border-radius: 12px; font-weight: 700;">⭐ Destaque Principal</span>' : ''}
+          </h4>
+          <p>
+            <strong>🎙️ Ministrante:</strong> ${sanitizeHTML(st.speaker || 'Evangelista Alexandra Maia')} | 
+            <strong>📖 Bíblia:</strong> ${sanitizeHTML(st.verse || 'Referência Bíblica')} | 
+            <strong>⏱️ Duração:</strong> ${sanitizeHTML(st.duration || '30 min')}
+          </p>
+          <p style="font-size: 0.82rem; color: #d0c8e0; margin-top: 4px; line-height: 1.4;">
+            ${sanitizeHTML(st.description || st.message || '')}
+          </p>
+          <div style="font-size: 0.78rem; color: var(--gold-light); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap;">
+            ${hasAudio ? `<span>🔊 Áudio MP3 / Direto Disponível</span>` : ''}
+            ${hasSpotify ? `<span>🎧 Link Spotify Integrado</span>` : ''}
+            ${st.date ? `<span>🗓️ ${sanitizeHTML(st.date)}</span>` : ''}
+          </div>
+        </div>
+        <div class="admin-item-actions">
+          <button type="button" class="btn-sm-action btn-gold" style="background: rgba(212,175,55,0.2); border: 1px solid var(--border-gold); color: var(--gold-bright); border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="selectStudyByIndex(${idx}, true); closeModals(); showToast('Tocando: ' + ${JSON.stringify(st.title)});">
+            ▶️ Ouvir
+          </button>
+          <button type="button" class="btn-sm-action btn-gold" style="background: rgba(157,78,221,0.2); border: 1px solid var(--border-violet); color: #c77dff; border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="editWordStudy('${st.id}')">
+            ✏️ Editar
+          </button>
+          ${!isFeatured ? `
+            <button type="button" class="btn-sm-action btn-gold" style="background: rgba(212,175,55,0.15); border: 1px solid var(--border-gold); color: var(--gold-bright); border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="setFeaturedStudy('${st.id}')">
+              ⭐ Destacar
+            </button>
+          ` : ''}
+          <button type="button" class="btn-sm-action btn-delete" onclick="deleteWordStudy('${st.id}')">
+            🗑️ Excluir
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-async function handleSaveDevotional(event) {
-  event.preventDefault();
-  const current = getDevotionalData();
-  const fileInput = document.getElementById('devFormAudioFile');
-  const urlInput = document.getElementById('devFormAudio');
-  const vidInput = document.getElementById('devFormVideo');
-  const spotInput = document.getElementById('devFormSpotify');
-  const spotShowInput = document.getElementById('devFormSpotifyShow');
-  
-  let audioSample = current.audioSample || '';
-  if (urlInput && urlInput.value.trim()) {
-    audioSample = urlInput.value.trim();
+function toggleAddStudyForm(show) {
+  const box = document.getElementById('studyFormBox');
+  if (!box) return;
+  if (show === undefined) {
+    const isVisible = (box.style.display === 'block');
+    if (isVisible) {
+      box.style.display = 'none';
+    } else {
+      openStudyForm();
+    }
+  } else {
+    box.style.display = show ? 'block' : 'none';
+    if (show) openStudyForm();
   }
-  const spotifyUrl = spotInput ? spotInput.value.trim() : (current.spotifyUrl || '');
-  const spotifyShowUrl = spotShowInput ? spotShowInput.value.trim() : '';
+}
+
+function openStudyForm(study = null) {
+  const box = document.getElementById('studyFormBox');
+  const heading = document.getElementById('studyFormHeading');
+  if (!box) return;
+
+  box.style.display = 'block';
+  if (heading) {
+    heading.textContent = study ? "Editar Mensagem / Estudo da Palavra" : "Adicionar Nova Mensagem em Áudio";
+  }
+
+  const idInput = document.getElementById('studyFormId');
+  const titleInput = document.getElementById('studyFormTitle');
+  const speakerInput = document.getElementById('studyFormSpeaker');
+  const verseInput = document.getElementById('studyFormVerse');
+  const durationInput = document.getElementById('studyFormDuration');
+  const dateInput = document.getElementById('studyFormDate');
+  const descInput = document.getElementById('studyFormDesc');
+  const audioUrlInput = document.getElementById('studyFormAudioUrl');
+  const audioFileInput = document.getElementById('studyFormAudioFile');
+  const featuredInput = document.getElementById('studyFormFeatured');
+
+  if (idInput) idInput.value = study ? (study.id || '') : '';
+  if (titleInput) titleInput.value = study ? (study.title || '') : '';
+  if (speakerInput) speakerInput.value = study ? (study.speaker || '') : 'Evangelista Alexandra Maia';
+  if (verseInput) verseInput.value = study ? (study.verse || '') : '';
+  if (durationInput) durationInput.value = study ? (study.duration || '30 min') : '30 min';
+  if (dateInput) dateInput.value = study ? (study.date || '') : new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+  if (descInput) descInput.value = study ? (study.description || study.message || '') : '';
+  if (audioUrlInput) {
+    audioUrlInput.value = study ? (study.audioUrl && !study.audioUrl.startsWith('data:') ? study.audioUrl : (study.spotifyUrl || '')) : '';
+  }
+  if (audioFileInput) audioFileInput.value = '';
+  if (featuredInput) featuredInput.checked = study ? !!study.featured : false;
+
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeStudyForm() {
+  const box = document.getElementById('studyFormBox');
+  if (box) box.style.display = 'none';
+}
+
+function editWordStudy(id) {
+  const studies = getWordStudiesData();
+  const study = studies.find(s => s.id === id);
+  if (study) {
+    openStudyForm(study);
+  }
+}
+
+function setFeaturedStudy(id) {
+  const studies = getWordStudiesData();
+  studies.forEach(s => {
+    s.featured = (s.id === id);
+  });
+  saveWordStudiesData(studies);
+  renderWordStudies();
+  renderAdminWordStudies();
+  showToast("Estudo destacado no topo do reprodutor com sucesso!");
+}
+
+function deleteWordStudy(id) {
+  if (!confirm("Deseja realmente excluir este estudo da palavra?")) return;
+  const studies = getWordStudiesData().filter(s => s.id !== id);
+  saveWordStudiesData(studies);
+  renderWordStudies();
+  renderAdminWordStudies();
+  showToast("Estudo excluído com sucesso!");
+}
+
+async function handleSaveWordStudy(event) {
+  event.preventDefault();
+  const id = document.getElementById('studyFormId').value.trim();
+  const title = document.getElementById('studyFormTitle').value.trim();
+  const speaker = document.getElementById('studyFormSpeaker').value.trim();
+  const verse = document.getElementById('studyFormVerse').value.trim();
+  const duration = document.getElementById('studyFormDuration').value.trim();
+  const date = document.getElementById('studyFormDate').value.trim();
+  const description = document.getElementById('studyFormDesc').value.trim();
+  let audioUrl = document.getElementById('studyFormAudioUrl').value.trim();
+  const fileInput = document.getElementById('studyFormAudioFile');
+  const isFeatured = document.getElementById('studyFormFeatured').checked;
+
+  let audioFile = '';
+  let spotifyUrl = '';
+
+  if (audioUrl.includes('spotify.com')) {
+    spotifyUrl = audioUrl;
+  }
 
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
-
-    // Limite preventivo para gravação direta no navegador
-    if (file.size > 5 * 1024 * 1024) {
-      alert("⚠️ Arquivo de áudio grande (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\nO navegador do celular possui um limite de memória para gravação local direta de até 5MB.\n\nPara áudios maiores ou para que todos os ouvintes da rádio ouçam em qualquer celular, você pode informar o link direto do áudio no campo 'Link de áudio' acima!");
+    if (file.size > 15 * 1024 * 1024) {
+      alert("⚠️ Arquivo de áudio grande (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\nPara áudios maiores que 15MB, insira o link direto do áudio no campo 'Link de áudio' acima!");
       return;
     }
     try {
-      audioSample = await new Promise((resolve, reject) => {
+      audioFile = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = e => resolve(e.target.result);
         reader.onerror = err => reject(err);
@@ -1684,29 +2089,62 @@ async function handleSaveDevotional(event) {
     }
   }
 
-  const updated = {
-    ...current,
-    title: document.getElementById('devFormTitle').value.trim(),
-    verse: document.getElementById('devFormVerse').value.trim(),
-    speaker: document.getElementById('devFormSpeaker').value.trim(),
-    message: document.getElementById('devFormMessage').value.trim(),
-    spotifyUrl: spotifyUrl,
-    audioSample: audioSample
-  };
-  delete updated.videoUrl;
+  const studies = getWordStudiesData();
 
-  saveDevotionalData(updated);
+  if (isFeatured) {
+    studies.forEach(s => s.featured = false);
+  }
 
-  // Sincroniza dados do Podcast oficial da rádio
-  const podcastData = getPodcastData();
-  if (spotifyUrl) podcastData.spotifyEpisodeUrl = spotifyUrl;
-  if (spotifyShowUrl) podcastData.spotifyShowUrl = spotifyShowUrl;
-  savePodcastData(podcastData);
+  if (id) {
+    // Editar existente
+    const idx = studies.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      const existing = studies[idx];
+      studies[idx] = {
+        ...existing,
+        title,
+        speaker,
+        verse,
+        duration: duration || existing.duration || '30 min',
+        date: date || existing.date || '',
+        description,
+        audioUrl: audioUrl || existing.audioUrl || '',
+        audioFile: audioFile || existing.audioFile || '',
+        spotifyUrl: spotifyUrl || existing.spotifyUrl || '',
+        featured: isFeatured
+      };
+    }
+  } else {
+    // Novo estudo
+    const newStudy = {
+      id: 'study_' + Date.now(),
+      title,
+      speaker: speaker || 'Evangelista Alexandra Maia',
+      verse,
+      duration: duration || '30 min',
+      date: date || new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
+      description,
+      audioUrl,
+      audioFile,
+      spotifyUrl,
+      featured: isFeatured || (studies.length === 0)
+    };
+    studies.unshift(newStudy);
+  }
 
-  renderDevotional();
-  renderPodcast();
-  alert("✅ Momento Devocional e Podcast atualizados e publicados com sucesso no site!");
-  closeModals();
+  saveWordStudiesData(studies);
+  renderWordStudies();
+  renderAdminWordStudies();
+  closeStudyForm();
+  showToast("✅ Ministração da Palavra salva e publicada com sucesso!");
+}
+
+/* Compatibilidade retroativa */
+function populateAdminDevotional() {
+  renderAdminWordStudies();
+}
+async function handleSaveDevotional(event) {
+  if (event) event.preventDefault();
 }
 
 /* Gestão da Galeria de Podcasts & Pregações no ADM */
@@ -1977,6 +2415,7 @@ async function handleSaveSettings(event) {
 function exportAdminConfig() {
   const backup = {
     streamUrl: getStreamUrl(),
+    wordStudies: getWordStudiesData(),
     dailyDevotional: getDevotionalData(),
     podcastEpisodes: getPodcastEpisodes(),
     schedule: getScheduleData(),
@@ -2009,6 +2448,7 @@ function handleImportBackup(event) {
   reader.onload = function(e) {
     try {
       const data = JSON.parse(e.target.result);
+      if (data.wordStudies && Array.isArray(data.wordStudies)) saveWordStudiesData(data.wordStudies);
       if (data.dailyDevotional) saveDevotionalData(data.dailyDevotional);
       if (data.podcastEpisodes && Array.isArray(data.podcastEpisodes)) savePodcastEpisodes(data.podcastEpisodes);
       if (data.schedule && Array.isArray(data.schedule)) saveScheduleData(data.schedule);
@@ -2019,6 +2459,8 @@ function handleImportBackup(event) {
         if (data.contact.whatsapp) localStorage.setItem('vox_arieh_whatsapp', data.contact.whatsapp);
         if (data.contact.instagram) localStorage.setItem('vox_arieh_instagram', data.contact.instagram);
       }
+      renderWordStudies();
+      renderAdminWordStudies();
       renderDevotional();
       renderSchedule();
       renderSponsors();
