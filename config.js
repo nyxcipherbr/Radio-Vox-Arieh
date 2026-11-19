@@ -53,7 +53,7 @@ const RADIO_CONFIG = {
       verse: "Gênesis 16 — O Deus que me vê no deserto",
       description: "Uma ministração profunda sobre cura emocional, identidade e como Deus restaura quem foi ferido e abandonado no deserto da vida.",
       audioUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f",
-      audioFile: "",
+      audioFile: "assets/estudando_palavra_intro.mp3",
       duration: "35 min",
       date: "18 de Novembro",
       featured: true
@@ -65,7 +65,7 @@ const RADIO_CONFIG = {
       verse: "Amós 3:8 — O leão rugiu, quem não temerá?",
       description: "Quando o Leão da Tribo de Judá ruge, as correntes caem, a enfermidade recua e as portas que estavam fechadas se abrem em nome de Jesus.",
       audioUrl: "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
-      audioFile: "",
+      audioFile: "assets/estudando_palavra_intro.mp3",
       duration: "28 min",
       date: "15 de Novembro",
       featured: false
@@ -77,7 +77,7 @@ const RADIO_CONFIG = {
       verse: "Hebreus 11:1 — A certeza das coisas que se esperam",
       description: "Ministração de edificação espiritual para destravar propósitos e renovar a esperança no Senhor diante dos desafios diários.",
       audioUrl: "https://open.spotify.com/episode/3SfN2YiJ5m9GiiQDM1c4Ew",
-      audioFile: "",
+      audioFile: "assets/estudando_palavra_intro.mp3",
       duration: "24 min",
       date: "10 de Novembro",
       featured: false
@@ -89,7 +89,7 @@ const RADIO_CONFIG = {
       verse: "Efésios 6:10-18 — Toda a armadura de Deus",
       description: "Estudo bíblico prático sobre a armadura da fé, oração contínua e posicionamento cristão em tempos de provação.",
       audioUrl: "https://open.spotify.com/episode/3I3zvqiyd0hkzWclex9Zsp",
-      audioFile: "",
+      audioFile: "assets/estudando_palavra_intro.mp3",
       duration: "30 min",
       date: "05 de Novembro",
       featured: false
@@ -101,7 +101,7 @@ const RADIO_CONFIG = {
       verse: "Salmos 147:3 — Ele sara os de coração quebrantado",
       description: "Deus não apenas perdoa, mas restaura memórias e sara dores profundas. Receba a paz que excede todo o entendimento.",
       audioUrl: "https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f",
-      audioFile: "",
+      audioFile: "assets/estudando_palavra_intro.mp3",
       duration: "33 min",
       date: "01 de Novembro",
       featured: false

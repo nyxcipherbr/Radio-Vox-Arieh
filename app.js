@@ -187,16 +187,28 @@ function saveSponsorsData(data) {
 }
 
 function getWordStudiesData() {
+  let list = [];
   if (SERVER_DATA && SERVER_DATA.wordStudies && Array.isArray(SERVER_DATA.wordStudies)) {
-    return SERVER_DATA.wordStudies;
+    list = SERVER_DATA.wordStudies;
+  } else {
+    try {
+      const saved = localStorage.getItem('vox_arieh_word_studies');
+      if (saved) list = JSON.parse(saved);
+      else list = (RADIO_CONFIG && RADIO_CONFIG.wordStudies) ? RADIO_CONFIG.wordStudies : [];
+    } catch (e) {
+      console.error("Erro ao carregar estudos bíblicos:", e);
+      list = (RADIO_CONFIG && RADIO_CONFIG.wordStudies) ? RADIO_CONFIG.wordStudies : [];
+    }
   }
-  try {
-    const saved = localStorage.getItem('vox_arieh_word_studies');
-    if (saved) return JSON.parse(saved);
-  } catch (e) {
-    console.error("Erro ao carregar estudos bíblicos:", e);
-  }
-  return (RADIO_CONFIG && RADIO_CONFIG.wordStudies) ? RADIO_CONFIG.wordStudies : [];
+
+  // Garante que todas as ministrações tenham uma fonte de áudio válida tocável
+  return list.map(st => {
+    let audioFile = st.audioFile || '';
+    if (!audioFile && (!st.audioUrl || st.audioUrl.includes('spotify'))) {
+      audioFile = 'assets/estudando_palavra_intro.mp3';
+    }
+    return { ...st, audioFile };
+  });
 }
 
 function saveWordStudiesData(data) {
@@ -564,7 +576,7 @@ function renderWordStudies() {
 
   if (studies.length === 0) {
     listContainer.innerHTML = `
-      <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+      <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted);">
         <p>Nenhuma ministração cadastrada no momento.</p>
       </div>`;
     return;
@@ -573,27 +585,35 @@ function renderWordStudies() {
   listContainer.innerHTML = studies.map((st, idx) => {
     const isActive = idx === currentStudyIndex;
     return `
-      <div class="study-item ${isActive ? 'is-active' : ''}" onclick="selectStudyByIndex(${idx})">
-        <div class="study-item-left">
-          <div class="study-item-icon">
-            <span>📖</span>
+      <div class="study-card-item ${isActive ? 'is-active' : ''}" onclick="selectStudyByIndex(${idx})">
+        <div class="study-card-thumb">
+          <img src="assets/biblia_aberta.jpg?v=6.5" alt="Bíblia Sagrada" class="study-thumb-img">
+          <span class="study-thumb-badge">${idx + 1}</span>
+        </div>
+        <div class="study-card-body">
+          <div class="study-card-topline">
+            <span class="study-verse-mini">${escapeHTML(st.verse || 'Escrituras Sagradas')}</span>
+            <span class="study-duration-mini">⏱️ ${escapeHTML(st.duration || '30 min')}</span>
           </div>
-          <div class="study-item-info">
-            <h4 class="study-item-title">${escapeHTML(st.title)}</h4>
-            <div class="study-item-meta">
-              <span>🎙️ ${escapeHTML(st.speaker || 'Evangelista Alexandra Maia')}</span>
-              <span>•</span>
-              <span>${escapeHTML(st.verse || '')}</span>
-              <span>•</span>
-              <span>⏱️ ${escapeHTML(st.duration || '30 min')}</span>
-            </div>
+          <h4 class="study-card-title">${escapeHTML(st.title)}</h4>
+          <div class="study-card-speaker">
+            <span>🎙️ ${escapeHTML(st.speaker || 'Evangelista Alexandra Maia')}</span>
+            ${st.date ? `<span> • 🗓️ ${escapeHTML(st.date)}</span>` : ''}
           </div>
         </div>
-        <button class="study-item-btn" title="Ouvir esta ministração" onclick="event.stopPropagation(); selectStudyByIndex(${idx}, true);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-        </button>
+        <div class="study-card-action">
+          <button class="btn-item-play ${isActive ? 'btn-item-active' : ''}" title="Ouvir esta ministração" onclick="event.stopPropagation(); selectStudyByIndex(${idx}, true);">
+            ${isActive ? `
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            ` : `
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            `}
+          </button>
+        </div>
       </div>
     `;
   }).join('');
@@ -606,16 +626,25 @@ function loadStudyIntoPlayer(study, autoPlay = false) {
   const titleElem = document.getElementById('currentStudyTitle');
   const speakerElem = document.getElementById('currentStudySpeaker');
   const dateElem = document.getElementById('currentStudyDate');
+  const durBadge = document.getElementById('currentStudyDurationBadge');
   const descElem = document.getElementById('currentStudyDesc');
   const durationElem = document.getElementById('studyTotalDuration');
   const spotifyBtn = document.getElementById('btnStudySpotify');
 
-  if (verseElem) verseElem.textContent = study.verse || 'Bíblia Sagrada';
+  if (verseElem) {
+    verseElem.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0;">
+        <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
+      </svg>
+      <span>${escapeHTML(study.verse || 'Bíblia Sagrada')}</span>
+    `;
+  }
   if (titleElem) titleElem.textContent = study.title || 'Ministração da Palavra';
   if (speakerElem) speakerElem.textContent = study.speaker || 'Evangelista Alexandra Maia';
-  if (dateElem) dateElem.textContent = study.date ? `• ${study.date}` : '';
+  if (dateElem) dateElem.textContent = study.date ? `🗓️ ${study.date}` : '';
+  if (durBadge) durBadge.textContent = study.duration ? `⏱️ ${study.duration}` : '⏱️ 30 min';
   if (descElem) descElem.textContent = study.description || '';
-  if (durationElem) durationElem.textContent = study.duration || '35:00';
+  if (durationElem) durationElem.textContent = study.duration || '00:16';
 
   if (spotifyBtn) {
     if (study.audioUrl && study.audioUrl.includes('spotify')) {
@@ -626,10 +655,23 @@ function loadStudyIntoPlayer(study, autoPlay = false) {
     }
   }
 
+  if (!wordStudyAudio) {
+    wordStudyAudio = document.getElementById('wordStudyAudio');
+  }
+
   if (wordStudyAudio) {
-    const audioSrc = study.audioFile || (study.audioUrl && !study.audioUrl.includes('spotify') ? study.audioUrl : '') || RADIO_CONFIG.fallbackAudio;
-    if (wordStudyAudio.src !== audioSrc) {
+    let audioSrc = '';
+    if (study.audioFile && !study.audioFile.includes('spotify')) {
+      audioSrc = study.audioFile;
+    } else if (study.audioUrl && !study.audioUrl.includes('spotify')) {
+      audioSrc = study.audioUrl;
+    } else {
+      audioSrc = 'assets/estudando_palavra_intro.mp3';
+    }
+
+    if (!wordStudyAudio.src.endsWith(audioSrc)) {
       wordStudyAudio.src = audioSrc;
+      wordStudyAudio.load();
     }
     if (autoPlay) {
       playStudyAudio();
@@ -643,7 +685,7 @@ function selectStudyByIndex(index, autoPlay = true) {
   currentStudyIndex = index;
   loadStudyIntoPlayer(studies[currentStudyIndex], autoPlay);
 
-  const listItems = document.querySelectorAll('.study-item');
+  const listItems = document.querySelectorAll('.study-card-item');
   listItems.forEach((item, idx) => {
     if (idx === index) item.classList.add('is-active');
     else item.classList.remove('is-active');
@@ -664,6 +706,9 @@ function toggleStudyAudio() {
 }
 
 function playStudyAudio() {
+  if (!wordStudyAudio) {
+    wordStudyAudio = document.getElementById('wordStudyAudio');
+  }
   if (!wordStudyAudio) return;
 
   // Pausa a rádio ao vivo para o ouvinte ouvir a Palavra!
@@ -673,28 +718,40 @@ function playStudyAudio() {
 
   const studies = getWordStudiesData();
   const current = studies[currentStudyIndex];
-  const audioSrc = (current && current.audioFile) 
-    ? current.audioFile 
-    : ((current && current.audioUrl && !current.audioUrl.includes('spotify')) ? current.audioUrl : RADIO_CONFIG.fallbackAudio);
 
-  if (!wordStudyAudio.src || wordStudyAudio.src === '' || wordStudyAudio.src === window.location.href) {
+  let audioSrc = '';
+  if (current && current.audioFile && !current.audioFile.includes('spotify')) {
+    audioSrc = current.audioFile;
+  } else if (current && current.audioUrl && !current.audioUrl.includes('spotify')) {
+    audioSrc = current.audioUrl;
+  } else {
+    audioSrc = 'assets/estudando_palavra_intro.mp3';
+  }
+
+  if (!wordStudyAudio.src || wordStudyAudio.src === '' || wordStudyAudio.src === window.location.href || !wordStudyAudio.src.endsWith(audioSrc)) {
     wordStudyAudio.src = audioSrc;
+    wordStudyAudio.load();
   }
 
   wordStudyAudio.playbackRate = currentStudySpeed;
 
-  wordStudyAudio.play().then(() => {
-    updateStudyPlayUI(true);
-    showToast(`📖 Tocando: ${current ? current.title : 'Estudando a Palavra'}`);
-  }).catch(err => {
-    console.warn("Erro ao reproduzir áudio do estudo:", err);
-    wordStudyAudio.src = RADIO_CONFIG.fallbackAudio;
-    wordStudyAudio.play().then(() => {
+  const playPromise = wordStudyAudio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
       updateStudyPlayUI(true);
-    }).catch(e => {
-      alert("Para ouvir este estudo completo, utilize o botão do Spotify ou contate a rádio no WhatsApp!");
+      showToast(`📖 Tocando: ${current ? current.title : 'Estudando a Palavra'}`);
+    }).catch(err => {
+      console.warn("Reproduzindo com vinheta sagrada oficial:", err);
+      wordStudyAudio.src = 'assets/estudando_palavra_intro.mp3';
+      wordStudyAudio.load();
+      wordStudyAudio.play().then(() => {
+        updateStudyPlayUI(true);
+        showToast(`📖 Tocando: ${current ? current.title : 'Estudando a Palavra'}`);
+      }).catch(e => {
+        console.error("Erro ao tocar áudio da palavra:", e);
+      });
     });
-  });
+  }
 }
 
 function pauseStudyAudio() {
@@ -711,6 +768,20 @@ function updateStudyPlayUI(playing) {
   if (iconPlay) iconPlay.style.display = playing ? 'none' : 'block';
   if (iconPause) iconPause.style.display = playing ? 'block' : 'none';
   if (liveBadge) liveBadge.style.display = playing ? 'inline-flex' : 'none';
+
+  // Atualiza botão do item ativo na lista
+  const activeBtn = document.querySelector('.study-card-item.is-active .btn-item-play');
+  if (activeBtn) {
+    activeBtn.innerHTML = playing ? `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+      </svg>
+    ` : `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    `;
+  }
 }
 
 function updateStudyProgress() {
@@ -745,7 +816,7 @@ function cycleStudySpeed() {
     wordStudyAudio.playbackRate = currentStudySpeed;
   }
   const btn = document.getElementById('btnStudySpeed');
-  if (btn) btn.textContent = `${currentStudySpeed}x`;
+  if (btn) btn.innerHTML = `<span style="font-size: 0.72rem; opacity: 0.8;">VEL:</span> <strong>${currentStudySpeed}x</strong>`;
 }
 
 function onStudyAudioEnded() {
@@ -774,7 +845,7 @@ function shareCurrentStudy() {
 
 function filterWordStudies(query) {
   const q = query.toLowerCase().trim();
-  const items = document.querySelectorAll('.study-item');
+  const items = document.querySelectorAll('.study-card-item');
   const studies = getWordStudiesData();
 
   items.forEach((item, idx) => {

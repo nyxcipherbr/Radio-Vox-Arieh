@@ -147,102 +147,143 @@
   <!-- ==========================================
        ESTUDANDO A PALAVRA (MENSAGENS & ESTUDOS EM ÁUDIO)
        ========================================== -->
-  <section id="palavra" class="section">
+  <section id="palavra" class="section word-study-section">
     <div class="container">
       <div class="section-header">
-        <span class="section-subtitle">Alimento & Edificação para o seu Espírito</span>
+        <span class="section-subtitle">✨ ALIMENTO ESPIRITUAL & ENSINAMENTO BÍBLICO</span>
         <h2 class="section-title">Estudando a <span class="gold-text">Palavra</span></h2>
-        <p class="section-desc" style="max-width: 680px; margin: 12px auto 0; color: var(--text-muted); font-size: 0.95rem;">
-          Prefere ouvir uma mensagem bíblica ao invés de louvores agora? Escolha abaixo qualquer ministração gravada e estude a Palavra de Deus no seu tempo.
+        <div class="sacred-divider">
+          <span class="sacred-line"></span>
+          <span class="sacred-icon">📖</span>
+          <span class="sacred-line"></span>
+        </div>
+        <p class="section-desc" style="max-width: 720px; margin: 10px auto 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+          Prefere ouvir uma ministração ungida ao invés de louvores agora? Escolha qualquer estudo bíblico gravado do acervo abaixo para edificar sua fé.
         </p>
       </div>
 
-      <div class="word-study-grid">
-        <!-- COLUNA 1: REPRODUTOR EM DESTAQUE COM CAPA DA BÍBLIA ABERTA -->
-        <div class="word-study-player-card">
-          <div class="word-study-cover-box">
-            <img src="assets/biblia_aberta.jpg?v=6.4" alt="Estudando a Palavra - Bíblia Sagrada Aberta" class="word-study-cover-img" id="wordStudyCoverImg">
-            <div class="word-study-badge">
-              <span>📖 Estudando a Palavra</span>
-            </div>
-            <div class="word-study-live-indicator" id="wordStudyLiveBadge" style="display: none;">
-              <span class="pulse-dot"></span> Tocando Agora
-            </div>
-          </div>
-
-          <div class="word-study-player-info">
-            <span class="word-study-verse-tag" id="currentStudyVerse">Gênesis 16 — O Deus que me vê no deserto</span>
-            <h3 class="word-study-title" id="currentStudyTitle">Saindo dos Personagens - Agar - Parte 1</h3>
-            <div class="word-study-speaker-wrap">
-              <span class="speaker-icon">🎙️</span>
-              <span class="speaker-name" id="currentStudySpeaker">Eder Gregorio</span>
-              <span class="study-date" id="currentStudyDate">• 18 de Novembro</span>
-            </div>
-            <p class="word-study-desc" id="currentStudyDesc">
-              Uma ministração profunda sobre cura emocional, identidade e como Deus restaura quem foi ferido e abandonado no deserto da vida.
-            </p>
-          </div>
-
-          <!-- REPRODUTOR DE ÁUDIO INTEGRADO -->
-          <div class="word-study-audio-box">
-            <audio id="wordStudyAudio" preload="metadata"></audio>
-
-            <div class="audio-progress-wrap">
-              <span class="audio-time" id="studyCurrentTime">00:00</span>
-              <input type="range" id="studyProgressBar" class="audio-progress-bar" min="0" max="100" value="0" oninput="seekStudyAudio(this.value)">
-              <span class="audio-time" id="studyTotalDuration">35:00</span>
-            </div>
-
-            <div class="audio-controls-row">
-              <button class="btn-study-play" id="btnStudyPlay" onclick="toggleStudyAudio()" title="Tocar / Pausar Ministração">
-                <svg id="iconStudyPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-                <svg id="iconStudyPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </svg>
-              </button>
-
-              <div class="audio-speed-wrap">
-                <button class="btn-speed" id="btnStudySpeed" onclick="cycleStudySpeed()" title="Velocidade da Ministração">1.0x</button>
+      <!-- MASTER REPRODUTOR EM DESTAQUE (HARMONIOSO E CENTRALIZADO) -->
+      <div class="word-study-hero-card">
+        <div class="word-study-hero-top">
+          <!-- CAPA DA BÍBLIA ABERTA (TAMANHO PROPORCIONAL DE ÁLBUM DEVOCIONAL) -->
+          <div class="word-study-cover-frame">
+            <img src="assets/biblia_aberta.jpg?v=6.5" alt="Bíblia Sagrada Aberta" class="word-study-cover-art" id="wordStudyCoverImg">
+            <div class="word-study-cover-overlay">
+              <span class="word-study-art-badge">📖 Bíblia Sagrada</span>
+              <div class="word-study-pulse-badge" id="wordStudyLiveBadge" style="display: none;">
+                <span class="pulse-dot"></span> Tocando
               </div>
+            </div>
+          </div>
 
-              <a id="btnStudySpotify" href="https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f" target="_blank" rel="noopener noreferrer" class="btn btn-spotify btn-sm" title="Ouvir no Spotify">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
+          <!-- DETALHES DA MINISTRAÇÃO SELECIONADA -->
+          <div class="word-study-hero-content">
+            <div class="word-study-meta-top">
+              <span class="word-study-scripture-pill" id="currentStudyVerse">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0;">
+                  <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
                 </svg>
-                <span>Spotify</span>
-              </a>
+                <span>Gênesis 16 — O Deus que me vê no deserto</span>
+              </span>
+              <span class="word-study-tag-badge">🎙️ Ministração Gravada</span>
+            </div>
 
-              <button class="btn btn-whatsapp btn-sm" onclick="shareCurrentStudy()" title="Compartilhar no WhatsApp">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
-                </svg>
-                <span>Compartilhar</span>
-              </button>
+            <h3 class="word-study-hero-title" id="currentStudyTitle">Saindo dos Personagens - Agar - Parte 1</h3>
+
+            <div class="word-study-preacher-row">
+              <div class="preacher-avatar-box">
+                <span class="preacher-avatar-icon">👑</span>
+              </div>
+              <div class="preacher-info">
+                <span class="preacher-label">Ministrante da Palavra:</span>
+                <strong class="preacher-name" id="currentStudySpeaker">Eder Gregorio</strong>
+              </div>
+              <div class="preacher-meta-pills">
+                <span class="meta-pill" id="currentStudyDate">🗓️ 18 de Novembro</span>
+                <span class="meta-pill" id="currentStudyDurationBadge">⏱️ 35 min</span>
+              </div>
+            </div>
+
+            <div class="word-study-scripture-quote">
+              <p class="quote-text" id="currentStudyDesc">
+                Uma ministração profunda sobre cura emocional, identidade e como Deus restaura quem foi ferido e abandonado no deserto da vida.
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- COLUNA 2: BIBLIOTECA DE ESTUDOS COM BARRA DE ROLAGEM -->
-        <div class="word-study-library-card">
-          <div class="library-header">
-            <div>
-              <h3 class="gold-text" style="font-size: 1.3rem; margin-bottom: 3px;">Acervo de Ministrações</h3>
-              <p style="color: var(--text-muted); font-size: 0.82rem; margin: 0;">Toque em qualquer áudio para ouvir imediatamente</p>
+        <!-- REPRODUTOR DE ÁUDIO EMBUTIDO NA BASE DO CARD -->
+        <div class="word-study-player-bar">
+          <audio id="wordStudyAudio" preload="auto" src="assets/estudando_palavra_intro.mp3"></audio>
+
+          <!-- LINHA DA TIMELINE / PROGRESSO -->
+          <div class="study-timeline-row">
+            <span class="timeline-clock" id="studyCurrentTime">00:00</span>
+            <div class="timeline-bar-wrapper">
+              <input type="range" id="studyProgressBar" class="study-range-slider" min="0" max="100" value="0" oninput="seekStudyAudio(this.value)">
             </div>
-            <span class="badge-count" id="studyListCount">5 Ministrações</span>
+            <span class="timeline-clock" id="studyTotalDuration">00:16</span>
           </div>
 
-          <!-- Filtro de Busca Rápida -->
-          <div class="study-search-wrap">
-            <input type="text" id="studySearchInput" class="form-control" placeholder="🔍 Digite para buscar por tema, pregador ou versículo..." oninput="filterWordStudies(this.value)">
-          </div>
+          <!-- BOTÕES DE CONTROLE E AÇÕES -->
+          <div class="study-controls-flex">
+            <!-- BOTÃO PLAY / PAUSE DOURADO LUMINOSO -->
+            <button class="btn-hero-play" id="btnStudyPlay" onclick="toggleStudyAudio()" title="Tocar / Pausar Ministração">
+              <svg id="iconStudyPlay" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <svg id="iconStudyPause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            </button>
 
-          <!-- LISTA COM BARRA DE ROLAGEM DOURADA -->
-          <div class="word-study-scroll-box" id="wordStudyList">
-            <!-- Renderizado dinamicamente pelo JavaScript -->
+            <!-- CONTROLE DE VELOCIDADE -->
+            <button class="btn-action-pill btn-pill-speed" id="btnStudySpeed" onclick="cycleStudySpeed()" title="Alterar velocidade do áudio">
+              <span style="font-size: 0.72rem; opacity: 0.8;">VEL:</span> <strong>1.0x</strong>
+            </button>
+
+            <!-- ABRIR NO SPOTIFY -->
+            <a id="btnStudySpotify" href="https://open.spotify.com/episode/1pkSEp2xss5YXe4KDgBj6f" target="_blank" rel="noopener noreferrer" class="btn-action-pill btn-pill-spotify" title="Ouvir episódio no Spotify">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.505 9.721 1.115.295.18.388.563.208.857zm1.224-2.719c-.226.367-.706.482-1.072.257-2.69-1.654-6.79-2.133-9.97-1.168-.413.125-.85-.107-.975-.52-.125-.413.107-.85.52-.975 3.632-1.102 8.147-.568 11.24 1.334.366.226.481.706.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.019.624-1.169 3.532-1.072 9.404-.865 13.115 1.338.445.264.59.838.327 1.282-.264.444-.838.59-1.28.332z"/>
+              </svg>
+              <span>Abrir no Spotify</span>
+            </a>
+
+            <!-- COMPARTILHAR NO WHATSAPP -->
+            <button class="btn-action-pill btn-pill-whatsapp" onclick="shareCurrentStudy()" title="Enviar para um irmão no WhatsApp">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+              </svg>
+              <span>Compartilhar Palavra</span>
+            </button>
           </div>
+        </div>
+      </div>
+
+      <!-- ACERVO DE MINISTRAÇÕES DISPONÍVEIS (SIMÉTRICO E ROLÁVEL) -->
+      <div class="word-study-collection-box">
+        <div class="collection-header-row">
+          <div class="collection-title-wrap">
+            <h3 class="collection-title">
+              <span>📖 Acervo de Ministrações & Estudos</span>
+            </h3>
+            <p class="collection-subtitle">Toque em qualquer ministração para carregar e ouvir no player acima</p>
+          </div>
+          <span class="collection-counter" id="studyListCount">5 Ministrações</span>
+        </div>
+
+        <!-- BARRA DE PESQUISA RÁPIDA -->
+        <div class="study-search-container">
+          <svg class="search-lens-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <input type="text" id="studySearchInput" class="study-search-field" placeholder="Buscar por tema, pregador, passagem bíblica ou palavra-chave..." oninput="filterWordStudies(this.value)">
+        </div>
+
+        <!-- LISTA ROLÁVEL COM BARRA DOURADA EM GRADE HARMONIOSA -->
+        <div class="word-study-scroll-grid" id="wordStudyList">
+          <!-- Renderizado dinamicamente pelo JavaScript -->
         </div>
       </div>
     </div>
