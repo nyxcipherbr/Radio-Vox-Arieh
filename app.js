@@ -217,6 +217,9 @@ function saveWordStudiesData(data) {
   } catch (e) {
     console.error("Erro ao salvar estudos no localStorage:", e);
   }
+  if (SERVER_DATA) {
+    SERVER_DATA.wordStudies = data;
+  }
   syncToServer('wordStudies', data).then(saved => {
     if (saved) {
       showToast("✅ Acervo Estudando a Palavra salvo no servidor!");
@@ -351,41 +354,35 @@ function savePodcastEpisodes(episodes) {
 }
 
 function getScheduleData() {
-  if (SERVER_DATA && Array.isArray(SERVER_DATA.schedule) && SERVER_DATA.schedule.length > 0) {
-    return SERVER_DATA.schedule;
-  }
+  // 1. Prioridade para alteração explícita do administrador no navegador
   try {
     const saved = localStorage.getItem('vox_arieh_schedule');
-    if (saved) {
+    if (saved !== null) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
-    return RADIO_CONFIG.schedule;
   } catch (e) {
-    console.error("Erro ao carregar grade:", e);
-    return RADIO_CONFIG.schedule;
+    console.error("Erro ao ler grade do localStorage:", e);
   }
-}
 
-// Auto-limpeza de cache de grade antiga ou corrompida no navegador
-try {
-  const savedSched = localStorage.getItem('vox_arieh_schedule');
-  if (savedSched) {
-    const parsed = JSON.parse(savedSched);
-    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some(p => p.start === "16:00") || parsed.some(p => p.host === "Ev. Alexandra Maia")) {
-      localStorage.removeItem('vox_arieh_schedule');
-    }
+  // 2. Se o servidor forneceu a grade (mesmo que vazia se o ADM limpou)
+  if (SERVER_DATA && Array.isArray(SERVER_DATA.schedule)) {
+    return SERVER_DATA.schedule;
   }
-} catch (e) {
-  localStorage.removeItem('vox_arieh_schedule');
+
+  // 3. Fallback para configuração padrão inicial
+  return (RADIO_CONFIG && Array.isArray(RADIO_CONFIG.schedule)) ? RADIO_CONFIG.schedule : [];
 }
 
 function saveScheduleData(data) {
   try {
     localStorage.setItem('vox_arieh_schedule', JSON.stringify(data));
   } catch (e) {}
+  if (SERVER_DATA) {
+    SERVER_DATA.schedule = data;
+  }
   syncToServer('schedule', data).then(saved => {
     if (saved) showToast("✅ Grade salva no servidor!");
   });
@@ -561,11 +558,6 @@ function togglePlay() {
 function renderWordStudies() {
   const studies = getWordStudiesData();
   const listContainer = document.getElementById('wordStudyList');
-  const countBadge = document.getElementById('studyListCount');
-
-  if (countBadge) {
-    countBadge.textContent = `${studies.length} Ministraç${studies.length === 1 ? 'ão' : 'ões'}`;
-  }
 
   if (studies.length > 0) {
     if (currentStudyIndex >= studies.length) currentStudyIndex = 0;
@@ -587,7 +579,7 @@ function renderWordStudies() {
     return `
       <div class="study-card-item ${isActive ? 'is-active' : ''}" onclick="selectStudyByIndex(${idx})">
         <div class="study-card-thumb">
-          <img src="assets/biblia_aberta.jpg?v=6.5" alt="Bíblia Sagrada" class="study-thumb-img">
+          <img src="assets/biblia_aberta.jpg?v=7.0" alt="Bíblia Sagrada" class="study-thumb-img">
           <span class="study-thumb-badge">${idx + 1}</span>
         </div>
         <div class="study-card-body">
@@ -996,13 +988,24 @@ function initPWA() {
   // 1. Registro do Service Worker para cache offline e funcionamento como App
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('./sw.js?v=7.0')
         .then(reg => {
           console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
+          // Força verificação imediata de atualizações no servidor
+          reg.update();
         })
         .catch(err => {
           console.warn('[PWA] Falha ao registrar Service Worker:', err);
         });
+    });
+
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        console.log('[PWA] Novo Service Worker ativo. Atualizando página...');
+        window.location.reload();
+      }
     });
   }
 
@@ -1107,10 +1110,32 @@ function renderDevotional() {
 
 function renderSchedule() {
   const container = document.getElementById('scheduleContainer');
+  const section = document.getElementById('programacao');
+  const navLinks = document.querySelectorAll('a[href="#programacao"]');
   if (!container) return;
 
-  const activeProg = getActiveProgram();
   const schedule = getScheduleData();
+
+  if (!schedule || schedule.length === 0) {
+    container.innerHTML = '';
+    if (section) section.style.display = 'none';
+    navLinks.forEach(link => {
+      const parentLi = link.closest('li');
+      if (parentLi) parentLi.style.display = 'none';
+      else link.style.display = 'none';
+    });
+    return;
+  }
+
+  // Se houver programação, reexibir seção e menu
+  if (section) section.style.display = '';
+  navLinks.forEach(link => {
+    const parentLi = link.closest('li');
+    if (parentLi) parentLi.style.display = '';
+    else link.style.display = '';
+  });
+
+  const activeProg = getActiveProgram();
 
   container.innerHTML = schedule.map(prog => {
     const isNow = (prog.title === activeProg.title);
@@ -1971,13 +1996,9 @@ function handleSaveSponsor(event) {
    ======================================================== */
 function renderAdminWordStudies() {
   const container = document.getElementById('adminStudiesList');
-  const countBadge = document.getElementById('adminStudyCount');
   if (!container) return;
 
   const studies = getWordStudiesData();
-  if (countBadge) {
-    countBadge.textContent = studies.length === 1 ? '1 mensagem' : `${studies.length} mensagens`;
-  }
 
   if (studies.length === 0) {
     container.innerHTML = `
@@ -2044,11 +2065,11 @@ function toggleAddStudyForm(show) {
     if (isVisible) {
       box.style.display = 'none';
     } else {
-      openStudyForm();
+      openStudyForm(null);
     }
   } else {
     box.style.display = show ? 'block' : 'none';
-    if (show) openStudyForm();
+    if (show) openStudyForm(null);
   }
 }
 
@@ -2060,6 +2081,11 @@ function openStudyForm(study = null) {
   box.style.display = 'block';
   if (heading) {
     heading.textContent = study ? "Editar Mensagem / Estudo da Palavra" : "Adicionar Nova Mensagem em Áudio";
+  }
+
+  const form = document.getElementById('adminStudyForm');
+  if (form && !study) {
+    form.reset();
   }
 
   const idInput = document.getElementById('studyFormId');
@@ -2086,7 +2112,12 @@ function openStudyForm(study = null) {
   if (audioFileInput) audioFileInput.value = '';
   if (featuredInput) featuredInput.checked = study ? !!study.featured : false;
 
-  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  try {
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => {
+      if (titleInput) titleInput.focus();
+    }, 100);
+  } catch (e) {}
 }
 
 function closeStudyForm() {
@@ -2351,6 +2382,16 @@ function renderAdminSchedule() {
 
   const schedule = getScheduleData();
 
+  if (schedule.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 35px 20px; color: var(--text-muted); background: rgba(36, 0, 70, 0.3); border: 1px dashed var(--border-violet); border-radius: var(--radius-md);">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">🗓️</div>
+        <h4 style="color: #fff; margin-bottom: 6px;">Nenhum horário cadastrado (Grade Oculta no Site)</h4>
+        <p style="font-size: 0.88rem; margin: 0;">A seção da grade está oculta para os ouvintes no site. Para adicionar horários, clique em "➕ Novo Horário", ou restaure a grade oficial clicando em "🔄 Restaurar Grade Oficial".</p>
+      </div>`;
+    return;
+  }
+
   container.innerHTML = schedule.map((prog, idx) => `
     <div class="admin-item-row">
       <div class="admin-item-info">
@@ -2359,7 +2400,7 @@ function renderAdminSchedule() {
         <p style="font-size: 0.8rem; color: var(--text-secondary);">${sanitizeHTML(prog.desc)}</p>
       </div>
       <div class="admin-item-actions">
-        <button class="btn-sm-action btn-delete" onclick="deleteProgram(${idx})">🗑️ Remover</button>
+        <button type="button" class="btn-sm-action btn-delete" onclick="deleteProgram(${idx})">🗑️ Remover</button>
       </div>
     </div>
   `).join('');
@@ -2413,9 +2454,20 @@ function deleteProgram(index) {
   }
 }
 
+function clearAllSchedule() {
+  if (confirm("Deseja realmente remover todos os horários e ocultar a grade de programação do site?")) {
+    saveScheduleData([]);
+    renderAdminSchedule();
+    renderSchedule();
+    updateLiveShow();
+    showToast("🗑️ Grade de programação removida com sucesso!");
+  }
+}
+
 function resetScheduleToDefault() {
   if (confirm("Deseja restaurar a Grade Oficial de 24 Horas com os horários da Palavra (00h, 03h, 06h, 12h, 18h) e Louvores?")) {
-    localStorage.removeItem('vox_arieh_schedule');
+    const defaultSched = (RADIO_CONFIG && Array.isArray(RADIO_CONFIG.schedule)) ? [...RADIO_CONFIG.schedule] : [];
+    saveScheduleData(defaultSched);
     renderAdminSchedule();
     renderSchedule();
     updateLiveShow();

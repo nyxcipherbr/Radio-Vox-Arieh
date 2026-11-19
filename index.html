@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Vox Arieh">
-  <link rel="stylesheet" href="styles.css?v=6.3">
+  <link rel="stylesheet" href="styles.css?v=7.0">
 
   <!-- ==========================================
        CYBERSECURITY HARDENING & HEADERS (CSP & PRIVACIDADE)
@@ -167,7 +167,7 @@
         <div class="word-study-hero-top">
           <!-- CAPA DA BÍBLIA ABERTA (TAMANHO PROPORCIONAL DE ÁLBUM DEVOCIONAL) -->
           <div class="word-study-cover-frame">
-            <img src="assets/biblia_aberta.jpg?v=6.5" alt="Bíblia Sagrada Aberta" class="word-study-cover-art" id="wordStudyCoverImg">
+            <img src="assets/biblia_aberta.jpg?v=7.0" alt="Bíblia Sagrada Aberta" class="word-study-cover-art" id="wordStudyCoverImg">
             <div class="word-study-cover-overlay">
               <span class="word-study-art-badge">📖 Bíblia Sagrada</span>
               <div class="word-study-pulse-badge" id="wordStudyLiveBadge" style="display: none;">
@@ -270,7 +270,6 @@
             </h3>
             <p class="collection-subtitle">Toque em qualquer ministração para carregar e ouvir no player acima</p>
           </div>
-          <span class="collection-counter" id="studyListCount">5 Ministrações</span>
         </div>
 
         <!-- BARRA DE PESQUISA RÁPIDA -->
@@ -1014,8 +1013,8 @@
       <!-- ABA 2: ESTUDANDO A PALAVRA -->
       <div id="tabDevotional" class="admin-tab-content">
         <div class="admin-section-title">
-          <span>Acervo "Estudando a Palavra" (<span id="adminStudyCount" style="color: var(--gold-bright);">5 mensagens</span>)</span>
-          <button class="btn btn-gold btn-sm" onclick="toggleAddStudyForm()">
+          <span>Acervo "Estudando a Palavra"</span>
+          <button type="button" class="btn btn-gold btn-sm" onclick="toggleAddStudyForm()">
             ➕ Nova Mensagem / Estudo em Áudio
           </button>
         </div>
@@ -1134,10 +1133,13 @@
         <div class="admin-section-title">
           <span>Grade de Programação 24 Horas</span>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <button class="btn btn-violet btn-sm" onclick="resetScheduleToDefault()" title="Restaura a grade oficial com horários de pregações e louvores">
+            <button type="button" class="btn btn-delete btn-sm" onclick="clearAllSchedule()" title="Remove todos os horários e oculta a grade do site">
+              🗑️ Remover Grade do Site
+            </button>
+            <button type="button" class="btn btn-violet btn-sm" onclick="resetScheduleToDefault()" title="Restaura a grade oficial com horários de pregações e louvores">
               🔄 Restaurar Grade Oficial
             </button>
-            <button class="btn btn-gold btn-sm" onclick="toggleAddProgForm()">
+            <button type="button" class="btn btn-gold btn-sm" onclick="toggleAddProgForm()">
               ➕ Novo Horário
             </button>
           </div>
@@ -1304,7 +1306,7 @@
   </div>
 
   <!-- Scripts com Cache-Busting -->
-  <script src="config.js?v=6.3"></script>
-  <script src="app.js?v=6.3"></script>
+  <script src="config.js?v=7.0"></script>
+  <script src="app.js?v=7.0"></script>
 </body>
 </html>

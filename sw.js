@@ -1,17 +1,19 @@
 /**
  * RÁDIO VOX ARIEH - SERVICE WORKER (PWA)
- * Cache inteligente do App Shell e suporte a execução contínua
+ * Atualizações Instantâneas (Network-First) & Suporte a Execução Contínua
  */
 
-const CACHE_NAME = 'vox-arieh-cache-v6.0';
+const CACHE_NAME = 'vox-arieh-cache-v7.0';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
-  './styles.css?v=6.0',
-  './app.js?v=6.0',
-  './config.js?v=6.0',
+  './styles.css?v=7.0',
+  './app.js?v=7.0',
+  './config.js?v=7.0',
   './manifest.json',
   './assets/lion_logo.jpg',
+  './assets/biblia_aberta.jpg',
+  './assets/estudando_palavra_intro.mp3',
   './assets/evangelista_alexandra.jpg',
   './assets/logo.svg'
 ];
@@ -32,7 +34,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((name) => {
           if (name !== CACHE_NAME) {
-            console.log('[SW] Removendo cache antigo:', name);
+            console.log('[SW] Purgando cache antigo:', name);
             return caches.delete(name);
           }
         })
@@ -55,26 +57,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // data.json: Estratégia Network-First (sempre busca o mais recente do servidor)
-  if (url.pathname.endsWith('data.json')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Demais arquivos (App Shell): Stale-While-Revalidate
+  // Estratégia Network-First para todos os arquivos: Sempre busca o mais recente do servidor
+  // Se a rede estiver offline, utiliza o cache local do PWA com segurança
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
+    fetch(event.request)
+      .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -82,9 +69,7 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => cachedResponse);
-
-      return cachedResponse || fetchPromise;
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
