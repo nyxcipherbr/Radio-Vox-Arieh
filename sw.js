@@ -3,13 +3,13 @@
  * Atualizações Instantâneas (Network-First) & Suporte a Execução Contínua
  */
 
-const CACHE_NAME = 'vox-arieh-cache-v8.0';
+const CACHE_NAME = 'vox-arieh-cache-v9.0';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
-  './styles.css?v=8.0',
-  './app.js?v=8.0',
-  './config.js?v=8.0',
+  './styles.css?v=9.0',
+  './app.js?v=9.0',
+  './config.js?v=9.0',
   './manifest.json',
   './assets/lion_logo.jpg',
   './assets/biblia_aberta.jpg',

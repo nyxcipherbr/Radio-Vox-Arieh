@@ -96,7 +96,7 @@ const server = http.createServer((req, res) => {
   // Cabeçalhos de Segurança da API (OWASP Hardening)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Hash');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Hash, X-File-Name');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -139,6 +139,98 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // 2b. Upload seguro de áudios de pregações / cultos até 120MB (POST /api/upload-audio)
+  if (req.method === 'POST' && pathname === '/api/upload-audio') {
+    if (!verifyAuth(req)) {
+      res.writeHead(401);
+      res.end(JSON.stringify({ error: 'Não autorizado. Autenticação de administrador necessária.' }));
+      return;
+    }
+
+    const audiosDir = path.join(__dirname, 'assets', 'audios');
+    try {
+      if (!fs.existsSync(audiosDir)) {
+        fs.mkdirSync(audiosDir, { recursive: true });
+      }
+    } catch (dirErr) {
+      console.error('[API] Erro ao criar diretório assets/audios:', dirErr);
+    }
+
+    // Identifica e valida extensão permitida
+    let rawFileName = 'audio.mp3';
+    try {
+      rawFileName = decodeURIComponent(req.headers['x-file-name'] || 'audio.mp3');
+    } catch (e) {
+      rawFileName = 'audio.mp3';
+    }
+
+    let ext = path.extname(rawFileName).toLowerCase();
+    const ALLOWED_EXTS = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.webm', '.opus', '.mp4'];
+    if (!ALLOWED_EXTS.includes(ext)) {
+      ext = '.mp3';
+    }
+
+    const safeBase = 'audio_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
+    const finalFileName = safeBase + ext;
+    const targetPath = path.join(audiosDir, finalFileName);
+
+    let totalBytes = 0;
+    const MAX_AUDIO_BYTES = 120 * 1024 * 1024; // 120MB
+    const fileStream = fs.createWriteStream(targetPath);
+    let aborted = false;
+
+    req.on('data', chunk => {
+      if (aborted) return;
+      totalBytes += chunk.length;
+      if (totalBytes > MAX_AUDIO_BYTES) {
+        aborted = true;
+        fileStream.destroy();
+        fs.unlink(targetPath, () => {});
+        res.writeHead(413);
+        res.end(JSON.stringify({ error: 'Áudio excede o limite máximo permitido de 120MB.' }));
+        req.destroy();
+        return;
+      }
+      fileStream.write(chunk);
+    });
+
+    req.on('end', () => {
+      if (aborted) return;
+      fileStream.end(() => {
+        const sizeMb = (totalBytes / (1024 * 1024)).toFixed(2);
+        console.log(`[API] Áudio gravado com sucesso: ${finalFileName} (${sizeMb}MB) em ${new Date().toISOString()}`);
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          success: true,
+          audioUrl: `assets/audios/${finalFileName}`,
+          fileName: finalFileName,
+          sizeMb: sizeMb
+        }));
+      });
+    });
+
+    req.on('error', (err) => {
+      console.error('[API] Erro no streaming de upload:', err);
+      fileStream.destroy();
+      fs.unlink(targetPath, () => {});
+      if (!res.headersSent) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: 'Erro durante a transmissão do áudio.' }));
+      }
+    });
+
+    fileStream.on('error', (err) => {
+      console.error('[API] Erro ao gravar arquivo no disco:', err);
+      fs.unlink(targetPath, () => {});
+      if (!res.headersSent) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: 'Erro ao gravar arquivo no disco do servidor.' }));
+      }
+    });
+
+    return;
+  }
+
   // 3. Salvar alterações do ADM (POST /api/save)
   if (req.method === 'POST' && pathname === '/api/save') {
     if (!checkRateLimit(clientIp, true)) {
@@ -149,7 +241,7 @@ const server = http.createServer((req, res) => {
     let body = '';
     req.on('data', chunk => {
       body += chunk;
-      if (body.length > 10 * 1024 * 1024) {
+      if (body.length > 50 * 1024 * 1024) {
         res.writeHead(413);
         res.end(JSON.stringify({ error: 'Payload muito grande.' }));
         req.destroy();

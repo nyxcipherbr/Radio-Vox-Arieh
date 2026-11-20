@@ -110,6 +110,8 @@ function sanitizeHTML(str) {
     .replace(/'/g, '&#39;');
 }
 
+const escapeHTML = sanitizeHTML;
+
 function sanitizeUrl(url) {
   if (!url || typeof url !== 'string') return '#';
   const clean = url.trim();
@@ -593,18 +595,18 @@ function renderWordStudies() {
     return `
       <div class="study-card-item ${isActive ? 'is-active' : ''}" onclick="selectStudyByIndex(${idx})">
         <div class="study-card-thumb">
-          <img src="assets/biblia_aberta.jpg?v=8.0" alt="Bíblia Sagrada" class="study-thumb-img">
+          <img src="assets/biblia_aberta.jpg?v=9.0" alt="Bíblia Sagrada" class="study-thumb-img">
           <span class="study-thumb-badge">${idx + 1}</span>
         </div>
         <div class="study-card-body">
           <div class="study-card-topline">
-            <span class="study-verse-mini">${escapeHTML(st.verse || 'Escrituras Sagradas')}</span>
-            <span class="study-duration-mini">⏱️ ${escapeHTML(st.duration || '30 min')}</span>
+            <span class="study-verse-mini">${sanitizeHTML(st.verse || 'Escrituras Sagradas')}</span>
+            <span class="study-duration-mini">⏱️ ${sanitizeHTML(st.duration || '30 min')}</span>
           </div>
-          <h4 class="study-card-title">${escapeHTML(st.title)}</h4>
+          <h4 class="study-card-title">${sanitizeHTML(st.title)}</h4>
           <div class="study-card-speaker">
-            <span>🎙️ ${escapeHTML(st.speaker || 'Evangelista Alexandra Maia')}</span>
-            ${st.date ? `<span> • 🗓️ ${escapeHTML(st.date)}</span>` : ''}
+            <span>🎙️ ${sanitizeHTML(st.speaker || 'Evangelista Alexandra Maia')}</span>
+            ${st.date ? `<span> • 🗓️ ${sanitizeHTML(st.date)}</span>` : ''}
           </div>
         </div>
         <div class="study-card-action">
@@ -642,7 +644,7 @@ function loadStudyIntoPlayer(study, autoPlay = false) {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0;">
         <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
       </svg>
-      <span>${escapeHTML(study.verse || 'Bíblia Sagrada')}</span>
+      <span>${sanitizeHTML(study.verse || 'Bíblia Sagrada')}</span>
     `;
   }
   if (titleElem) titleElem.textContent = study.title || 'Ministração da Palavra';
@@ -1002,7 +1004,7 @@ function initPWA() {
   // 1. Registro do Service Worker para cache offline e funcionamento como App
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=8.0')
+      navigator.serviceWorker.register('./sw.js?v=9.0')
         .then(reg => {
           console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
           // Força verificação imediata de atualizações no servidor
@@ -2051,7 +2053,7 @@ function renderAdminWordStudies() {
           </div>
         </div>
         <div class="admin-item-actions">
-          <button type="button" class="btn-sm-action btn-gold" style="background: rgba(212,175,55,0.2); border: 1px solid var(--border-gold); color: var(--gold-bright); border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="selectStudyByIndex(${idx}, true); closeModals(); showToast('Tocando: ' + ${JSON.stringify(st.title)});">
+          <button type="button" class="btn-sm-action btn-gold" style="background: rgba(212,175,55,0.2); border: 1px solid var(--border-gold); color: var(--gold-bright); border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="selectStudyByIndex(${idx}, true); closeModals();">
             ▶️ Ouvir
           </button>
           <button type="button" class="btn-sm-action btn-gold" style="background: rgba(157,78,221,0.2); border: 1px solid var(--border-violet); color: #c77dff; border-radius: 6px; padding: 6px 10px; cursor: pointer;" onclick="editWordStudy('${st.id}')">
@@ -2199,19 +2201,58 @@ async function handleSaveWordStudy(event) {
 
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
-    if (file.size > 15 * 1024 * 1024) {
-      alert("⚠️ Arquivo de áudio grande (" + (file.size / (1024 * 1024)).toFixed(1) + "MB).\nPara áudios maiores que 15MB, insira o link direto do áudio no campo 'Link de áudio' acima!");
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+
+    if (file.size > 120 * 1024 * 1024) {
+      alert("⚠️ O arquivo de áudio selecionado (" + sizeMb + "MB) excede o limite máximo permitido de 120MB.\nPor favor, comprima o arquivo ou insira o link direto.");
       return;
     }
+
+    showToast("⏳ Enviando áudio (" + sizeMb + "MB) para o servidor... Aguarde.");
+
+    // Upload direto em streaming para o servidor (/api/upload-audio)
+    let uploadSuccess = false;
     try {
-      audioFile = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.onerror = err => reject(err);
-        reader.readAsDataURL(file);
+      const uploadRes = await fetch('/api/upload-audio', {
+        method: 'POST',
+        headers: {
+          'X-Admin-Hash': getAdminHash(),
+          'X-File-Name': encodeURIComponent(file.name),
+          'Content-Type': file.type || 'audio/mpeg'
+        },
+        body: file
       });
-    } catch (e) {
-      console.warn("Falha ao ler arquivo de áudio:", e);
+
+      if (uploadRes.ok) {
+        const uploadJson = await uploadRes.json();
+        if (uploadJson.success && uploadJson.audioUrl) {
+          audioFile = uploadJson.audioUrl;
+          if (!audioUrl) audioUrl = uploadJson.audioUrl;
+          uploadSuccess = true;
+          console.log("[VOX ARIEH] Áudio gravado com sucesso no servidor:", uploadJson.audioUrl);
+        }
+      }
+    } catch (uploadErr) {
+      console.warn("[VOX ARIEH] Falha no upload para /api/upload-audio:", uploadErr);
+    }
+
+    // Fallback: se offline ou sem API e o áudio for pequeno (<= 6MB)
+    if (!uploadSuccess) {
+      if (file.size <= 6 * 1024 * 1024) {
+        try {
+          audioFile = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = err => reject(err);
+            reader.readAsDataURL(file);
+          });
+        } catch (e) {
+          console.warn("Falha ao converter áudio para base64:", e);
+        }
+      } else {
+        alert("⚠️ O áudio possui " + sizeMb + "MB. Para arquivos deste tamanho, verifique se a API do servidor está ativa ou insira o link direto de áudio (MP3 ou Spotify).");
+        return;
+      }
     }
   }
 
