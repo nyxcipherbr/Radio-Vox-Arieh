@@ -489,6 +489,17 @@ function initWordStudyPlayer() {
   wordStudyAudio.addEventListener('pause', () => updateStudyPlayUI(false));
 }
 
+function updateNavPlayButton(playing) {
+  const navText = document.getElementById('navPlayText');
+  const navSvg = document.getElementById('navPlaySvg');
+  if (navText) navText.textContent = playing ? 'Pausar' : 'Ouvir Rádio';
+  if (navSvg) {
+    navSvg.innerHTML = playing ? 
+      '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' : 
+      '<path d="M8 5v14l11-7z"/>';
+  }
+}
+
 function togglePlayStream() {
   if (!radioAudio) return;
 
@@ -505,6 +516,7 @@ function togglePlayStream() {
     if (pauseIcon) pauseIcon.style.display = 'none';
     if (fixedPlayer) fixedPlayer.classList.remove('is-playing');
     if (heroBtnText) heroBtnText.textContent = 'Ouvir a Rádio Agora';
+    updateNavPlayButton(false);
     updateMediaSession();
     updateMiniPlayerUI();
   } else {
@@ -529,6 +541,7 @@ function togglePlayStream() {
         if (pauseIcon) pauseIcon.style.display = 'block';
         if (fixedPlayer) fixedPlayer.classList.add('is-playing');
         if (heroBtnText) heroBtnText.textContent = 'Pausar Transmissão';
+        updateNavPlayButton(true);
         updateMediaSession();
         updateMiniPlayerUI();
       }).catch(error => {
@@ -540,6 +553,7 @@ function togglePlayStream() {
           if (pauseIcon) pauseIcon.style.display = 'block';
           if (fixedPlayer) fixedPlayer.classList.add('is-playing');
           if (heroBtnText) heroBtnText.textContent = 'Pausar Transmissão';
+          updateNavPlayButton(true);
           updateMediaSession();
           updateMiniPlayerUI();
         }).catch(err => console.error("Falha ao tocar áudio:", err));
@@ -579,7 +593,7 @@ function renderWordStudies() {
     return `
       <div class="study-card-item ${isActive ? 'is-active' : ''}" onclick="selectStudyByIndex(${idx})">
         <div class="study-card-thumb">
-          <img src="assets/biblia_aberta.jpg?v=7.0" alt="Bíblia Sagrada" class="study-thumb-img">
+          <img src="assets/biblia_aberta.jpg?v=8.0" alt="Bíblia Sagrada" class="study-thumb-img">
           <span class="study-thumb-badge">${idx + 1}</span>
         </div>
         <div class="study-card-body">
@@ -988,7 +1002,7 @@ function initPWA() {
   // 1. Registro do Service Worker para cache offline e funcionamento como App
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=7.0')
+      navigator.serviceWorker.register('./sw.js?v=8.0')
         .then(reg => {
           console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
           // Força verificação imediata de atualizações no servidor
@@ -2098,6 +2112,7 @@ function openStudyForm(study = null) {
   const audioUrlInput = document.getElementById('studyFormAudioUrl');
   const audioFileInput = document.getElementById('studyFormAudioFile');
   const featuredInput = document.getElementById('studyFormFeatured');
+  const fileNameDisplay = document.getElementById('studyFormFileName');
 
   if (idInput) idInput.value = study ? (study.id || '') : '';
   if (titleInput) titleInput.value = study ? (study.title || '') : '';
@@ -2110,13 +2125,18 @@ function openStudyForm(study = null) {
     audioUrlInput.value = study ? (study.audioUrl && !study.audioUrl.startsWith('data:') ? study.audioUrl : (study.spotifyUrl || '')) : '';
   }
   if (audioFileInput) audioFileInput.value = '';
+  if (fileNameDisplay) fileNameDisplay.textContent = 'Nenhum arquivo selecionado';
   if (featuredInput) featuredInput.checked = study ? !!study.featured : false;
 
+  const adminModal = document.querySelector('.admin-modal-box');
+  if (adminModal) {
+    adminModal.scrollTop = 0;
+  }
   try {
     box.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => {
       if (titleInput) titleInput.focus();
-    }, 100);
+    }, 120);
   } catch (e) {}
 }
 
@@ -2124,6 +2144,10 @@ function closeStudyForm() {
   const box = document.getElementById('studyFormBox');
   if (box) box.style.display = 'none';
 }
+
+window.toggleAddStudyForm = toggleAddStudyForm;
+window.openStudyForm = openStudyForm;
+window.closeStudyForm = closeStudyForm;
 
 function editWordStudy(id) {
   const studies = getWordStudiesData();
